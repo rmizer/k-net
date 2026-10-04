@@ -1,17 +1,11 @@
 /* K-Net brand styles. Colors and type follow dev/branding.png. */
 
 /*
- * Brand font: All Genders V4 (Lite / Regular / Bold). Once the web font files
- * are added under public/fonts/, declare them here, e.g.
- *
- * @font-face {
- *   font-family: 'All Genders';
- *   src: url('/fonts/AllGendersV4-Bold.woff2') format('woff2');
- *   font-weight: 700;
- *   font-display: swap;
- * }
- *
- * Until then, Fira Sans (loaded in index.html) is used as a close match.
+ * Brand font: Tw Cen MT (Regular / Bold / Italic). It's a commercial Monotype
+ * font that ships with Microsoft Office, so it's used when installed on the
+ * viewer's device. Everyone else gets Jost (loaded in index.html), a free font
+ * with the same geometric style. Embedding Tw Cen MT itself requires a web
+ * font license from Monotype.
  */
 
 :root {
@@ -26,8 +20,7 @@
   --knet-red-tint: #fde8e8;
   --knet-red-wash: #fff8f8;
 
-  --font-brand: 'All Genders', 'All Genders V4', 'Fira Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --weight-light: 300;
+  --font-brand: 'Tw Cen MT', 'Tw Cen MT Std', 'Jost', 'Century Gothic', system-ui, sans-serif;
   --weight-regular: 400;
   --weight-bold: 700;
 
@@ -37,8 +30,10 @@
   --shadow-tile: 0 1px 3px rgb(0 0 0 / 0.08), 0 1px 2px rgb(0 0 0 / 0.06);
 
   color-scheme: light;
+  /* Tw Cen MT has a small x-height, so the base size is nudged up to 17px. */
+  font-size: 106.25%;
   font-family: var(--font-brand);
-  font-weight: var(--weight-light);
+  font-weight: var(--weight-regular);
   line-height: 1.5;
   color: var(--knet-black);
   background: var(--knet-white);
@@ -159,17 +154,21 @@ a:hover {
 
 .site-header {
   background: var(--knet-white);
-  padding: 1rem 0;
+  padding: 1.75rem 0 1.5rem;
+  text-align: center;
 }
 
 .site-header__logo {
   display: inline-block;
+  max-width: 100%;
 }
 
 .site-header__logo img {
   display: block;
-  height: 72px;
+  height: 120px;
   width: auto;
+  max-width: 100%;
+  object-fit: contain;
 }
 
 /* Main navigation */
@@ -348,7 +347,8 @@ a:hover {
 .placeholder__badge {
   display: inline-block;
   margin-bottom: 0.75rem;
-  padding: 0.15rem 0.6rem;
+  /* Extra 3px on top optically centers the brand font's capitals in the pill. */
+  padding: calc(0.15rem + 3px) 0.6rem 0.15rem;
   border-radius: 999px;
   background: var(--knet-red);
   color: var(--knet-white);
@@ -577,7 +577,8 @@ a:hover {
 .badge {
   display: inline-block;
   margin-right: 0.4rem;
-  padding: 0.05rem 0.5rem;
+  /* Extra 3px on top optically centers the brand font's capitals in the pill. */
+  padding: calc(0.05rem + 3px) 0.5rem 0.05rem;
   border-radius: 999px;
   background: var(--knet-red);
   color: var(--knet-white);
@@ -644,8 +645,17 @@ a:hover {
 /* ---------- Mobile: vertical navigation ---------- */
 
 @media (max-width: 860px) {
+  .site-header {
+    padding: 1.25rem 0 1rem;
+  }
+
+  .site-header__logo {
+    width: min(320px, 100%);
+  }
+
   .site-header__logo img {
-    height: 52px;
+    width: 100%;
+    height: auto;
   }
 
   .site-nav__inner {

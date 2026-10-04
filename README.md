@@ -70,6 +70,6 @@ cd frontend && npm run lint && npm run build
 ## Branding
 
 - Dark red `#880101`, red `#D60000`, black `#000000`
-- Font: All Genders V4 (Lite / Regular / Bold). Web font files still need to be
-  added to `frontend/public/fonts/` (see the note at the top of `frontend/src/index.css`);
-  Fira Sans is the fallback until then.
+- Font: Tw Cen MT (Regular / Bold / Italic), used when installed (it ships with Microsoft
+  Office). Jost from Google Fonts is the fallback everywhere else; embedding Tw Cen MT itself
+  needs a web font license from Monotype.
