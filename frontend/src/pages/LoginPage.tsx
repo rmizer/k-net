@@ -3,6 +3,7 @@ import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { ApiError } from '../api'
 import { useAuth } from '../auth/useAuth'
 import { isSiteManager } from '../auth/roles'
+import wordmark from '../assets/brand/knet-wordmark.png'
 
 export function LoginPage() {
   const { user, loading, login } = useAuth()
@@ -15,7 +16,12 @@ export function LoginPage() {
 
   const from = (location.state as { from?: string } | null)?.from
 
-  if (loading) return <p className="loading">Loading…</p>
+  if (loading)
+    return (
+      <main className="login-screen">
+        <p className="loading">Loading…</p>
+      </main>
+    )
   if (user) return <Navigate to={from ?? '/'} replace />
 
   const handleSubmit = async (event: FormEvent) => {
@@ -34,39 +40,41 @@ export function LoginPage() {
   }
 
   return (
-    <section className="login">
-      <h1>Log in</h1>
-      <p className="subtitle">K Network Project Center</p>
-      <form className="tile form" onSubmit={handleSubmit} noValidate>
-        {error && (
-          <p className="form__error" role="alert">
-            {error}
-          </p>
-        )}
-        <label className="form__field">
-          <span>Email</span>
-          <input
-            type="email"
-            autoComplete="email"
-            required
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-          />
-        </label>
-        <label className="form__field">
-          <span>Password</span>
-          <input
-            type="password"
-            autoComplete="current-password"
-            required
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-        </label>
-        <button type="submit" className="button" disabled={submitting}>
-          {submitting ? 'Logging in…' : 'Log in'}
-        </button>
-      </form>
-    </section>
+    <main className="login-screen">
+      <section className="login">
+        <img src={wordmark} alt="K-Net: K Network Project Center" className="login__logo" width={900} height={286} />
+        <h1>Log in</h1>
+        <form className="tile form" onSubmit={handleSubmit} noValidate>
+          {error && (
+            <p className="form__error" role="alert">
+              {error}
+            </p>
+          )}
+          <label className="form__field">
+            <span>Email</span>
+            <input
+              type="email"
+              autoComplete="email"
+              required
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+            />
+          </label>
+          <label className="form__field">
+            <span>Password</span>
+            <input
+              type="password"
+              autoComplete="current-password"
+              required
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+            />
+          </label>
+          <button type="submit" className="button" disabled={submitting}>
+            {submitting ? 'Logging in…' : 'Log in'}
+          </button>
+        </form>
+      </section>
+    </main>
   )
 }

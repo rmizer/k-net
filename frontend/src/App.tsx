@@ -168,8 +168,9 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+          {/* Login stands alone: no header, nav or footer. */}
+          <Route path="/login" element={<LoginPage />} />
           <Route element={<Layout />}>
-            <Route path="/login" element={<LoginPage />} />
             <Route element={<RequireAuth />}>
               <Route path="/" element={<DashboardPage />} />
               <Route path="/account" element={<AccountPage />} />

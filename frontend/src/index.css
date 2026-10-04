@@ -458,9 +458,31 @@ a:hover {
   font-weight: var(--weight-regular);
 }
 
+/* Login: full-screen, centered, without the site header/nav/footer. */
+.login-screen {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 2rem var(--gutter);
+  background: var(--knet-white);
+}
+
 .login {
+  width: 100%;
   max-width: 420px;
-  margin: 0 auto;
+  text-align: center;
+}
+
+.login__logo {
+  display: block;
+  width: min(280px, 80%);
+  height: auto;
+  margin: 0 auto 1.75rem;
+}
+
+.login .form {
+  text-align: left;
 }
 
 .account {
