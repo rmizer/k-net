@@ -23,6 +23,8 @@
   --knet-gray-300: #d9d3d3;
   --knet-gray-600: #5c5555;
   --knet-success: #1f6f3a;
+  --knet-red-tint: #fde8e8;
+  --knet-red-wash: #fff8f8;
 
   --font-brand: 'All Genders', 'All Genders V4', 'Fira Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --weight-light: 300;
@@ -439,7 +441,7 @@ a:hover {
   margin: 0;
   padding: 0.6rem 0.75rem;
   border-left: 4px solid var(--knet-red);
-  background: #fdecec;
+  background: var(--knet-red-tint);
   color: var(--knet-dark-red);
   font-weight: var(--weight-regular);
 }
@@ -510,6 +512,111 @@ a:hover {
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+.muted {
+  margin: 0;
+  color: var(--knet-gray-600);
+}
+
+.text-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--knet-dark-red);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.text-button:hover {
+  color: var(--knet-red);
+  text-decoration: underline;
+}
+
+.icon-button {
+  flex: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--knet-gray-600);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.icon-button:hover {
+  background: var(--knet-gray-100);
+  color: var(--knet-red);
+}
+
+.badge {
+  display: inline-block;
+  margin-right: 0.4rem;
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  background: var(--knet-red);
+  color: var(--knet-white);
+  font-size: 0.7rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: 0.15em;
+}
+
+.badge--muted {
+  background: var(--knet-gray-300);
+  color: var(--knet-black);
+}
+
+.badge--influencer {
+  background: var(--knet-black);
+}
+
+.form__field select,
+.form__field textarea {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--knet-gray-300);
+  border-radius: var(--radius);
+  background: var(--knet-white);
+  font-weight: var(--weight-regular);
+}
+
+.form__hint {
+  margin: -0.5rem 0 0;
+  font-size: 0.85rem;
+  color: var(--knet-gray-600);
+}
+
+.form__check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: var(--weight-regular);
+}
+
+/* A small form that opens inside a tile (e.g. "Post announcement"). */
+.inline-form {
+  display: grid;
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--knet-gray-300);
+}
+
+.inline-form:only-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.inline-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 /* ---------- Mobile: vertical navigation ---------- */

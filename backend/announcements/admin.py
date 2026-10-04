@@ -1,0 +1,16 @@
+from django.contrib import admin
+
+from .models import Alert, Announcement
+
+
+@admin.register(Announcement)
+class AnnouncementAdmin(admin.ModelAdmin):
+    list_display = ["title", "pinned", "created_by", "created_at"]
+    list_filter = ["pinned"]
+    search_fields = ["title", "body"]
+
+
+@admin.register(Alert)
+class AlertAdmin(admin.ModelAdmin):
+    list_display = ["message", "level", "expires_at", "created_at"]
+    list_filter = ["level"]

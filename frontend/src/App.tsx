@@ -4,6 +4,7 @@ import { MANAGER_ROLES, type Role } from './auth/roles'
 import { Layout } from './components/Layout'
 import { RequireAuth, RequireRole } from './components/RouteGuards'
 import { AccountPage } from './pages/AccountPage'
+import { DashboardPage } from './pages/dashboard/DashboardPage'
 import { LoginPage } from './pages/LoginPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
@@ -12,19 +13,6 @@ const NON_MANAGER_ROLES: Role[] = ['director', 'assistant', 'staff']
 
 // Pages not built yet, with the contents planned for each (from the site plan).
 const PLACEHOLDERS: { path: string; title: string; planned: string[]; roles?: Role[] }[] = [
-  {
-    path: '/',
-    title: 'Dashboard',
-    planned: [
-      'Weather',
-      'Announcements (about 75% width) and Alerts (about 25% width)',
-      'Daily Rundown: links to today’s calendar events',
-      'Your Tasks',
-      'Staff Tasks (Directors and Assistants only)',
-      'Weekly schedule preview with a link to the monthly schedule',
-      'Today’s Crew, grouped by department',
-    ],
-  },
   {
     path: '/directory',
     title: 'Directory',
@@ -183,6 +171,7 @@ export default function App() {
           <Route element={<Layout />}>
             <Route path="/login" element={<LoginPage />} />
             <Route element={<RequireAuth />}>
+              <Route path="/" element={<DashboardPage />} />
               <Route path="/account" element={<AccountPage />} />
               {PLACEHOLDERS.map(({ path, title, planned, roles }) => {
                 const page = <PlaceholderPage title={title} planned={planned} />

@@ -2,7 +2,7 @@
 
 Production-coordination platform for large-scale film shoots: scheduling, logistics,
 staff management, communication, documents and finance in one place.
-Planning docs and brand assets live in [`dev/`](dev/).
+Planning docs and brand source files are kept locally in `dev/` and are not part of the repo.
 
 ## Stack
 

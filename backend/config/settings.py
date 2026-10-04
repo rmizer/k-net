@@ -51,6 +51,10 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "accounts",
+    "core",
+    "announcements",
+    "tasks",
+    "schedule",
 ]
 
 MIDDLEWARE = [
@@ -59,6 +63,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "core.middleware.ProductionTimeZoneMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -124,9 +129,11 @@ REST_FRAMEWORK = {
 
 
 # Internationalization
+# Requests run in the production's time zone (set from its location; see
+# core.middleware). TIME_ZONE is only the fallback outside requests.
 
 LANGUAGE_CODE = "en-us"
-TIME_ZONE = os.environ.get("DJANGO_TIME_ZONE", "UTC")
+TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
