@@ -1,0 +1,97 @@
+/* Resources Directory. Shared tokens and components live in src/index.css. */
+
+.filters--two {
+  grid-template-columns: 2fr 1fr;
+}
+
+.resources__count {
+  margin: 1.25rem 0 0;
+  font-size: 0.9rem;
+}
+
+.resources__group {
+  margin-top: 2rem;
+}
+
+.resources__group h2 {
+  margin-bottom: 0.75rem;
+  font-size: 1.35rem;
+}
+
+.resources__group-count {
+  color: var(--knet-gray-600);
+  font-weight: var(--weight-regular);
+}
+
+.resource-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.resource-tile {
+  display: grid;
+  align-content: start;
+  gap: 0.6rem;
+  padding: 1rem;
+}
+
+.resource-tile__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.resource-tile__head h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  text-transform: none;
+  color: var(--knet-black);
+}
+
+.resource-tile__contact {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--knet-red);
+}
+
+.resource-tile__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.resource-tile__actions .text-button {
+  font-size: 0.8rem;
+}
+
+.resource-tile__links {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.95rem;
+  overflow-wrap: anywhere;
+}
+
+.resource-tile__notes {
+  margin: 0;
+  padding-top: 0.6rem;
+  border-top: 1px dashed var(--knet-gray-300);
+  font-size: 0.9rem;
+  color: var(--knet-gray-600);
+}
+
+@media (max-width: 860px) {
+  .filters--two {
+    grid-template-columns: 1fr;
+  }
+}

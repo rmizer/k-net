@@ -21,6 +21,7 @@ class EventSerializer(serializers.ModelSerializer):
             "department",
             "department_name",
             "attendees",
+            "influencers",
             "is_mine",
         ]
 

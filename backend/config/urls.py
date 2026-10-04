@@ -14,6 +14,9 @@ urlpatterns = [
     path("api/", include("announcements.urls")),
     path("api/", include("tasks.urls")),
     path("api/", include("schedule.urls")),
+    path("api/", include("crewfinder.urls")),
+    path("api/", include("resources.urls")),
+    path("api/", include("influencers.urls")),
 ]
 
 if settings.DEBUG:

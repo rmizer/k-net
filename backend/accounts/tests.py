@@ -21,6 +21,17 @@ class AuthTests(APITestCase):
         self.assertEqual(response.data["role"], "staff")
         self.assertEqual(self.client.get("/api/auth/me/").data["email"], "staff@test.com")
 
+    def test_login_email_is_case_insensitive(self):
+        response = self.client.post("/api/auth/login/", {"email": "Staff@Test.com", "password": PASSWORD})
+        self.assertEqual(response.status_code, 200)
+
+    def test_me_lists_assignable_roles(self):
+        director = make_user("dir@test.com", User.Role.DIRECTOR)
+        self.client.force_authenticate(director)
+        self.assertEqual(self.client.get("/api/auth/me/").data["assignable_roles"], ["assistant", "staff"])
+        self.client.force_authenticate(self.staff)
+        self.assertEqual(self.client.get("/api/auth/me/").data["assignable_roles"], [])
+
     def test_bad_password_rejected(self):
         response = self.client.post("/api/auth/login/", {"email": "staff@test.com", "password": "nope"})
         self.assertEqual(response.status_code, 400)
@@ -104,6 +115,57 @@ class AccountCreationTests(APITestCase):
         self.assertEqual(self.client.delete(f"/api/users/{other_director.pk}/").status_code, 403)
         self.staff.refresh_from_db()
         self.assertFalse(self.staff.is_active)
+
+
+class DirectoryManagementTests(APITestCase):
+    def setUp(self):
+        self.director = make_user("dir@test.com", User.Role.DIRECTOR)
+        self.client.force_authenticate(self.director)
+
+    def add(self, **fields):
+        data = {"email": "new@test.com", "first_name": "New", "last_name": "Person", "role": "staff", **fields}
+        return self.client.post("/api/users/", data)
+
+    def test_temporary_password_returned_once_when_none_given(self):
+        response = self.add()
+        self.assertEqual(response.status_code, 201)
+        temp = response.data["temporary_password"]
+        self.assertTrue(User.objects.get(email="new@test.com").check_password(temp))
+        listing = self.client.get(f"/api/users/{response.data['id']}/").data
+        self.assertNotIn("temporary_password", listing)
+
+    def test_no_temporary_password_when_password_given(self):
+        response = self.add(password=PASSWORD)
+        self.assertNotIn("temporary_password", response.data)
+
+    def test_duplicate_email_rejected_case_insensitively(self):
+        self.add()
+        response = self.add(email="NEW@test.com")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("email", response.data)
+
+    def test_readding_removed_person_explains_restore(self):
+        user = self.add().data
+        self.client.delete(f"/api/users/{user['id']}/")
+        response = self.add()
+        self.assertIn("removed account", str(response.data["email"]))
+
+    def test_names_required(self):
+        self.assertEqual(self.add(first_name="").status_code, 400)
+
+    def test_director_assigns_department(self):
+        from .models import Department
+        dept = Department.objects.create(name="Tech")
+        response = self.add(department=dept.pk)
+        self.assertEqual(response.data["department_name"], "Tech")
+
+    def test_department_names_unique_case_insensitively(self):
+        self.assertEqual(self.client.post("/api/departments/", {"name": "Catering"}).status_code, 201)
+        self.assertEqual(self.client.post("/api/departments/", {"name": " catering "}).status_code, 400)
+
+    def test_staff_cannot_add_departments(self):
+        self.client.force_authenticate(make_user("s@test.com", User.Role.STAFF))
+        self.assertEqual(self.client.post("/api/departments/", {"name": "X"}).status_code, 403)
 
 
 class EmergencyContactVisibilityTests(APITestCase):

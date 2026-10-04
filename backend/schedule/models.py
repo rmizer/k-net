@@ -35,6 +35,7 @@ class Event(models.Model):
         "accounts.Department", null=True, blank=True, on_delete=models.SET_NULL, related_name="events"
     )
     attendees = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name="events")
+    influencers = models.ManyToManyField("influencers.Influencer", blank=True, related_name="events")
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="+"
     )

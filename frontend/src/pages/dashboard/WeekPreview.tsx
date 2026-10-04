@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { addDays, eventDays, formatDay, formatTime } from '../../format'
 import type { CalendarEvent } from '../../types'
+import '../../components/schedule/schedule.css'
 import { DashboardSection } from './DashboardSection'
 
 interface WeekPreviewProps {
@@ -24,7 +25,7 @@ export function WeekPreview({ events, weekStart, today, timeZone, ownScheduleOnl
   return (
     <DashboardSection
       title={ownScheduleOnly ? 'Your Week' : 'This Week'}
-      action={<Link to="/schedule?view=month">Monthly schedule</Link>}
+      action={<Link to="/schedule#month">Monthly schedule</Link>}
     >
       <ol className="week">
         {days.map((day) => {

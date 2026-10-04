@@ -117,7 +117,7 @@ function LocationForm({ onSaved, onCancel }: { onSaved: () => void; onCancel: ()
     <form className="inline-form" onSubmit={handleSubmit}>
       <label className="form__field">
         <span>Production location (city)</span>
-        <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="e.g. Atlanta" required />
+        <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="e.g. Tampa" required />
       </label>
       <p className="form__hint">This also sets the production’s time zone for schedules and tasks.</p>
       {error && (

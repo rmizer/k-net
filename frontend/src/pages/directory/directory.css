@@ -1,0 +1,125 @@
+/* Directory page. Shared tokens and components live in src/index.css. */
+
+.directory__count {
+  margin: 1.25rem 0 0;
+  font-size: 0.9rem;
+}
+
+.directory__group {
+  margin-top: 2rem;
+}
+
+.directory__group h2 {
+  margin-bottom: 0.75rem;
+  font-size: 1.35rem;
+}
+
+.directory__group-count {
+  color: var(--knet-gray-600);
+  font-weight: var(--weight-regular);
+}
+
+.staff-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.staff-tile {
+  display: grid;
+  align-content: start;
+  gap: 0.85rem;
+  padding: 1rem;
+}
+
+.staff-tile__head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.staff-tile__name {
+  flex: 1;
+  min-width: 0;
+}
+
+.staff-tile__name h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  text-transform: none;
+  color: var(--knet-black);
+}
+
+.staff-tile__role {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--knet-red);
+}
+
+.staff-tile__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  align-self: flex-start;
+}
+
+.staff-tile__actions .text-button {
+  font-size: 0.8rem;
+}
+
+.staff-tile__details {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.staff-tile__details > div {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: 0.5rem;
+}
+
+.staff-tile__details dt {
+  font-size: 0.72rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.06em;
+  line-height: 1.9;
+  text-transform: uppercase;
+  color: var(--knet-dark-red);
+}
+
+.staff-tile__details dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.staff-tile__details > .staff-tile__emergency {
+  grid-template-columns: 1fr;
+  gap: 0.1rem;
+  margin-top: 0.2rem;
+  padding-top: 0.6rem;
+  border-top: 1px dashed var(--knet-gray-300);
+}
+
+.temp-password {
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  background: var(--knet-white);
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.95em;
+  user-select: all;
+}
+
+@media (max-width: 520px) {
+  .staff-tiles {
+    grid-template-columns: 1fr;
+  }
+}

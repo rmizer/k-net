@@ -186,6 +186,9 @@ class ProductionTimeZoneTests(BaseTestCase):
         with mock.patch("django.utils.timezone.now", return_value=frozen):
             data = self.client.get("/api/dashboard/").data
         self.assertEqual(str(data["production"]["today"]), "2026-01-02")
+        with mock.patch("django.utils.timezone.now", return_value=frozen):
+            data = self.client.get("/api/production/").data
+        self.assertEqual(str(data["today"]), "2026-01-02")
 
     def test_settings_row_cannot_be_deleted(self):
         ProductionSettings.load().delete()

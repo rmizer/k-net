@@ -59,3 +59,13 @@ export async function api<T = unknown>(path: string, options: RequestInit = {}):
 }
 
 export const ensureCsrfCookie = () => api('/auth/csrf/')
+
+/** Per-field messages from a DRF validation error, e.g. { email: 'Already exists.' }. */
+export function fieldErrors(error: unknown): Record<string, string> {
+  if (!(error instanceof ApiError) || !error.data || typeof error.data !== 'object') return {}
+  const result: Record<string, string> = {}
+  for (const [field, messages] of Object.entries(error.data as Record<string, unknown>)) {
+    if (Array.isArray(messages) && typeof messages[0] === 'string') result[field] = messages[0]
+  }
+  return result
+}

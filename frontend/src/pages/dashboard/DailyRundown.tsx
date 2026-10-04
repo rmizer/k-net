@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom'
-import { formatTimeRange } from '../../format'
+import { GanttChart } from '../../components/schedule/GanttChart'
+import { ScheduleLegend } from '../../components/schedule/ScheduleLegend'
 import type { CalendarEvent } from '../../types'
 import { DashboardSection } from './DashboardSection'
 
@@ -16,20 +16,15 @@ export function DailyRundown({ events, today, timeZone }: DailyRundownProps) {
         {events.length === 0 ? (
           <p className="muted">Nothing on the schedule today.</p>
         ) : (
-          <ul className="rundown">
-            {events.map((event) => (
-              <li key={event.id} className={event.event_type === 'influencer' ? 'is-influencer' : undefined}>
-                <span className="rundown__time">
-                  {event.all_day ? 'All day' : formatTimeRange(event.start, event.end, timeZone)}
-                </span>
-                <Link to={`/schedule?date=${today}&event=${event.id}`} className="rundown__title">
-                  {event.title}
-                </Link>
-                {event.event_type === 'influencer' && <span className="badge badge--influencer">Influencer</span>}
-                {event.location && <span className="rundown__location">{event.location}</span>}
-              </li>
-            ))}
-          </ul>
+          <>
+            <GanttChart
+              events={events}
+              day={today}
+              timeZone={timeZone}
+              eventHref={(event) => `/schedule?date=${today}&event=${event.id}`}
+            />
+            <ScheduleLegend />
+          </>
         )}
       </div>
     </DashboardSection>

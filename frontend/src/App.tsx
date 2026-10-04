@@ -5,6 +5,13 @@ import { Layout } from './components/Layout'
 import { RequireAuth, RequireRole } from './components/RouteGuards'
 import { AccountPage } from './pages/AccountPage'
 import { DashboardPage } from './pages/dashboard/DashboardPage'
+import { CrewFinderPage } from './pages/crew/CrewFinderPage'
+import { CrewPage } from './pages/crew/CrewPage'
+import { DirectoryPage } from './pages/directory/DirectoryPage'
+import { InfluencerProfilePage } from './pages/influencers/InfluencerProfilePage'
+import { InfluencersPage } from './pages/influencers/InfluencersPage'
+import { ResourcesPage } from './pages/resources/ResourcesPage'
+import { SchedulePage } from './pages/schedule/SchedulePage'
 import { LoginPage } from './pages/LoginPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
@@ -13,53 +20,6 @@ const NON_MANAGER_ROLES: Role[] = ['director', 'assistant', 'staff']
 
 // Pages not built yet, with the contents planned for each (from the site plan).
 const PLACEHOLDERS: { path: string; title: string; planned: string[]; roles?: Role[] }[] = [
-  {
-    path: '/directory',
-    title: 'Directory',
-    planned: [
-      'Every staff member, grouped by department, shown as small tiles',
-      'Name, department, role, lodging, email, phone',
-      'Emergency contacts (visible to Directors and Assistants only)',
-    ],
-  },
-  {
-    path: '/crew',
-    title: 'Staff / Crew',
-    planned: ['Active crew and staff currently working', 'Small tiles under department headers'],
-  },
-  {
-    path: '/crew/finder',
-    title: 'CrewFinder',
-    planned: ['Live crew locations from location trackers', 'Only Site Managers can add trackers'],
-  },
-  {
-    path: '/resources',
-    title: 'Resources Directory',
-    planned: [
-      'Vendors: caterers, rentals, transportation, equipment, utilities, technical resources, stores',
-      'Company name, contact name, address, phone (editable by Directors and Assistants)',
-    ],
-  },
-  {
-    path: '/influencers',
-    title: 'Influencer Roster',
-    planned: [
-      'Square tiles for each influencer / content creator',
-      'Profile: contact details, agent info, notes, schedule and needs, travel arrangements',
-      'Only Directors and Assistants can add, edit or remove influencers',
-    ],
-  },
-  {
-    path: '/schedule',
-    title: 'Schedule',
-    planned: [
-      'Daily schedule view',
-      'Calendar that switches between weekly and monthly views',
-      'Recent tasks with a link to your task list',
-      'Influencer events styled differently; your own entries highlighted',
-      'Filter by staff member',
-    ],
-  },
   { path: '/schedule/tasks', title: 'My Tasks', planned: ['Tasks assigned to you'] },
   {
     path: '/schedule/timeline',
@@ -173,6 +133,13 @@ export default function App() {
           <Route element={<Layout />}>
             <Route element={<RequireAuth />}>
               <Route path="/" element={<DashboardPage />} />
+              <Route path="/directory" element={<DirectoryPage />} />
+              <Route path="/crew" element={<CrewPage />} />
+              <Route path="/resources" element={<ResourcesPage />} />
+              <Route path="/schedule" element={<SchedulePage />} />
+              <Route path="/influencers" element={<InfluencersPage />} />
+              <Route path="/influencers/:id" element={<InfluencerProfilePage />} />
+              <Route path="/crew/finder" element={<CrewFinderPage />} />
               <Route path="/account" element={<AccountPage />} />
               {PLACEHOLDERS.map(({ path, title, planned, roles }) => {
                 const page = <PlaceholderPage title={title} planned={planned} />

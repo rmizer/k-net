@@ -55,10 +55,19 @@ npm run dev                   # http://localhost:5173
 
 After `seed_demo`, every account uses the password `knet-demo-2026`:
 
-- `manager@knet.test` (Site Manager)
-- `director@knet.test` (Director)
-- `assistant@knet.test` (Assistant)
-- `robert@knet.test` (Staff, Tech), plus other crew in Tech, Logistics and Film Crew
+- `coachk@knet.test`, `babes@knet.test` (Directors)
+- `rachel@knet.test` (Site Manager)
+- `jared@knet.test` (Assistant, Logistics)
+- `jimmy@knet.test` (Staff, Tech), plus other staff in Tech, Logistics and Film Crew
+
+`python manage.py load_tampa_resources` adds verified Tampa-area vendors to the Resources Directory
+(safe to run again; it updates existing entries by name).
+
+`python manage.py import_influencers <file.csv>` adds or updates Influencer Roster entries from a CSV
+(needs a `name` column; matches existing influencers by name).
+
+`python manage.py seed_demo --reset` deletes the demo accounts and demo content and re-creates them
+(production settings, departments and non-demo accounts are kept).
 
 ## Checks
 

@@ -20,7 +20,7 @@ class EventViewSet(viewsets.ModelViewSet):
     permission_classes = [ReadOnlyOrManagerLevel]
 
     def get_queryset(self):
-        events = Event.objects.select_related("department").prefetch_related("attendees")
+        events = Event.objects.select_related("department").prefetch_related("attendees", "influencers")
         params = self.request.query_params
 
         start, end = params.get("start"), params.get("end")

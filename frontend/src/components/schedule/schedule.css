@@ -1,0 +1,313 @@
+/* Schedule views shared by the dashboard and the Schedule page. */
+
+/* Gantt chart: one day's events as bars on a time axis */
+
+.gantt {
+  --gantt-label: 15rem;
+}
+
+.gantt__rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gantt__row {
+  display: grid;
+  grid-template-columns: var(--gantt-label) 1fr;
+  gap: 1rem;
+  align-items: center;
+}
+
+.gantt__rows .gantt__row {
+  padding: 0.35rem 0.4rem;
+  border-radius: 4px;
+}
+
+.gantt__rows .gantt__row + .gantt__row {
+  border-top: 1px solid var(--knet-gray-100);
+}
+
+.gantt__row.is-mine {
+  background: var(--knet-red-tint);
+}
+
+.gantt__row--axis {
+  padding: 1.1rem 0.4rem 0.35rem;
+}
+
+.gantt__label {
+  display: grid;
+  min-width: 0;
+}
+
+/* Event titles read better in sentence case than as all-caps body links. */
+.gantt__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-transform: none;
+  font-size: 1rem;
+}
+
+.gantt__meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.82rem;
+  color: var(--knet-gray-600);
+  font-variant-numeric: tabular-nums;
+}
+
+.gantt__track {
+  position: relative;
+  height: 1.75rem;
+}
+
+.gantt__row--axis .gantt__track {
+  height: 1rem;
+}
+
+.gantt__tick {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  font-size: 0.72rem;
+  color: var(--knet-gray-600);
+  font-variant-numeric: tabular-nums;
+}
+
+.gantt__tick:first-child {
+  transform: none;
+}
+
+.gantt__tick:last-child {
+  transform: translateX(-100%);
+}
+
+.gantt__grid {
+  position: absolute;
+  top: -0.35rem;
+  bottom: -0.35rem;
+  width: 1px;
+  background: var(--knet-gray-300);
+  opacity: 0.6;
+}
+
+.gantt__bar {
+  position: absolute;
+  top: 0.3rem;
+  bottom: 0.3rem;
+  min-width: 6px;
+  border-radius: 4px;
+  background: var(--knet-dark-red);
+  box-shadow: 0 0 0 2px var(--knet-white);
+}
+
+.gantt__bar:hover {
+  background: var(--knet-red);
+}
+
+/* Influencer events: dashed black edge on white, as in the week view. */
+.is-influencer .gantt__bar {
+  background: var(--knet-white);
+  border: 2px dashed var(--knet-black);
+}
+
+.is-influencer .gantt__bar:hover {
+  background: var(--knet-gray-100);
+}
+
+.gantt__tip {
+  position: absolute;
+  bottom: calc(100% + 0.4rem);
+  left: 50%;
+  z-index: 2;
+  display: none;
+  min-width: 10rem;
+  max-width: 16rem;
+  padding: 0.45rem 0.6rem;
+  transform: translateX(-50%);
+  border: 1px solid var(--knet-gray-300);
+  border-radius: 4px;
+  background: var(--knet-white);
+  box-shadow: var(--shadow-tile);
+  color: var(--knet-black);
+  font-size: 0.82rem;
+  text-transform: none;
+  white-space: normal;
+}
+
+.gantt__tip strong {
+  display: block;
+  font-variant-numeric: tabular-nums;
+}
+
+.gantt__tip span {
+  display: block;
+}
+
+.gantt__bar:hover .gantt__tip {
+  display: block;
+}
+
+/* The current time, drawn through every row. */
+.gantt__now {
+  position: absolute;
+  top: -0.35rem;
+  bottom: -0.35rem;
+  left: var(--gantt-now);
+  z-index: 1;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--knet-red);
+  pointer-events: none;
+}
+
+.gantt__row--axis .gantt__now {
+  top: 0;
+}
+
+.gantt__now--label {
+  font-size: 0;
+}
+
+.gantt__now--label::before {
+  content: "Now";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-bottom: 0.15rem;
+  padding: 0.05rem 0.3rem 0;
+  transform: translateX(-50%);
+  border-radius: 3px;
+  background: var(--knet-red);
+  color: var(--knet-white);
+  font-size: 0.65rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.legend__item--staff::before {
+  background: var(--knet-dark-red);
+}
+
+/* Agenda: one day's events as a list */
+
+.agenda {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.agenda__item {
+  display: grid;
+  grid-template-columns: 10.5rem 1fr;
+  gap: 0.15rem 1rem;
+  align-items: baseline;
+  padding: 0.55rem 0.5rem 0.55rem 0.75rem;
+  border-left: 3px solid var(--knet-dark-red);
+  border-radius: 0 4px 4px 0;
+}
+
+.agenda__item + .agenda__item {
+  margin-top: 0.4rem;
+}
+
+.agenda__item.is-influencer {
+  border-left: 3px dashed var(--knet-black);
+}
+
+.agenda__item.is-mine {
+  background: var(--knet-red-tint);
+}
+
+.agenda__time {
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+.agenda__body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 0.6rem;
+  min-width: 0;
+}
+
+/* Event titles read better in sentence case than as all-caps body links. */
+.agenda__title {
+  text-transform: none;
+  font-size: 1.05rem;
+}
+
+.agenda__meta {
+  flex-basis: 100%;
+  color: var(--knet-gray-600);
+  font-size: 0.9rem;
+}
+
+/* The event opened in the details panel. */
+.gantt__row.is-selected,
+.agenda__item.is-selected {
+  outline: 2px solid var(--knet-dark-red);
+  outline-offset: -2px;
+}
+
+/* Legend */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin: 0.6rem 0 0;
+  font-size: 0.85rem;
+  color: var(--knet-gray-600);
+}
+
+.legend__item::before {
+  content: "";
+  display: inline-block;
+  width: 0.9rem;
+  height: 0.9rem;
+  margin-right: 0.4rem;
+  vertical-align: -0.15em;
+  border-radius: 2px;
+}
+
+.legend__item--influencer::before {
+  box-shadow: inset 0 0 0 1px var(--knet-gray-300);
+  border-left: 3px dashed var(--knet-black);
+}
+
+.legend__item--mine::before {
+  background: var(--knet-red-tint);
+  border-left: 3px solid var(--knet-dark-red);
+}
+
+@media (max-width: 860px) {
+  .gantt {
+    --gantt-label: 9.5rem;
+  }
+
+  .agenda__item {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  /* Narrow screens: the label sits above its bar, and every other hour is labeled. */
+  .gantt__row {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+
+  .gantt__row--axis > span:first-child {
+    display: none;
+  }
+
+  .gantt__tick:nth-child(even):not(:last-child) {
+    visibility: hidden;
+  }
+}

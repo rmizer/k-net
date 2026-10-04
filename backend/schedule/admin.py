@@ -8,4 +8,4 @@ class EventAdmin(admin.ModelAdmin):
     list_display = ["title", "event_type", "start", "end", "department", "location"]
     list_filter = ["event_type", "department"]
     search_fields = ["title", "description", "location"]
-    filter_horizontal = ["attendees"]
+    filter_horizontal = ["attendees", "influencers"]

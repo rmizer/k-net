@@ -37,7 +37,7 @@ class ProductionSettingsView(APIView):
 
 
 class ProductionLocationView(APIView):
-    """Sets the production location from a place name (e.g. "Atlanta, GA"),
+    """Sets the production location from a place name (e.g. "Tampa, FL"),
     which also sets the time zone used for "today"."""
 
     permission_classes = [IsManagerLevel]
@@ -51,7 +51,7 @@ class ProductionLocationView(APIView):
             return Response({"detail": str(error)}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
         if place is None:
             return Response(
-                {"query": ["We couldn't find that place. Try a city name, like “Atlanta”."]},
+                {"query": ["We couldn't find that place. Try a city name, like “Tampa”."]},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -91,7 +91,7 @@ class DashboardView(APIView):
         today = timezone.localdate()
         week_start = today - timedelta(days=today.weekday())  # Monday
 
-        events = Event.objects.select_related("department").prefetch_related("attendees")
+        events = Event.objects.select_related("department").prefetch_related("attendees", "influencers")
         todays_events = events.overlapping(_start_of(today), _start_of(today + timedelta(days=1)))
         week_events = events.overlapping(_start_of(week_start), _start_of(week_start + timedelta(days=7)))
         # Staff see only their own week; Directors and Assistants see everyone's.

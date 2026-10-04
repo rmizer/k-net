@@ -2,6 +2,7 @@ import { useState, type ChangeEvent, type FormEvent } from 'react'
 import { api, ApiError } from '../api'
 import { useAuth } from '../auth/useAuth'
 import type { User } from '../auth/roles'
+import { initials } from '../format'
 
 const EDITABLE_FIELDS = [
   { name: 'first_name', label: 'First name', type: 'text', autoComplete: 'given-name' },
@@ -55,7 +56,6 @@ export function AccountPage() {
     event.target.value = ''
   }
 
-  const initials = `${user.first_name[0] ?? ''}${user.last_name[0] ?? ''}`.toUpperCase() || '?'
 
   return (
     <section>
@@ -77,7 +77,7 @@ export function AccountPage() {
             <img src={user.profile_picture} alt="" className="avatar avatar--large" />
           ) : (
             <span className="avatar avatar--large avatar--initials" aria-hidden="true">
-              {initials}
+              {initials(user.first_name, user.last_name)}
             </span>
           )}
           <label className="button button--secondary">

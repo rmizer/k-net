@@ -1,0 +1,300 @@
+/* Staff / Crew and CrewFinder. Shared tokens and components live in src/index.css. */
+
+.page-header__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.crew__group {
+  margin-top: 1.75rem;
+}
+
+.crew__group h2 {
+  margin-bottom: 0.6rem;
+  font-size: 1.3rem;
+}
+
+.crew__group-count {
+  color: var(--knet-gray-600);
+  font-weight: var(--weight-regular);
+}
+
+/* Small crew tiles */
+.crew-member-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.crew-member {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-top-width: 3px;
+}
+
+.crew-member__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.crew-member__text p {
+  margin: 0;
+}
+
+.crew-member__name {
+  font-weight: var(--weight-bold);
+  line-height: 1.2;
+}
+
+.crew-member__role {
+  font-size: 0.8rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--knet-red);
+}
+
+.crew-member__phone {
+  font-size: 0.9rem;
+}
+
+.crew-member .icon-button {
+  align-self: flex-start;
+}
+
+/* Add to crew dialog */
+.add-crew__search {
+  margin: 1rem 0 0.75rem;
+}
+
+.add-crew__list {
+  display: grid;
+  gap: 0.15rem;
+  max-height: 45vh;
+  margin: 0 0 1rem;
+  padding: 0.25rem 0;
+  overflow-y: auto;
+  list-style: none;
+  border-block: 1px solid var(--knet-gray-300);
+}
+
+.add-crew__list label {
+  padding: 0.4rem 0.25rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-crew__list label:hover {
+  background: var(--knet-gray-100);
+}
+
+/* CrewFinder */
+.crewfinder__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+  gap: 1rem;
+  margin-top: 1.5rem;
+  align-items: stretch;
+}
+
+.crew-map {
+  min-height: 520px;
+  border: 1px solid var(--knet-gray-300);
+  border-top: 4px solid var(--knet-dark-red);
+  border-radius: var(--radius);
+  z-index: 0; /* Keep Leaflet's panes under the nav and dialogs. */
+}
+
+.map-pin {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 2px solid var(--knet-white);
+  border-radius: 50%;
+  background: var(--knet-dark-red);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.35);
+  color: var(--knet-white);
+  font-family: var(--font-brand);
+  font-size: 0.8rem;
+  font-weight: var(--weight-bold);
+}
+
+.map-pin--stale {
+  background: var(--knet-gray-600);
+  opacity: 0.8;
+}
+
+.map-popup {
+  display: grid;
+  gap: 0.1rem;
+  font-family: var(--font-brand);
+  font-size: 0.9rem;
+}
+
+.map-popup__meta {
+  color: var(--knet-gray-600);
+}
+
+.crewfinder__list {
+  display: flex;
+  flex-direction: column;
+  max-height: 520px;
+  padding: 1rem;
+}
+
+.crewfinder__list-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.crewfinder__list ul {
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.finder-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.4rem;
+  border-radius: 4px;
+}
+
+.finder-row + .finder-row {
+  border-top: 1px solid var(--knet-gray-300);
+}
+
+.finder-row.is-selected {
+  background: var(--knet-red-wash);
+}
+
+.finder-row__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.finder-row__text p {
+  margin: 0;
+  line-height: 1.3;
+}
+
+.finder-row__name {
+  font-weight: var(--weight-bold);
+}
+
+.finder-row__meta {
+  font-size: 0.85rem;
+  color: var(--knet-gray-600);
+}
+
+.finder-row__seen {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+}
+
+.finder-row__dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--knet-success);
+}
+
+.finder-row.is-stale .finder-row__dot {
+  background: var(--knet-gray-300);
+}
+
+.finder-row.is-stale .finder-row__name,
+.finder-row.is-stale .finder-row__seen {
+  color: var(--knet-gray-600);
+}
+
+.finder-row__show {
+  font-size: 0.8rem;
+}
+
+.finder-legend {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+}
+
+/* Site Manager tracker tools */
+.tracker-manager {
+  margin-top: 2.5rem;
+}
+
+.tracker-manager h2 {
+  margin: 0;
+}
+
+.tracker-manager .tile {
+  margin-top: 1rem;
+}
+
+.key-notice {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.key-notice__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.key-notice__head p {
+  margin: 0;
+}
+
+.key-notice__key {
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  background: var(--knet-white);
+  color: var(--knet-black);
+  font-family: ui-monospace, Consolas, monospace;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
+.key-notice details {
+  color: var(--knet-black);
+}
+
+.key-notice summary {
+  cursor: pointer;
+  font-weight: var(--weight-bold);
+}
+
+.key-notice__code {
+  padding: 0.75rem;
+  border-radius: 4px;
+  background: var(--knet-white);
+  font-size: 0.85rem;
+  overflow-x: auto;
+}
+
+@media (max-width: 960px) {
+  .crewfinder__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .crew-map {
+    min-height: 380px;
+  }
+
+  .crewfinder__list {
+    max-height: none;
+  }
+}

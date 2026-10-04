@@ -55,6 +55,9 @@ INSTALLED_APPS = [
     "announcements",
     "tasks",
     "schedule",
+    "crewfinder",
+    "resources",
+    "influencers",
 ]
 
 MIDDLEWARE = [

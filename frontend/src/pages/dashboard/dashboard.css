@@ -151,7 +151,6 @@
 
 .announcements,
 .alerts,
-.rundown,
 .task-list {
   margin: 0;
   padding: 0;
@@ -240,42 +239,6 @@
 
 .alert--info .alert__level {
   color: var(--knet-gray-600);
-}
-
-/* Daily rundown */
-
-.rundown li {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.15rem 0.75rem;
-  padding: 0.55rem 0 0.55rem 0.75rem;
-  border-left: 3px solid var(--knet-dark-red);
-}
-
-.rundown li + li {
-  margin-top: 0.4rem;
-}
-
-.rundown li.is-influencer {
-  border-left: 3px dashed var(--knet-black);
-}
-
-.rundown__time {
-  min-width: 10.5rem;
-  font-weight: var(--weight-bold);
-  font-variant-numeric: tabular-nums;
-}
-
-/* Event titles read better in sentence case than as all-caps body links. */
-.rundown__title {
-  text-transform: none;
-  font-size: 1.05rem;
-}
-
-.rundown__location {
-  color: var(--knet-gray-600);
-  font-size: 0.9rem;
 }
 
 /* Tasks */
@@ -463,35 +426,6 @@
   background: var(--knet-red-tint);
 }
 
-.legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1.25rem;
-  margin: 0.6rem 0 0;
-  font-size: 0.85rem;
-  color: var(--knet-gray-600);
-}
-
-.legend__item::before {
-  content: "";
-  display: inline-block;
-  width: 0.9rem;
-  height: 0.9rem;
-  margin-right: 0.4rem;
-  vertical-align: -0.15em;
-  border-radius: 2px;
-}
-
-.legend__item--influencer::before {
-  box-shadow: inset 0 0 0 1px var(--knet-gray-300);
-  border-left: 3px dashed var(--knet-black);
-}
-
-.legend__item--mine::before {
-  background: var(--knet-red-tint);
-  border-left: 3px solid var(--knet-dark-red);
-}
-
 /* Today's crew */
 
 .crew-tiles {
@@ -530,10 +464,6 @@
     flex-basis: 100%;
   }
 
-  .rundown__time {
-    min-width: 0;
-    flex-basis: 100%;
-  }
 }
 
 @media (max-width: 520px) {
