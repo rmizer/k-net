@@ -178,23 +178,23 @@ a:hover {
   color: var(--knet-white);
 }
 
-/* Desktop: greeting and account controls on top, page links in a full-width row. */
+/* Desktop: one row. Greeting | page links | account settings and log out. */
 .site-nav__inner {
   display: grid;
-  grid-template-columns: 1fr auto;
-  grid-template-areas:
-    'greeting account'
-    'links links';
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: 'greeting links account';
   align-items: center;
-  gap: 0.35rem 1.5rem;
-  padding-top: 0.6rem;
-  padding-bottom: 0.6rem;
+  gap: 0.35rem 1.1rem;
+  max-width: none; /* The nav bar spans the window (with the usual side margins), wider than page content. */
+  padding-top: 0.55rem;
+  padding-bottom: 0.55rem;
 }
 
 .site-nav__greeting {
   grid-area: greeting;
   margin: 0;
   font-weight: var(--weight-regular);
+  white-space: nowrap;
 }
 
 .site-nav__menu {
@@ -203,6 +203,7 @@ a:hover {
 
 .site-nav__links {
   grid-area: links;
+  justify-content: center;
 }
 
 .site-nav__account {
@@ -220,10 +221,17 @@ a:hover {
   padding: 0;
 }
 
+/* The pipes that set the menu off from the greeting and the account controls. */
 @media (min-width: 861px) {
-  .site-nav .site-nav__links {
-    border-top: 1px solid rgb(255 255 255 / 0.25);
-    padding-top: 0.35rem;
+  .site-nav__greeting {
+    padding-right: 1.1rem;
+    border-right: 1px solid rgb(255 255 255 / 0.6);
+  }
+
+  .site-nav__account {
+    flex-wrap: nowrap;
+    padding-left: 1.1rem;
+    border-left: 1px solid rgb(255 255 255 / 0.6);
   }
 }
 
@@ -254,6 +262,23 @@ a:hover {
   background: none;
   border: 0;
   cursor: pointer;
+}
+
+/* Icon + label; sized so a manager's full menu fits on one line. */
+.site-nav__links .nav-link {
+  gap: 0.3rem;
+  font-size: 0.85rem;
+}
+
+@media (min-width: 861px) {
+  .site-nav__links {
+    column-gap: 1.1rem;
+  }
+}
+
+.nav-link .nav-icon {
+  flex-shrink: 0;
+  margin-top: -0.15em; /* Optical alignment with the all-caps label. */
 }
 
 .nav-link--icon.is-active svg {
@@ -557,6 +582,10 @@ a:hover {
   cursor: pointer;
 }
 
+.text-button--danger {
+  color: var(--knet-red);
+}
+
 .text-button:hover {
   color: var(--knet-red);
   text-decoration: underline;
@@ -711,6 +740,96 @@ a:hover {
 
 .notice--with-action p {
   margin: 0;
+}
+
+/* Segmented switch (My Tasks, Finance) */
+.segmented {
+  display: inline-flex;
+  border: 1px solid var(--knet-dark-red);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.segmented button {
+  padding: 0.5rem 1rem 0.4rem;
+  border: 0;
+  background: var(--knet-white);
+  color: var(--knet-dark-red);
+  font: inherit;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.segmented button + button {
+  border-left: 1px solid var(--knet-dark-red);
+}
+
+.segmented button:hover {
+  background: var(--knet-red-wash);
+}
+
+.segmented button[aria-pressed='true'] {
+  background: var(--knet-dark-red);
+  color: var(--knet-white);
+}
+
+.segmented button:focus-visible {
+  outline: 2px solid var(--knet-red);
+  outline-offset: -4px;
+}
+
+.segmented__count {
+  margin-left: 0.25rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.8;
+}
+
+.segmented--small button {
+  padding: 0.35rem 0.7rem 0.3rem;
+  font-size: 0.8rem;
+}
+
+/* Sortable table headers (components/sorting.tsx) */
+.sort-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.fin-num .sort-header,
+th.is-numeric .sort-header {
+  flex-direction: row-reverse;
+}
+
+.sort-header__arrow {
+  font-size: 0.6rem;
+  opacity: 0.25;
+}
+
+.sort-header__arrow.is-active {
+  opacity: 1;
+}
+
+/* Leaflet map popups (CrewFinder, Locations) */
+.map-popup {
+  display: grid;
+  gap: 0.1rem;
+  font-family: var(--font-brand);
+  font-size: 0.9rem;
+}
+
+.map-popup__meta {
+  color: var(--knet-gray-600);
 }
 
 /* Data tables */

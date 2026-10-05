@@ -2,7 +2,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/useAuth'
 import { canSee, isInSection, NAV_ITEMS } from '../navigation'
 
-/** Section submenu under the main nav. The current page is underlined and not clickable. */
+/** Section submenu under the main nav. The current page is underlined (and not clickable when you're on it). */
 export function SubNav() {
   const { user } = useAuth()
   const { pathname } = useLocation()
@@ -11,6 +11,10 @@ export function SubNav() {
     (item) => item.children && canSee(item, user?.role) && isInSection(pathname, item.path),
   )
   if (!section?.children) return null
+  // The deepest matching page, so /finance/payroll/5 highlights Payroll (not Overview).
+  const current = section.children
+    .filter((child) => isInSection(pathname, child.path))
+    .sort((a, b) => b.path.length - a.path.length)[0]
 
   return (
     <nav className="sub-nav" aria-label={`${section.label} pages`}>
@@ -22,7 +26,7 @@ export function SubNav() {
                 {child.label}
               </span>
             ) : (
-              <Link to={child.path} className="sub-nav__link">
+              <Link to={child.path} className={`sub-nav__link${child === current ? ' is-active' : ''}`}>
                 {child.label}
               </Link>
             )}

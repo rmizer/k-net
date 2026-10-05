@@ -131,17 +131,6 @@
   opacity: 0.8;
 }
 
-.map-popup {
-  display: grid;
-  gap: 0.1rem;
-  font-family: var(--font-brand);
-  font-size: 0.9rem;
-}
-
-.map-popup__meta {
-  color: var(--knet-gray-600);
-}
-
 .crewfinder__list {
   display: flex;
   flex-direction: column;

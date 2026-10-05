@@ -2,18 +2,20 @@ from django.utils.dateparse import parse_datetime
 from rest_framework import viewsets
 from rest_framework.exceptions import ValidationError
 
+from accounts.models import User
 from accounts.permissions import ReadOnlyOrManagerLevel
 
-from .models import Event
-from .serializers import EventSerializer
+from .models import Event, TimelineItem
+from .serializers import EventSerializer, TimelineItemSerializer
 
 
 class EventViewSet(viewsets.ModelViewSet):
     """Everyone can view the schedule; Directors, Assistants and Site Managers
     add and edit events.
 
-    Filters: ?start=<iso>&end=<iso> limits to events in that window, and
-    ?mine=1 limits to the signed-in user's own events.
+    Filters: ?start=<iso>&end=<iso> limits to events in that window,
+    ?mine=1 limits to the signed-in user's own events, and ?person=<id> to
+    someone else's (events they attend or that belong to their department).
     """
 
     serializer_class = EventSerializer
@@ -32,7 +34,24 @@ class EventViewSet(viewsets.ModelViewSet):
 
         if params.get("mine") in ("1", "true"):
             events = events.for_user(self.request.user)
+        if params.get("person"):
+            person = User.objects.filter(pk=params["person"]).first()
+            if person is None:
+                raise ValidationError({"person": "No such person."})
+            events = events.for_user(person)
         return events
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+
+
+class TimelineItemViewSet(viewsets.ModelViewSet):
+    """The Master Timeline. Everyone can view it; Directors, Assistants and
+    Site Managers add, edit and remove items."""
+
+    queryset = TimelineItem.objects.select_related("created_by")
+    serializer_class = TimelineItemSerializer
+    permission_classes = [ReadOnlyOrManagerLevel]
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)

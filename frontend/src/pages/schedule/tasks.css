@@ -1,0 +1,142 @@
+.my-tasks {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.my-tasks .page-header {
+  margin-bottom: 0;
+}
+
+.my-tasks__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+}
+
+.my-tasks__sort {
+  min-width: 10rem;
+}
+
+.my-tasks__sort select {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--knet-gray-300);
+  border-radius: var(--radius);
+  background: var(--knet-white);
+}
+
+/* Due-date groups */
+
+.my-tasks__group h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1.05rem;
+}
+
+.my-tasks__group-count {
+  margin-left: 0.25rem;
+  color: var(--knet-gray-600);
+  font-variant-numeric: tabular-nums;
+}
+
+.my-tasks__group--overdue {
+  border-top-color: var(--knet-red);
+}
+
+.my-tasks__group--overdue h2 {
+  color: var(--knet-red);
+}
+
+.my-task-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.my-task {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.25rem 0.85rem;
+  align-items: start;
+  padding: 0.75rem 0;
+}
+
+.my-task + .my-task {
+  border-top: 1px solid var(--knet-gray-300);
+}
+
+.my-task__check {
+  width: 1.2rem;
+  height: 1.2rem;
+  margin: 0.15rem 0 0;
+  accent-color: var(--knet-dark-red);
+  cursor: pointer;
+}
+
+.my-task__body {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.my-task__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.5rem;
+}
+
+.my-task__head .badge {
+  margin-right: 0;
+}
+
+.my-task__title {
+  font-size: 1.05rem;
+  font-weight: var(--weight-bold);
+}
+
+.my-task.is-done .my-task__title {
+  color: var(--knet-gray-600);
+  text-decoration: line-through;
+}
+
+.my-task__description {
+  margin: 0;
+  color: var(--knet-gray-600);
+  white-space: pre-line;
+}
+
+.my-task__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 1rem;
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--knet-gray-600);
+}
+
+.my-task__due {
+  color: var(--knet-black);
+}
+
+.my-task__due.is-overdue {
+  color: var(--knet-red);
+  font-weight: var(--weight-bold);
+}
+
+.my-task__action {
+  align-self: center;
+  white-space: nowrap;
+}
+
+@media (max-width: 520px) {
+  .my-task {
+    grid-template-columns: auto 1fr;
+  }
+
+  .my-task__action {
+    grid-column: 2;
+    justify-self: start;
+  }
+}

@@ -1,0 +1,264 @@
+.documents {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.documents .page-header {
+  margin-bottom: 0;
+}
+
+.documents__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.documents__section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+}
+
+.documents__section-head h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.documents__section-head p {
+  margin: 0;
+}
+
+.documents__status-help {
+  margin: 1rem 0 0;
+}
+
+/* Expiring soon */
+
+.documents__expiring {
+  border-top-color: var(--knet-red);
+  background: var(--knet-red-wash);
+}
+
+.documents__expiring h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+  color: var(--knet-red);
+}
+
+.documents__expiring ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.documents__expiring li + li {
+  margin-top: 0.2rem;
+}
+
+.doc-expiry {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.doc-expiry.is-soon {
+  color: var(--knet-red);
+  font-weight: var(--weight-bold);
+}
+
+.doc-expiry.is-expired {
+  color: var(--knet-white);
+  background: var(--knet-red);
+  padding: 0.1rem 0.4rem 0;
+  border-radius: 3px;
+  font-weight: var(--weight-bold);
+}
+
+/* Type tabs */
+
+.doc-tabs {
+  display: flex;
+  gap: 0.25rem;
+  overflow-x: auto;
+  border-bottom: 2px solid var(--knet-dark-red);
+  scrollbar-width: thin;
+}
+
+.doc-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: none;
+  padding: 0.55rem 0.85rem 0.45rem;
+  border: 0;
+  border-radius: var(--radius) var(--radius) 0 0;
+  background: none;
+  color: var(--knet-dark-red);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.doc-tab:hover {
+  background: var(--knet-red-wash);
+}
+
+.doc-tab[aria-selected='true'] {
+  background: var(--knet-dark-red);
+  color: var(--knet-white);
+}
+
+.doc-tab:focus-visible {
+  outline: 2px solid var(--knet-red);
+  outline-offset: -3px;
+}
+
+.doc-tab__count {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.75;
+}
+
+.doc-tab .badge {
+  margin: 0;
+}
+
+.documents__search {
+  max-width: 24rem;
+}
+
+.documents__search input {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--knet-gray-300);
+  border-radius: var(--radius);
+}
+
+/* Tables */
+
+.doc-table td {
+  vertical-align: top;
+}
+
+.doc-link {
+  font-weight: var(--weight-bold);
+  text-transform: none;
+}
+
+.doc-sub {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--knet-gray-600);
+  overflow-wrap: anywhere;
+}
+
+.doc-table__amount {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.doc-table__actions {
+  width: 1%;
+}
+
+.doc-table tr.is-new td {
+  background: var(--knet-red-wash);
+}
+
+.doc-status-select {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--knet-gray-300);
+  border-radius: var(--radius);
+  background: var(--knet-white);
+  font: inherit;
+  font-size: 0.9rem;
+}
+
+/* Receipt status: label plus a four-step track. */
+.receipt-progress {
+  display: inline-grid;
+  gap: 0.2rem;
+  min-width: 6.5rem;
+}
+
+.doc-link + .receipt-progress {
+  display: grid;
+  margin: 0.2rem 0;
+  max-width: 7rem;
+}
+
+.receipt-progress__label {
+  font-size: 0.82rem;
+  font-weight: var(--weight-bold);
+}
+
+.receipt-progress__steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+
+.receipt-progress__steps span {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--knet-gray-300);
+}
+
+.receipt-progress__steps .is-reached {
+  background: var(--knet-dark-red);
+}
+
+.receipt-progress.is-processed .receipt-progress__label {
+  color: var(--knet-success);
+}
+
+.receipt-progress.is-processed .is-reached {
+  background: var(--knet-success);
+}
+
+/* Phones: each row becomes a labeled card. */
+@media (max-width: 640px) {
+  .doc-table thead {
+    display: none;
+  }
+
+  .doc-table,
+  .doc-table tbody,
+  .doc-table tr,
+  .doc-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .doc-table tr {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--knet-gray-300);
+  }
+
+  .doc-table td {
+    padding: 0.15rem 0;
+    border: 0;
+    text-align: left;
+  }
+
+  .doc-table td[data-label]:not(:first-child)::before {
+    content: attr(data-label) ": ";
+    font-size: 0.75rem;
+    font-weight: var(--weight-bold);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--knet-dark-red);
+  }
+
+  .doc-table__amount {
+    text-align: left;
+  }
+
+  .doc-table .row-actions {
+    justify-content: flex-start;
+    margin-top: 0.35rem;
+  }
+}

@@ -1,0 +1,320 @@
+.timeline-page {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.timeline-page .page-header {
+  margin-bottom: 0;
+}
+
+/* Chart: one row per item, weeks across */
+
+.timeline {
+  --timeline-label: 17rem;
+}
+
+.timeline__rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.timeline__row {
+  display: grid;
+  grid-template-columns: var(--timeline-label) 1fr;
+  gap: 1rem;
+  align-items: center;
+}
+
+.timeline__rows .timeline__row {
+  padding: 0.3rem 0.4rem;
+  border-radius: 4px;
+}
+
+.timeline__rows .timeline__row + .timeline__row {
+  border-top: 1px solid var(--knet-gray-100);
+}
+
+.timeline__row.is-selected {
+  outline: 2px solid var(--knet-dark-red);
+  outline-offset: -2px;
+}
+
+/* The Today chip sits above the month labels. */
+.timeline__row--axis {
+  padding: 1.3rem 0.4rem 0.3rem;
+}
+
+.timeline__label {
+  display: grid;
+  min-width: 0;
+}
+
+/* Item names read better in sentence case than as all-caps body links. */
+.timeline__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-transform: none;
+  font-size: 1rem;
+}
+
+.timeline__dates {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.82rem;
+  color: var(--knet-gray-600);
+  font-variant-numeric: tabular-nums;
+}
+
+.timeline__row.is-done .timeline__name {
+  color: var(--knet-gray-600);
+}
+
+.timeline__track {
+  position: relative;
+  height: 1.6rem;
+}
+
+.timeline__row--axis .timeline__track {
+  height: 2.1rem;
+}
+
+/* Month labels sit above the Today line. */
+.timeline__month {
+  position: absolute;
+  top: 0;
+  z-index: 2;
+  padding: 0 0.2rem;
+  background: var(--knet-white);
+  border-left: 2px solid var(--knet-dark-red);
+  font-size: 0.78rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--knet-dark-red);
+  white-space: nowrap;
+}
+
+.timeline__week {
+  position: absolute;
+  bottom: 0;
+  padding-left: 0.2rem;
+  font-size: 0.7rem;
+  color: var(--knet-gray-600);
+  font-variant-numeric: tabular-nums;
+}
+
+.timeline__grid {
+  position: absolute;
+  top: -0.3rem;
+  bottom: -0.3rem;
+  width: 1px;
+  background: var(--knet-gray-300);
+  opacity: 0.6;
+}
+
+.timeline__bar {
+  position: absolute;
+  top: 0.3rem;
+  bottom: 0.3rem;
+  min-width: 6px;
+  border-radius: 4px;
+  background: var(--knet-dark-red);
+  box-shadow: 0 0 0 2px var(--knet-white);
+}
+
+.timeline__bar:hover {
+  background: var(--knet-red);
+}
+
+.is-done .timeline__bar {
+  background: var(--knet-gray-300);
+}
+
+.is-done .timeline__bar:hover {
+  background: var(--knet-gray-600);
+}
+
+/* A diamond, drawn by the ::before so the tooltip inside isn't rotated. */
+.timeline__milestone {
+  position: absolute;
+  top: 50%;
+  width: 1.4rem;
+  height: 1.4rem;
+  transform: translate(-50%, -50%);
+}
+
+.timeline__milestone::before {
+  content: "";
+  position: absolute;
+  inset: 0.25rem;
+  border: 2px solid var(--knet-white);
+  background: var(--knet-black);
+  transform: rotate(45deg);
+}
+
+.timeline__milestone:hover::before {
+  background: var(--knet-red);
+}
+
+.is-done .timeline__milestone::before {
+  background: var(--knet-gray-600);
+}
+
+.timeline__tip {
+  position: absolute;
+  bottom: calc(100% + 0.5rem);
+  left: 50%;
+  z-index: 2;
+  display: none;
+  min-width: 10rem;
+  max-width: 16rem;
+  padding: 0.45rem 0.6rem;
+  transform: translateX(-50%);
+  border: 1px solid var(--knet-gray-300);
+  border-radius: 4px;
+  background: var(--knet-white);
+  box-shadow: var(--shadow-tile);
+  color: var(--knet-black);
+  font-size: 0.82rem;
+  text-transform: none;
+  white-space: normal;
+}
+
+.timeline__tip strong,
+.timeline__tip span {
+  display: block;
+}
+
+.timeline__tip span {
+  color: var(--knet-gray-600);
+}
+
+.timeline__bar:hover .timeline__tip,
+.timeline__milestone:hover .timeline__tip {
+  display: block;
+}
+
+/* Today, drawn through every row. */
+.timeline__today {
+  position: absolute;
+  top: -0.3rem;
+  bottom: -0.3rem;
+  left: var(--timeline-today);
+  z-index: 1;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--knet-red);
+  pointer-events: none;
+}
+
+.timeline__row--axis .timeline__today {
+  top: 0;
+}
+
+.timeline__today--label {
+  font-size: 0;
+}
+
+.timeline__today--label::before {
+  content: "Today";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-bottom: 0.15rem;
+  padding: 0.05rem 0.3rem 0;
+  transform: translateX(-50%);
+  border-radius: 3px;
+  background: var(--knet-red);
+  color: var(--knet-white);
+  font-size: 0.62rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Legend swatches */
+
+.timeline-legend--phase::before {
+  background: var(--knet-dark-red);
+}
+
+.timeline-legend--done::before {
+  background: var(--knet-gray-300);
+}
+
+.timeline-legend--milestone::before {
+  width: 0.65rem;
+  height: 0.65rem;
+  margin-right: 0.55rem;
+  background: var(--knet-black);
+  transform: rotate(45deg);
+}
+
+.timeline-legend--today::before {
+  width: 2px;
+  background: var(--knet-red);
+}
+
+/* Selected item */
+
+.timeline-details__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.timeline-details__head h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.timeline-details__head .icon-button {
+  text-decoration: none;
+}
+
+.timeline-details__dates {
+  margin: 0.2rem 0 0;
+  color: var(--knet-gray-600);
+}
+
+.timeline-details__description {
+  white-space: pre-line;
+}
+
+@media (max-width: 860px) {
+  .timeline {
+    --timeline-label: 10rem;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Narrow screens: the label sits above its bar; months only on the axis. */
+  .timeline__row {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+
+  .timeline__row--axis > span:first-child {
+    display: none;
+  }
+
+  .timeline__row--axis .timeline__track {
+    height: 1rem;
+  }
+
+  .timeline__week {
+    display: none;
+  }
+}
+
+/* Keep the hovered item's tooltip above the Today line. */
+.timeline__bar:hover,
+.timeline__milestone:hover {
+  z-index: 3;
+}

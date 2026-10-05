@@ -68,6 +68,14 @@ class TaskPermissionTests(BaseTestCase):
         self.assertEqual([t["title"] for t in self.client.get("/api/tasks/").data], ["Mine"])
         self.assertEqual(self.client.get(f"/api/tasks/{self.theirs.pk}/").status_code, 404)
 
+    def test_mine_filter_limits_managers_to_their_own_tasks(self):
+        Task.objects.create(title="Director's", assigned_to=self.director, created_by=self.staff)
+        self.client.force_authenticate(self.director)
+        self.assertEqual(len(self.client.get("/api/tasks/").data), 3)
+        tasks = self.client.get("/api/tasks/?mine=1").data
+        self.assertEqual([t["title"] for t in tasks], ["Director's"])
+        self.assertEqual(tasks[0]["created_by_name"], "Staff Test")
+
     def test_staff_can_complete_own_task(self):
         self.client.force_authenticate(self.staff)
         response = self.client.patch(f"/api/tasks/{self.mine.pk}/", {"status": "done"})
@@ -174,6 +182,41 @@ class DashboardTests(BaseTestCase):
     def test_staff_cannot_see_emergency_details_via_crew(self):
         crew = self.get_dashboard(self.staff)["todays_crew"]
         self.assertEqual(set(crew[0]["members"][0]), {"id", "first_name", "last_name"})
+
+
+class StaffManagerTests(BaseTestCase):
+    def test_tasks_need_a_person_or_department(self):
+        self.client.force_authenticate(self.director)
+        response = self.client.post("/api/tasks/", {"title": "Floating"})
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("assigned_to", response.data)
+        response = self.client.post("/api/tasks/", {"title": "Tech job", "department": self.tech.pk})
+        self.assertEqual(response.status_code, 201)
+
+    def test_events_for_a_person(self):
+        day = timezone.localdate() + timedelta(days=1)
+        theirs = Event.objects.create(title="Theirs", start=at(day, 9), end=at(day, 10))
+        theirs.attendees.add(self.other)
+        dept = Event.objects.create(title="Tech meeting", start=at(day, 11), end=at(day, 12), department=self.tech)
+        Event.objects.create(title="Nobody's", start=at(day, 13), end=at(day, 14))
+        self.client.force_authenticate(self.director)
+        titles = [e["title"] for e in self.client.get(f"/api/events/?person={self.staff.pk}").data]
+        self.assertEqual(titles, [dept.title])
+        self.assertEqual(self.client.get("/api/events/?person=99999").status_code, 400)
+
+    def test_staff_overview(self):
+        today = timezone.localdate()
+        Task.objects.create(title="Late", assigned_to=self.staff, due_date=today - timedelta(days=1))
+        Task.objects.create(title="Done", assigned_to=self.staff, status=Task.Status.DONE)
+        monday = today - timedelta(days=today.weekday())
+        shift = Event.objects.create(title="Shift", start=at(monday, 9), end=at(monday, 17))
+        shift.attendees.add(self.staff)
+        self.client.force_authenticate(self.staff)
+        self.assertEqual(self.client.get("/api/staff-manager/staff/").status_code, 403)
+        self.client.force_authenticate(self.director)
+        row = next(r for r in self.client.get("/api/staff-manager/staff/").data if r["id"] == self.staff.pk)
+        self.assertEqual(row["tasks"], {"open": 1, "overdue": 1, "done": 1})
+        self.assertEqual(row["hours_this_week"], 8.0)
 
 
 class ProductionTimeZoneTests(BaseTestCase):

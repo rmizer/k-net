@@ -1,9 +1,12 @@
 import type { Role } from './auth/roles'
+import type { NavIconName } from './components/NavIcon'
 import { MANAGER_ROLES } from './auth/roles'
 
 export interface NavItem {
   label: string
   path: string
+  /** Icon shown beside the label in the main nav. */
+  icon?: NavIconName
   /** Roles allowed to see this item. Omitted means every signed-in user. */
   roles?: Role[]
   /** Submenu shown under the main nav while inside this section. */
@@ -11,33 +14,36 @@ export interface NavItem {
 }
 
 export const NAV_ITEMS: NavItem[] = [
-  { label: 'Site Manager', path: '/site-manager', roles: ['site_manager'] },
-  { label: 'Dashboard', path: '/' },
-  { label: 'Directory', path: '/directory' },
+  { label: 'Site Manager', path: '/site-manager', icon: 'shield', roles: ['site_manager'] },
+  { label: 'Dashboard', path: '/', icon: 'home' },
+  { label: 'Directory', path: '/directory', icon: 'contacts' },
   {
     label: 'Staff / Crew',
     path: '/crew',
+    icon: 'crew',
     children: [
       { label: 'Active Crew', path: '/crew' },
       { label: 'CrewFinder', path: '/crew/finder' },
     ],
   },
-  { label: 'Resources', path: '/resources' },
-  { label: 'Influencers', path: '/influencers' },
+  { label: 'Resources', path: '/resources', icon: 'resources' },
+  { label: 'Influencers', path: '/influencers', icon: 'star' },
   {
     label: 'Schedule',
     path: '/schedule',
+    icon: 'calendar',
     children: [
       { label: 'Schedule', path: '/schedule' },
       { label: 'My Tasks', path: '/schedule/tasks' },
       { label: 'Master Timeline', path: '/schedule/timeline' },
     ],
   },
-  { label: 'Documents', path: '/documents' },
-  { label: 'Locations', path: '/locations' },
+  { label: 'Documents', path: '/documents', icon: 'document' },
+  { label: 'Locations', path: '/locations', icon: 'pin' },
   {
     label: 'Finance',
     path: '/finance',
+    icon: 'dollar',
     roles: MANAGER_ROLES,
     children: [
       { label: 'Overview', path: '/finance' },
@@ -49,8 +55,9 @@ export const NAV_ITEMS: NavItem[] = [
     ],
   },
   {
-    label: 'Staff Manager',
+    label: 'Task Manager',
     path: '/staff-manager',
+    icon: 'clipboard',
     roles: MANAGER_ROLES,
     children: [
       { label: 'Overview', path: '/staff-manager' },

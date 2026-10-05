@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/useAuth'
 import { canSee, isInSection, NAV_ITEMS } from '../navigation'
 import { GearIcon } from './GearIcon'
+import { NavIcon } from './NavIcon'
 
 export function Nav() {
   const { user, logout } = useAuth()
@@ -49,7 +50,8 @@ export function Nav() {
                     className={`nav-link${active ? ' is-active' : ''}`}
                     aria-current={active ? 'page' : undefined}
                   >
-                    {item.label}
+                    {item.icon && <NavIcon name={item.icon} />}
+                    <span className="nav-link__label">{item.label}</span>
                   </Link>
                 </li>
               )

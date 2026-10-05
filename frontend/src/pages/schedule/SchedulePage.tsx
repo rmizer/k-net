@@ -43,9 +43,11 @@ function Schedule({ today, timeZone }: { today: string; timeZone: string }) {
   const view = params.get('view') === 'agenda' ? 'agenda' : 'gantt'
   const selectedId = Number(params.get('event')) || null
 
-  const [month, setMonth] = useState(day.slice(0, 7))
-  // Moving the daily view to another month brings the calendar along.
-  useEffect(() => setMonth(day.slice(0, 7)), [day])
+  // The calendar shows the selected day's month until someone pages it to another.
+  // Picking a new day (here or via the URL) brings it back to that day's month.
+  const [paged, setPaged] = useState<{ forDay: string; month: string } | null>(null)
+  const month = paged?.forDay === day ? paged.month : day.slice(0, 7)
+  const setMonth = (next: string) => setPaged({ forDay: day, month: next })
 
   useEffect(() => {
     if (location.hash === '#month') monthRef.current?.scrollIntoView()

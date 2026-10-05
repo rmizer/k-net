@@ -118,3 +118,36 @@ export function toLocalInput(iso: string | null): string {
 export function fromLocalInput(value: string): string | null {
   return value ? new Date(value).toISOString() : null
 }
+
+/** Milliseconds the time zone is ahead of UTC at a given instant. */
+function zoneOffsetMs(utcMs: number, timeZone: string): number {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone,
+    hourCycle: 'h23',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  }).formatToParts(new Date(utcMs))
+  const get = (type: string) => Number(parts.find((p) => p.type === type)?.value ?? 0)
+  return Date.UTC(get('year'), get('month') - 1, get('day'), get('hour'), get('minute'), get('second')) - utcMs
+}
+
+/** A wall-clock date and time in `timeZone` ("2026-10-05", "08:30") as an ISO instant. */
+export function zonedIso(day: string, time: string, timeZone: string): string {
+  const [year, month, date] = day.split('-').map(Number)
+  const [hour, minute] = time.split(':').map(Number)
+  const guess = Date.UTC(year, month - 1, date, hour, minute)
+  // Two passes settle the offset across daylight-saving changes.
+  const first = guess - zoneOffsetMs(guess, timeZone)
+  return new Date(guess - zoneOffsetMs(first, timeZone)).toISOString()
+}
+
+/** "08:30" (24-hour) for an instant, in the given time zone. */
+export function timeInZone(iso: string, timeZone: string): string {
+  return new Intl.DateTimeFormat('en-GB', { timeZone, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(
+    new Date(iso),
+  )
+}

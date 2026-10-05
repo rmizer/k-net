@@ -154,3 +154,61 @@ class DashboardView(APIView):
                 {"id": person.pk, "first_name": person.first_name, "last_name": person.last_name}
             )
         return [{"department": name, "members": members} for name, members in groups.items()]
+
+
+class StaffOverviewView(APIView):
+    """The Task Manager's master staff list: everyone, with their task load and
+    what's next on their schedule. Directors, Assistants and Site Managers only."""
+
+    permission_classes = [IsManagerLevel]
+
+    def get(self, request):
+        today = timezone.localdate()
+        now = timezone.now()
+        week_start = _start_of(today - timedelta(days=today.weekday()))
+        week_end = week_start + timedelta(days=7)
+        people = User.objects.filter(is_active=True).select_related("department").order_by("first_name", "last_name")
+        tasks = list(Task.objects.filter(assigned_to__in=people).values("assigned_to", "status", "due_date"))
+
+        rows = []
+        for person in people:
+            mine = [t for t in tasks if t["assigned_to"] == person.pk]
+            open_tasks = [t for t in mine if t["status"] != Task.Status.DONE]
+            events = Event.objects.for_user(person)
+            upcoming = events.filter(end__gt=now).order_by("start").first()
+            this_week = events.overlapping(week_start, week_end).filter(all_day=False)
+            hours = sum(
+                (min(e.end, week_end) - max(e.start, week_start)).total_seconds() / 3600 for e in this_week
+            )
+            rows.append(
+                {
+                    "id": person.pk,
+                    "name": person.get_full_name(),
+                    "first_name": person.first_name,
+                    "email": person.email,
+                    "phone": person.phone,
+                    "role": person.role,
+                    "role_display": person.get_role_display(),
+                    "department": person.department_id,
+                    "department_name": person.department.name if person.department else None,
+                    "is_active_crew": person.is_active_crew,
+                    "lodging": person.lodging,
+                    "tasks": {
+                        "open": len(open_tasks),
+                        "overdue": sum(1 for t in open_tasks if t["due_date"] and t["due_date"] < today),
+                        "done": len(mine) - len(open_tasks),
+                    },
+                    "next_event": {
+                        "id": upcoming.pk,
+                        "title": upcoming.title,
+                        "start": upcoming.start,
+                        "end": upcoming.end,
+                        "all_day": upcoming.all_day,
+                        "location": upcoming.location,
+                    }
+                    if upcoming
+                    else None,
+                    "hours_this_week": round(hours, 1),
+                }
+            )
+        return Response(rows)

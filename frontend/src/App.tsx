@@ -8,10 +8,24 @@ import { DashboardPage } from './pages/dashboard/DashboardPage'
 import { CrewFinderPage } from './pages/crew/CrewFinderPage'
 import { CrewPage } from './pages/crew/CrewPage'
 import { DirectoryPage } from './pages/directory/DirectoryPage'
+import { DocumentsPage } from './pages/documents/DocumentsPage'
+import { FinanceOverviewPage } from './pages/finance/FinanceOverviewPage'
+import { IncomingPage } from './pages/finance/IncomingPage'
+import { InvoicesPage } from './pages/finance/InvoicesPage'
+import { OutgoingPage } from './pages/finance/OutgoingPage'
+import { PaymentOptionsPage } from './pages/finance/PaymentOptionsPage'
+import { PayrollPage } from './pages/finance/PayrollPage'
+import { PayrollPersonPage } from './pages/finance/PayrollPersonPage'
 import { InfluencerProfilePage } from './pages/influencers/InfluencerProfilePage'
 import { InfluencersPage } from './pages/influencers/InfluencersPage'
+import { LocationsPage } from './pages/locations/LocationsPage'
 import { ResourcesPage } from './pages/resources/ResourcesPage'
+import { MyTasksPage } from './pages/schedule/MyTasksPage'
 import { SchedulePage } from './pages/schedule/SchedulePage'
+import { SchedulingPage } from './pages/staff-manager/SchedulingPage'
+import { StaffOverviewPage } from './pages/staff-manager/StaffOverviewPage'
+import { TaskManagementPage } from './pages/staff-manager/TaskManagementPage'
+import { TimelinePage } from './pages/schedule/TimelinePage'
 import { LoginPage } from './pages/LoginPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
@@ -20,91 +34,18 @@ const NON_MANAGER_ROLES: Role[] = ['director', 'assistant', 'staff']
 
 // Pages not built yet, with the contents planned for each (from the site plan).
 const PLACEHOLDERS: { path: string; title: string; planned: string[]; roles?: Role[] }[] = [
-  { path: '/schedule/tasks', title: 'My Tasks', planned: ['Tasks assigned to you'] },
-  {
-    path: '/schedule/timeline',
-    title: 'Master Timeline',
-    planned: [
-      'Project-wide timeline',
-      'Directors and Assistants create and edit timelines (name, start, end, description)',
-    ],
-  },
-  {
-    path: '/documents',
-    title: 'Documents',
-    planned: [
-      'Insurance, permits, contracts, vehicle documents, invoices, vouchers, receipts, miscellaneous',
-      'Everyone can upload receipts and see their own, with status: Submitted, Viewed, In Process, Processed',
-      'Directors and Assistants see and manage every document type',
-    ],
-  },
-  {
-    path: '/locations',
-    title: 'Locations',
-    planned: ['Lodging, shooting and custom location types'],
-  },
-  {
-    path: '/finance',
-    title: 'Finance',
-    roles: MANAGER_ROLES,
-    planned: [
-      'Vendor payments due, staff paychecks due, new receipts and their status',
-      'Scheduled auto drafts',
-      'Finance calendar (separate from the crew schedule)',
-    ],
-  },
-  {
-    path: '/finance/payroll',
-    title: 'Payroll',
-    roles: MANAGER_ROLES,
-    planned: [
-      'Staff pay table you can sort and filter, with a page per person',
-      'Printable payroll reports that follow the active filters',
-      'Receipt reimbursements added to paychecks',
-    ],
-  },
-  {
-    path: '/finance/incoming',
-    title: 'Incoming',
-    roles: MANAGER_ROLES,
-    planned: ['Running statement of incoming money', 'Source, amount, description, deposited into, document'],
-  },
-  {
-    path: '/finance/outgoing',
-    title: 'Outgoing',
-    roles: MANAGER_ROLES,
-    planned: ['Outgoing payments', 'Receipts submitted for reimbursement'],
-  },
-  {
-    path: '/finance/invoices',
-    title: 'Invoices',
-    roles: MANAGER_ROLES,
-    planned: ['Submit and view invoices', 'Table you can sort and filter; open or archive any invoice'],
-  },
-  {
-    path: '/finance/payment-options',
-    title: 'Payment Options',
-    roles: MANAGER_ROLES,
-    planned: ['Company cards, bank accounts and digital payment methods', 'Asks for confirmation before deleting'],
-  },
-  {
-    path: '/staff-manager',
-    title: 'Staff Manager',
-    roles: MANAGER_ROLES,
-    planned: ['Your task list', 'Master staff list you can sort and filter'],
-  },
-  {
-    path: '/staff-manager/scheduling',
-    title: 'Scheduling',
-    roles: MANAGER_ROLES,
-    planned: ['Edit individual staff schedules'],
-  },
-  {
-    path: '/staff-manager/tasks',
-    title: 'Task Management',
-    roles: MANAGER_ROLES,
-    planned: ['Assign tasks to staff; they appear on that person’s dashboard'],
-  },
+
+
+
+
+
+
+
+
+
+
+
+
   {
     path: '/site-manager',
     title: 'Site Manager Dashboard',
@@ -137,6 +78,22 @@ export default function App() {
               <Route path="/crew" element={<CrewPage />} />
               <Route path="/resources" element={<ResourcesPage />} />
               <Route path="/schedule" element={<SchedulePage />} />
+              <Route path="/schedule/tasks" element={<MyTasksPage />} />
+              <Route path="/schedule/timeline" element={<TimelinePage />} />
+              <Route path="/documents" element={<DocumentsPage />} />
+              <Route path="/locations" element={<LocationsPage />} />
+              <Route element={<RequireRole roles={MANAGER_ROLES} />}>
+                <Route path="/finance" element={<FinanceOverviewPage />} />
+                <Route path="/finance/payroll" element={<PayrollPage />} />
+                <Route path="/finance/payroll/:id" element={<PayrollPersonPage />} />
+                <Route path="/finance/incoming" element={<IncomingPage />} />
+                <Route path="/finance/outgoing" element={<OutgoingPage />} />
+                <Route path="/finance/invoices" element={<InvoicesPage />} />
+                <Route path="/finance/payment-options" element={<PaymentOptionsPage />} />
+                <Route path="/staff-manager" element={<StaffOverviewPage />} />
+                <Route path="/staff-manager/scheduling" element={<SchedulingPage />} />
+                <Route path="/staff-manager/tasks" element={<TaskManagementPage />} />
+              </Route>
               <Route path="/influencers" element={<InfluencersPage />} />
               <Route path="/influencers/:id" element={<InfluencerProfilePage />} />
               <Route path="/crew/finder" element={<CrewFinderPage />} />

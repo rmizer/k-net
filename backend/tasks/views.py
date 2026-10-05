@@ -10,22 +10,30 @@ STAFF_EDITABLE_FIELDS = {"status"}
 
 class TaskViewSet(viewsets.ModelViewSet):
     """Directors, Assistants and Site Managers see and manage every task.
-    Staff see only tasks assigned to them and can update their status."""
+    Staff see only tasks assigned to them and can update their status.
+
+    Filters: ?mine=1 limits to tasks assigned to the signed-in user.
+    """
 
     serializer_class = TaskSerializer
 
     def get_queryset(self):
-        tasks = Task.objects.select_related("assigned_to", "department")
-        if self.request.user.is_manager_level:
-            return tasks
-        return tasks.filter(assigned_to=self.request.user)
+        tasks = Task.objects.select_related("assigned_to", "department", "created_by")
+        user = self.request.user
+        if not user.is_manager_level or self.request.query_params.get("mine") in ("1", "true"):
+            tasks = tasks.filter(assigned_to=user)
+        return tasks
 
     def _require_manager(self):
         if not self.request.user.is_manager_level:
             raise PermissionDenied("Only Directors and Assistants can manage tasks.")
 
-    def perform_create(self, serializer):
+    def create(self, request, *args, **kwargs):
+        # Check permission before validating, so staff get a 403 rather than form errors.
         self._require_manager()
+        return super().create(request, *args, **kwargs)
+
+    def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
 
     def perform_update(self, serializer):

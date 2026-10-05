@@ -58,6 +58,9 @@ INSTALLED_APPS = [
     "crewfinder",
     "resources",
     "influencers",
+    "documents",
+    "locations",
+    "finance",
 ]
 
 MIDDLEWARE = [
@@ -148,6 +151,8 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
+# Uploaded documents; never served directly, only through the API.
+PRIVATE_MEDIA_ROOT = BASE_DIR / "private"
 
 
 # Email

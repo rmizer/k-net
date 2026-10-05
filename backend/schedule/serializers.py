@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Event
+from .models import Event, TimelineItem
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -41,4 +41,20 @@ class EventSerializer(serializers.ModelSerializer):
         end = attrs.get("end", getattr(self.instance, "end", None))
         if start and end and end < start:
             raise serializers.ValidationError({"end": "The end time can't be before the start time."})
+        return attrs
+
+
+class TimelineItemSerializer(serializers.ModelSerializer):
+    created_by_name = serializers.CharField(source="created_by.get_full_name", read_only=True, default=None)
+
+    class Meta:
+        model = TimelineItem
+        fields = ["id", "name", "start_date", "end_date", "description", "created_by_name", "updated_at"]
+        extra_kwargs = {"name": {"error_messages": {"blank": "Give this a name."}}}
+
+    def validate(self, attrs):
+        start = attrs.get("start_date", getattr(self.instance, "start_date", None))
+        end = attrs.get("end_date", getattr(self.instance, "end_date", None))
+        if start and end and end < start:
+            raise serializers.ValidationError({"end_date": "The end date can't be before the start date."})
         return attrs

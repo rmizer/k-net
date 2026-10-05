@@ -17,6 +17,9 @@ urlpatterns = [
     path("api/", include("crewfinder.urls")),
     path("api/", include("resources.urls")),
     path("api/", include("influencers.urls")),
+    path("api/", include("documents.urls")),
+    path("api/", include("locations.urls")),
+    path("api/finance/", include("finance.urls")),
 ]
 
 if settings.DEBUG:

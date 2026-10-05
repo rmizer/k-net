@@ -53,3 +53,28 @@ class Event(models.Model):
     def clean(self):
         if self.start and self.end and self.end < self.start:
             raise ValidationError({"end": "The end time can't be before the start time."})
+
+
+class TimelineItem(models.Model):
+    """A phase or milestone on the project-wide Master Timeline. An item that
+    starts and ends on the same day is shown as a milestone."""
+
+    name = models.CharField(max_length=200)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    description = models.TextField(blank=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="+"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["start_date", "end_date", "name"]
+
+    def __str__(self):
+        return self.name
+
+    def clean(self):
+        if self.start_date and self.end_date and self.end_date < self.start_date:
+            raise ValidationError({"end_date": "The end date can't be before the start date."})

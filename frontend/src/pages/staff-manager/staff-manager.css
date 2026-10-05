@@ -1,0 +1,289 @@
+/* Task Manager (the /staff-manager pages). Stat tiles, filters and tables come from finance.css. */
+
+.sm-filters {
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+}
+
+.sm-status {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--knet-gray-300);
+  border-radius: var(--radius);
+  background: var(--knet-white);
+  font: inherit;
+  font-size: 0.9rem;
+}
+
+.sm-done {
+  color: var(--knet-gray-600);
+  text-decoration: line-through;
+}
+
+/* Your task list (overview) */
+
+.sm-my-tasks {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sm-my-tasks li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  padding: 0.55rem 0;
+}
+
+.sm-my-tasks li + li {
+  border-top: 1px solid var(--knet-gray-100);
+}
+
+.sm-my-tasks input {
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: var(--knet-dark-red);
+}
+
+.sm-my-tasks__title {
+  flex: 1;
+  min-width: 12rem;
+  font-weight: var(--weight-bold);
+}
+
+.sm-my-tasks .badge {
+  margin: 0;
+}
+
+/* Scheduling: people on the left, their week on the right */
+
+.sm-scheduling {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(0, 3fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.sm-people {
+  position: sticky;
+  top: 1rem;
+  display: grid;
+  gap: 0.6rem;
+  max-height: calc(100vh - 2rem);
+  overflow: auto;
+  padding: 0.85rem;
+}
+
+.sm-people input {
+  width: 100%;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--knet-gray-300);
+  border-radius: var(--radius);
+}
+
+.sm-people ul {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sm-people button {
+  display: grid;
+  width: 100%;
+  padding: 0.45rem 0.6rem;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--knet-black);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sm-people button:hover {
+  background: var(--knet-gray-100);
+}
+
+.sm-people button.is-selected {
+  background: var(--knet-red-tint);
+  box-shadow: inset 3px 0 0 var(--knet-dark-red);
+}
+
+.sm-people__name {
+  font-weight: var(--weight-bold);
+}
+
+.sm-people__meta {
+  font-size: 0.8rem;
+  color: var(--knet-gray-600);
+}
+
+.sm-week {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.sm-week__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.sm-week__head h2 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.sm-week__head p {
+  margin: 0.15rem 0 0;
+}
+
+.sm-week__nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.6rem;
+}
+
+.sm-week__nav h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.sm-arrow {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.sm-week__hours {
+  margin-left: auto;
+  color: var(--knet-gray-600);
+  font-size: 0.9rem;
+}
+
+.sm-days {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sm-day {
+  padding: 0.75rem 1rem;
+  border-top-width: 3px;
+}
+
+.sm-day.is-today {
+  border-top-color: var(--knet-red);
+  background: var(--knet-red-wash);
+}
+
+.sm-day__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sm-day__head h4 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.sm-day__head h4 span {
+  margin-left: 0.5rem;
+  color: var(--knet-gray-600);
+  font-weight: var(--weight-regular);
+}
+
+.sm-day__empty {
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+}
+
+.sm-events {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sm-event {
+  display: grid;
+  grid-template-columns: 10rem minmax(0, 1fr) auto;
+  gap: 0.25rem 1rem;
+  align-items: start;
+  padding: 0.45rem 0.6rem;
+  border-left: 3px solid var(--knet-dark-red);
+  border-radius: 0 4px 4px 0;
+  background: var(--knet-white);
+}
+
+/* Influencer events: dashed black edge, as on the Schedule. */
+.sm-event--influencer {
+  border-left: 3px dashed var(--knet-black);
+}
+
+.sm-event.is-clash {
+  box-shadow: inset 0 0 0 1px var(--knet-red);
+}
+
+.sm-event__time {
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+.sm-event__body {
+  display: grid;
+  min-width: 0;
+}
+
+.event-people {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.25rem 1rem;
+}
+
+@media (max-width: 860px) {
+  .sm-scheduling {
+    grid-template-columns: 1fr;
+  }
+
+  .sm-people {
+    position: static;
+    max-height: 16rem;
+  }
+
+  .sm-filters {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .sm-filters .form__field:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .sm-event {
+    grid-template-columns: 1fr;
+  }
+
+  .sm-event .row-actions {
+    justify-content: flex-start;
+  }
+
+  .sm-week__hours {
+    flex-basis: 100%;
+    margin-left: 0;
+  }
+}

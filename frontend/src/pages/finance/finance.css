@@ -1,0 +1,737 @@
+.finance {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.finance .page-header {
+  margin-bottom: 0;
+}
+
+.fin-header-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.fin-section {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.fin-section h2,
+.fin-section__head h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.fin-section__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.tile > .fin-section__head {
+  margin-bottom: 0.6rem;
+}
+
+/* Stat tiles */
+
+.fin-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.fin-stat {
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--knet-gray-300);
+  border-top: 3px solid var(--knet-dark-red);
+  border-radius: var(--radius);
+  background: var(--knet-white);
+}
+
+.fin-stat dt {
+  font-size: 0.72rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--knet-dark-red);
+}
+
+.fin-stat dd {
+  margin: 0.15rem 0 0;
+  font-size: 1.6rem;
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.fin-stat .fin-stat__note {
+  font-size: 0.85rem;
+  font-weight: var(--weight-regular);
+  color: var(--knet-gray-600);
+}
+
+.fin-stat--alert {
+  border-top-color: var(--knet-red);
+  background: var(--knet-red-wash);
+}
+
+.fin-stat--alert .fin-stat__note {
+  color: var(--knet-red);
+  font-weight: var(--weight-bold);
+}
+
+.fin-inout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.75rem;
+  font-size: 1.15rem;
+}
+
+/* Money colors: always paired with a + or − sign. */
+.fin-in {
+  color: var(--knet-success);
+}
+
+.fin-out {
+  color: var(--knet-dark-red);
+}
+
+/* Overview */
+
+.fin-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.fin-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fin-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+}
+
+.fin-list li + li {
+  border-top: 1px solid var(--knet-gray-100);
+}
+
+.fin-list--compact li {
+  padding: 0.25rem 0;
+}
+
+.fin-list li.is-done {
+  opacity: 0.6;
+}
+
+.fin-list__main {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Names and titles read better in sentence case than as all-caps body links. */
+.fin-list a {
+  text-transform: none;
+}
+
+.fin-list .receipt-progress {
+  min-width: 6rem;
+}
+
+.fin-payday + .fin-payday {
+  margin-top: 0.75rem;
+}
+
+.fin-payday h3 {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  margin: 0 0 0.25rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 2px solid var(--knet-dark-red);
+  font-size: 1rem;
+}
+
+.fin-payday h3 span {
+  color: var(--knet-gray-600);
+  font-size: 0.9rem;
+}
+
+/* Badges */
+
+.fin-badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem 0.05rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: var(--knet-gray-100);
+  color: var(--knet-black);
+  box-shadow: inset 0 0 0 1px var(--knet-gray-300);
+}
+
+.fin-badge--overdue {
+  background: var(--knet-red);
+  color: var(--knet-white);
+  box-shadow: none;
+}
+
+.fin-badge--scheduled {
+  background: var(--knet-red-tint);
+  color: var(--knet-dark-red);
+  box-shadow: none;
+}
+
+.fin-badge--paid {
+  background: var(--knet-white);
+  color: var(--knet-success);
+  box-shadow: inset 0 0 0 1px var(--knet-success);
+}
+
+/* Tables */
+
+.fin-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+}
+
+.fin-search {
+  min-width: min(22rem, 100%);
+}
+
+.fin-search input,
+.fin-filters input:not([type='checkbox']),
+.fin-filters select {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--knet-gray-300);
+  border-radius: var(--radius);
+  background: var(--knet-white);
+}
+
+.fin-filters {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  align-items: end;
+  gap: 0.75rem 1rem;
+}
+
+.fin-filters__check {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding-bottom: 0.6rem;
+  white-space: nowrap;
+}
+
+.fin-table td {
+  vertical-align: top;
+}
+
+.fin-table tr.is-overdue td {
+  background: var(--knet-red-wash);
+}
+
+.fin-table tr.is-inactive td {
+  color: var(--knet-gray-600);
+}
+
+.fin-table tfoot th,
+.fin-table tfoot td {
+  padding: 0.6rem 0.75rem;
+  border-top: 2px solid var(--knet-dark-red);
+  border-bottom: 0;
+  font-weight: var(--weight-bold);
+  text-align: left;
+}
+
+.fin-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.fin-table tfoot .fin-num {
+  text-align: right;
+}
+
+.fin-sub {
+  display: block;
+  font-size: 0.83rem;
+  font-weight: var(--weight-regular);
+  color: var(--knet-gray-600);
+  white-space: normal;
+}
+
+.fin-overdue {
+  color: var(--knet-red);
+  font-weight: var(--weight-bold);
+}
+
+.fin-missing {
+  color: var(--knet-red);
+}
+
+.fin-actions {
+  width: 1%;
+}
+
+.fin-person-link {
+  font-weight: var(--weight-bold);
+  text-transform: none;
+}
+
+/* Names and titles read better in sentence case than as all-caps body links. */
+.fin-table td a:not(.text-button) {
+  text-transform: none;
+}
+
+/* Payment options */
+
+.fin-methods {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fin-method {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.fin-method p {
+  margin: 0;
+}
+
+.fin-method.is-inactive {
+  opacity: 0.65;
+}
+
+.fin-method__head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.fin-method__head h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.fin-method__number {
+  font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.fin-method__number span {
+  margin-left: 0.4rem;
+  letter-spacing: 0.08em;
+}
+
+.fin-method__uses {
+  font-size: 0.85rem;
+}
+
+.fin-method__actions {
+  justify-content: flex-start;
+  margin-top: auto;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--knet-gray-100);
+}
+
+/* Pay dialog and paycheck totals */
+
+.dialog--narrow {
+  width: min(480px, calc(100vw - 2 * var(--gutter)));
+}
+
+.fin-pay-summary {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+}
+
+.fin-paycheck-total {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.75rem;
+  border-radius: var(--radius);
+  background: var(--knet-gray-100);
+}
+
+.fin-paycheck-total dt {
+  font-size: 0.7rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--knet-gray-600);
+}
+
+.fin-paycheck-total dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.fin-paycheck-total .is-total dt {
+  color: var(--knet-dark-red);
+}
+
+.fin-paycheck-total .is-total dd {
+  font-size: 1.2rem;
+  font-weight: var(--weight-bold);
+}
+
+/* Finance calendar (reuses the Schedule month grid) */
+
+.fin-calendar {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(240px, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.fin-calendar__day h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.fin-chip--invoice {
+  border-left-color: var(--knet-red) !important;
+  background: var(--knet-red-wash) !important;
+}
+
+.fin-chip--payroll {
+  border-left-color: var(--knet-dark-red) !important;
+}
+
+.fin-chip--draft {
+  border-left: 3px dashed var(--knet-black) !important;
+  background: var(--knet-white) !important;
+}
+
+.fin-chip--deposit {
+  border-left-color: var(--knet-success) !important;
+}
+
+.month__chip.is-done {
+  opacity: 0.5;
+}
+
+.fin-chip--deposit .month__chip-time {
+  color: var(--knet-success);
+}
+
+.fin-dot {
+  flex: none;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-left: 4px solid var(--knet-dark-red);
+  background: var(--knet-gray-100);
+}
+
+.fin-legend--invoice::before {
+  border-left: 3px solid var(--knet-red);
+  background: var(--knet-red-wash);
+}
+
+.fin-legend--payroll::before {
+  border-left: 3px solid var(--knet-dark-red);
+  background: var(--knet-gray-100);
+}
+
+.fin-legend--draft::before {
+  border-left: 3px dashed var(--knet-black);
+  box-shadow: inset 0 0 0 1px var(--knet-gray-300);
+}
+
+.fin-legend--deposit::before {
+  border-left: 3px solid var(--knet-success);
+  background: var(--knet-gray-100);
+}
+
+.fin-legend--done::before {
+  border-left: 3px solid var(--knet-dark-red);
+  background: var(--knet-gray-100);
+  opacity: 0.5;
+}
+
+/* Revenue chart (Incoming): one series, so no legend; the heading names it. */
+
+.revenue-chart {
+  position: relative;
+  min-width: 0;
+  overflow-x: clip; /* The SVG is sized to this box; never let it widen the page. */
+}
+
+/* Grid children may shrink below their content (the chart measures its box). */
+.finance > * {
+  min-width: 0;
+}
+
+.revenue-chart svg {
+  display: block;
+  overflow: visible;
+}
+
+/* Focus ring around the whole chart (the SVG itself is clipped to its box). */
+.revenue-chart svg:focus-visible {
+  outline: none;
+}
+
+.revenue-chart:has(svg:focus-visible) {
+  outline: 2px solid var(--knet-red);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.revenue-chart__caption {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.revenue-chart__grid {
+  stroke: var(--knet-gray-300);
+  stroke-width: 1;
+}
+
+.revenue-chart__axis {
+  fill: var(--knet-gray-600);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.revenue-chart__area {
+  fill: var(--knet-dark-red);
+  fill-opacity: 0.1;
+}
+
+.revenue-chart__line {
+  fill: none;
+  stroke: var(--knet-dark-red);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+/* Dots carry a 2px ring in the surface color so they stay clear of the line. */
+.revenue-chart__dot {
+  fill: var(--knet-dark-red);
+  stroke: var(--knet-white);
+  stroke-width: 2;
+}
+
+.revenue-chart__end {
+  fill: var(--knet-black);
+  font-size: 15px;
+  font-weight: var(--weight-bold);
+}
+
+.revenue-chart__crosshair {
+  stroke: var(--knet-gray-600);
+  stroke-width: 1;
+  pointer-events: none;
+}
+
+.revenue-chart__hit {
+  fill: transparent;
+  cursor: crosshair;
+}
+
+.revenue-chart__tip {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  gap: 0.15rem;
+  min-width: 11rem;
+  max-width: 18rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--knet-gray-300);
+  border-radius: 4px;
+  background: var(--knet-white);
+  box-shadow: var(--shadow-tile);
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+
+.revenue-chart__tip strong {
+  font-size: 1.05rem;
+}
+
+.revenue-chart__tip-label {
+  color: var(--knet-gray-600);
+}
+
+.revenue-chart__tip-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.revenue-chart__key {
+  flex: none;
+  width: 0.8rem;
+  height: 2px;
+  background: var(--knet-dark-red);
+}
+
+.print-only {
+  display: none;
+}
+
+@media (max-width: 960px) {
+  .fin-grid,
+  .fin-calendar {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .fin-filters {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .fin-filters .form__field:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .fin-paycheck-total {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Phones: table rows become labeled cards. */
+@media (max-width: 640px) {
+  .fin-table thead {
+    display: none;
+  }
+
+  .fin-table,
+  .fin-table tbody,
+  .fin-table tfoot,
+  .fin-table tr,
+  .fin-table td,
+  .fin-table tfoot th {
+    display: block;
+    width: 100%;
+  }
+
+  .fin-table tr {
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--knet-gray-300);
+  }
+
+  .fin-table td {
+    padding: 0.1rem 0;
+    border: 0;
+    text-align: left;
+  }
+
+  .fin-table td[data-label]:not(:first-child)::before,
+  .fin-table tfoot td[data-label]::before {
+    content: attr(data-label) ": ";
+    font-size: 0.72rem;
+    font-weight: var(--weight-bold);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--knet-dark-red);
+  }
+
+  .fin-table .fin-num {
+    text-align: left;
+  }
+
+  .fin-table .fin-sub {
+    display: inline;
+    margin-left: 0.4rem;
+  }
+
+  .fin-table td:first-child .fin-sub {
+    display: block;
+    margin-left: 0;
+  }
+
+  .fin-table .row-actions {
+    justify-content: flex-start;
+  }
+
+  .fin-table tfoot td:empty {
+    display: none;
+  }
+}
+
+/* Printed payroll reports: just the report, following the active filters. */
+@media print {
+  .site-header,
+  .site-nav,
+  .sub-nav,
+  .site-footer,
+  .no-print,
+  .fin-filters,
+  .page-header button {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block;
+  }
+
+  .fin-print-meta {
+    margin: 0;
+    font-size: 0.85rem;
+  }
+
+  .tile,
+  .fin-stat {
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .fin-stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .fin-stat dd {
+    font-size: 1.1rem;
+  }
+
+  .fin-table {
+    font-size: 0.8rem;
+  }
+
+  .fin-table tr {
+    break-inside: avoid;
+  }
+
+  .sort-header__arrow {
+    display: none;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
