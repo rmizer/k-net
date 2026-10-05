@@ -16,18 +16,6 @@ export interface NavItem {
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Site Manager', path: '/site-manager', icon: 'shield', roles: ['site_manager'] },
   { label: 'Dashboard', path: '/', icon: 'home' },
-  { label: 'Directory', path: '/directory', icon: 'contacts' },
-  {
-    label: 'Staff / Crew',
-    path: '/crew',
-    icon: 'crew',
-    children: [
-      { label: 'Active Crew', path: '/crew' },
-      { label: 'CrewFinder', path: '/crew/finder' },
-    ],
-  },
-  { label: 'Resources', path: '/resources', icon: 'resources' },
-  { label: 'Influencers', path: '/influencers', icon: 'star' },
   {
     label: 'Schedule',
     path: '/schedule',
@@ -38,8 +26,32 @@ export const NAV_ITEMS: NavItem[] = [
       { label: 'Master Timeline', path: '/schedule/timeline' },
     ],
   },
-  { label: 'Documents', path: '/documents', icon: 'document' },
+  {
+    label: 'Task Manager',
+    path: '/staff-manager',
+    icon: 'clipboard',
+    roles: MANAGER_ROLES,
+    children: [
+      { label: 'Overview', path: '/staff-manager' },
+      { label: 'Scheduling', path: '/staff-manager/scheduling' },
+      { label: 'Task Management', path: '/staff-manager/tasks' },
+    ],
+  },
+  {
+    label: 'Staff / Crew',
+    path: '/crew',
+    icon: 'crew',
+    children: [
+      { label: 'Active Crew', path: '/crew' },
+      { label: 'CrewFinder', path: '/crew/finder' },
+    ],
+  },
+  { label: 'Influencers', path: '/influencers', icon: 'star' },
   { label: 'Locations', path: '/locations', icon: 'pin' },
+  { label: 'Directory', path: '/directory', icon: 'contacts' },
+  { label: 'Resources', path: '/resources', icon: 'resources' },
+  { label: 'Documents', path: '/documents', icon: 'document' },
+  // Last, for those who can see it.
   {
     label: 'Finance',
     path: '/finance',
@@ -52,17 +64,6 @@ export const NAV_ITEMS: NavItem[] = [
       { label: 'Outgoing', path: '/finance/outgoing' },
       { label: 'Invoices', path: '/finance/invoices' },
       { label: 'Payment Options', path: '/finance/payment-options' },
-    ],
-  },
-  {
-    label: 'Task Manager',
-    path: '/staff-manager',
-    icon: 'clipboard',
-    roles: MANAGER_ROLES,
-    children: [
-      { label: 'Overview', path: '/staff-manager' },
-      { label: 'Scheduling', path: '/staff-manager/scheduling' },
-      { label: 'Task Management', path: '/staff-manager/tasks' },
     ],
   },
 ]
