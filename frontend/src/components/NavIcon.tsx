@@ -12,6 +12,8 @@ export type NavIconName =
   | 'pin'
   | 'dollar'
   | 'clipboard'
+  | 'trend'
+  | 'mail'
 
 // 24×24 line icons, drawn with the current text color.
 const PATHS: Record<NavIconName, ReactNode> = {
@@ -69,6 +71,18 @@ const PATHS: Record<NavIconName, ReactNode> = {
       <rect x="5" y="4" width="14" height="18" rx="2" />
       <path d="M9 2.5h6v3H9z" />
       <path d="m9 13 2 2 4-4" />
+    </>
+  ),
+  mail: (
+    <>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="m3 7 9 6 9-6" />
+    </>
+  ),
+  trend: (
+    <>
+      <path d="m3 17 6-6 4 4 8-8" />
+      <path d="M15 7h6v6" />
     </>
   ),
 }

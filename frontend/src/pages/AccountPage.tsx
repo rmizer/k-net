@@ -22,6 +22,7 @@ export function AccountPage() {
       string
     >,
   )
+  const [slackNotifications, setSlackNotifications] = useState(user?.slack_notifications ?? true)
   const [status, setStatus] = useState<{ kind: 'success' | 'error'; message: string } | null>(null)
   const [saving, setSaving] = useState(false)
 
@@ -32,7 +33,7 @@ export function AccountPage() {
     setSaving(true)
     setStatus(null)
     try {
-      setUser(await api<User>('/auth/me/', { method: 'PATCH', body: JSON.stringify(form) }))
+      setUser(await api<User>('/auth/me/', { method: 'PATCH', body: JSON.stringify({ ...form, slack_notifications: slackNotifications }) }))
       setStatus({ kind: 'success', message: 'Your account has been updated.' })
     } catch (err) {
       setStatus({ kind: 'error', message: err instanceof ApiError ? err.message : 'Could not save changes.' })
@@ -102,6 +103,16 @@ export function AccountPage() {
               />
             </label>
           ))}
+          {user.slack_available && (
+            <label className="form__check">
+              <input
+                type="checkbox"
+                checked={slackNotifications}
+                onChange={(event) => setSlackNotifications(event.target.checked)}
+              />
+              Message me on Slack when I'm assigned a task
+            </label>
+          )}
           <button type="submit" className="button" disabled={saving}>
             {saving ? 'Saving…' : 'Save changes'}
           </button>

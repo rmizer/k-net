@@ -17,6 +17,12 @@ export interface User {
   is_active_crew: boolean
   /** Only on the signed-in user's own profile: roles they may give others. */
   assignable_roles?: Role[]
+  /** Only on the signed-in user's own profile: Slack messages for new tasks. */
+  slack_notifications?: boolean
+  /** Only on the signed-in user's own profile: whether the server has Slack set up. */
+  slack_available?: boolean
+  /** Only on the signed-in user's own profile: link to join the K-Net Slack workspace. */
+  slack_invite_url?: string
   /** Only right after creating an account without choosing a password. */
   temporary_password?: string
 }

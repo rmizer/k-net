@@ -1,0 +1,62 @@
+.invite__card {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  max-width: 480px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.invite__qr {
+  display: block;
+  width: min(100%, 320px);
+  height: auto;
+  aspect-ratio: 1;
+  image-rendering: pixelated;
+}
+
+.invite__qr--loading {
+  background: var(--knet-gray-100);
+}
+
+.invite__url {
+  margin: 0;
+  font-weight: var(--weight-bold);
+  overflow-wrap: anywhere;
+}
+
+.invite__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.invite__note {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--knet-gray-600);
+}
+
+/* Print just the code and the link, large, for a poster or handout. */
+@media print {
+  .trial-banner,
+  .site-header,
+  .site-nav,
+  .sub-nav,
+  .site-footer,
+  .invite .subtitle,
+  .invite__actions,
+  .invite__note {
+    display: none !important;
+  }
+
+  .invite__card {
+    border: none;
+    box-shadow: none;
+  }
+
+  .invite__qr {
+    width: 12cm;
+  }
+}

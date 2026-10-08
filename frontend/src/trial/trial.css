@@ -1,0 +1,125 @@
+/* Trial countdown: a slim black strip above everything else. */
+.trial-banner {
+  --trial-red: #ff4545; /* Brighter than the brand red so small text stays readable on black. */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem 1rem;
+  padding: 0.35rem var(--gutter);
+  background: var(--knet-black);
+  color: var(--trial-red);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+
+.trial-banner__text {
+  margin: 0;
+}
+
+.trial-banner__label {
+  opacity: 0.85;
+}
+
+.trial-banner__part {
+  white-space: nowrap;
+}
+
+/* Each number sits in a clipped box so a new value can roll down into place. */
+.trial-banner__number {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  min-width: 1ch;
+  text-align: right;
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+.trial-banner__digits {
+  display: inline-block;
+  animation: trial-roll 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes trial-roll {
+  from {
+    transform: translateY(-90%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.trial-banner__link {
+  color: var(--knet-white);
+  font-size: 0.8rem;
+  text-decoration: underline;
+  text-decoration-color: var(--trial-red);
+  text-underline-offset: 0.2em;
+  white-space: nowrap;
+}
+
+.trial-banner__link:hover,
+.trial-banner__link:focus-visible {
+  color: var(--trial-red);
+}
+
+.trial-banner__link:focus-visible {
+  outline: 2px solid var(--trial-red);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trial-banner__digits {
+    animation: none;
+  }
+}
+
+/* About the trial page */
+.trial-page h2 {
+  margin-top: 2rem;
+}
+
+.trial-page .tile p {
+  margin: 0 0 0.75rem;
+}
+
+.trial-page .tile p:last-child {
+  margin-bottom: 0;
+}
+
+.trial-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.trial-page__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: 1rem;
+  margin: 0;
+}
+
+.trial-page__list dt {
+  font-weight: var(--weight-bold);
+  color: var(--knet-dark-red);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.trial-page__list dd {
+  margin: 0.35rem 0 0;
+}
+
+.trial-page__list--muted .tile {
+  border-top-color: var(--knet-gray-600);
+}
+
+.trial-page__list--muted dt {
+  color: var(--knet-gray-600);
+}

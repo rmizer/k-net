@@ -1,6 +1,8 @@
 from rest_framework import viewsets
 from rest_framework.exceptions import PermissionDenied
 
+from notifications import slack
+
 from .models import Task
 from .serializers import TaskSerializer
 
@@ -34,14 +36,20 @@ class TaskViewSet(viewsets.ModelViewSet):
         return super().create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user)
+        task = serializer.save(created_by=self.request.user)
+        if task.assigned_to != self.request.user:
+            slack.notify_task_assigned(task)
 
     def perform_update(self, serializer):
         if not self.request.user.is_manager_level:
             extra = set(self.request.data) - STAFF_EDITABLE_FIELDS
             if extra:
                 raise PermissionDenied("You can only update the status of your tasks.")
-        serializer.save()
+        previous_assignee_id = serializer.instance.assigned_to_id
+        task = serializer.save()
+        # Message the new person when a task is reassigned (not on every edit).
+        if task.assigned_to_id != previous_assignee_id and task.assigned_to != self.request.user:
+            slack.notify_task_assigned(task)
 
     def perform_destroy(self, instance):
         self._require_manager()

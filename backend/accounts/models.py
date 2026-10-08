@@ -64,6 +64,16 @@ class User(AbstractUser):
     emergency_contact_phone = models.CharField(max_length=30, blank=True)
     # Whether this person is on the active crew (shown on the Staff / Crew page).
     is_active_crew = models.BooleanField(default=False)
+    # False only for people who signed up themselves and haven't clicked the
+    # link in their verification email yet. Accounts managers create are trusted.
+    email_verified = models.BooleanField(default=True)
+    # When the person agreed to the privacy statement on the sign-up form.
+    privacy_accepted_at = models.DateTimeField(null=True, blank=True)
+    # Slack member ID, found by email the first time K-Net messages this person.
+    slack_user_id = models.CharField(max_length=20, blank=True)
+    slack_notifications = models.BooleanField(
+        default=True, help_text="Send this person a Slack message when they're assigned a task."
+    )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["first_name", "last_name"]

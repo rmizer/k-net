@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/useAuth'
-import { isSiteManager } from '../auth/roles'
 
 const YEAR = new Date().getFullYear()
 
@@ -12,14 +11,12 @@ export function Footer() {
       <div className="container site-footer__inner">
         <p>&copy; {YEAR} K-Net. All rights reserved.</p>
         <ul className="site-footer__links">
-          {/* Contact sends bug / tech reports to the Site Managers, so they don't need it. */}
-          {!isSiteManager(user) && (
-            <li>
-              <Link to="/contact" className="nav-link">
-                Contact
-              </Link>
-            </li>
-          )}
+          <li>
+            {/* Bug reports, feature requests, questions and feedback, emailed to support. */}
+            <Link to={user ? '/contact' : '/trial'} className="nav-link">
+              Contact
+            </Link>
+          </li>
           <li>
             {/* Django admin; only Site Manager accounts can sign in there. */}
             <a href="/admin/" className="site-footer__admin">

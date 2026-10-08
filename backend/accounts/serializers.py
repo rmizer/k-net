@@ -1,15 +1,21 @@
 import secrets
 
+from django.conf import settings
 from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import serializers
+
+from notifications import slack
 
 from .models import Department, User
 
 
 class DepartmentSerializer(serializers.ModelSerializer):
+    member_count = serializers.IntegerField(read_only=True, default=0)
+
     class Meta:
         model = Department
-        fields = ["id", "name"]
+        fields = ["id", "name", "member_count"]
 
     def validate_name(self, name):
         name = name.strip()
@@ -129,13 +135,27 @@ class ProfileSerializer(UserSerializer):
 
     # Roles this person may give others, so the app only offers those choices.
     assignable_roles = serializers.SerializerMethodField()
+    # Whether the server has Slack set up, so the app only offers the setting then.
+    slack_available = serializers.SerializerMethodField()
+    slack_invite_url = serializers.SerializerMethodField()
 
     class Meta(UserSerializer.Meta):
-        fields = [f for f in UserSerializer.Meta.fields if f != "password"] + ["assignable_roles"]
+        fields = [f for f in UserSerializer.Meta.fields if f != "password"] + [
+            "slack_notifications",
+            "assignable_roles",
+            "slack_available",
+            "slack_invite_url",
+        ]
         read_only_fields = ["email", "role", "department", "is_active_crew", "profile_picture"]
 
     def get_assignable_roles(self, user):
         return [role for role in User.Role.values if user.can_assign_role(role)]
+
+    def get_slack_available(self, user):
+        return slack.is_enabled()
+
+    def get_slack_invite_url(self, user):
+        return settings.SLACK_INVITE_URL
 
 
 class ProfilePictureSerializer(serializers.ModelSerializer):
@@ -144,6 +164,40 @@ class ProfilePictureSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["profile_picture"]
+
+
+class SignupSerializer(serializers.Serializer):
+    """The public sign-up form. Everyone who signs up starts as Staff."""
+
+    first_name = serializers.CharField(max_length=150)
+    last_name = serializers.CharField(max_length=150)
+    email = serializers.EmailField()
+    password = serializers.CharField(trim_whitespace=False, write_only=True)
+    phone = serializers.CharField(max_length=30)
+    accept_privacy = serializers.BooleanField()
+    # Hidden from people on the form; bots that fill in every field get caught.
+    website = serializers.CharField(required=False, allow_blank=True)
+
+    def validate_email(self, email):
+        email = User.objects.normalize_email(email).lower()
+        existing = User.objects.filter(email__iexact=email).first()
+        # Signing up again before verifying just sends a fresh link.
+        if existing is not None and (existing.email_verified or not existing.is_active):
+            raise serializers.ValidationError("An account with this email already exists. Try logging in.")
+        return email
+
+    def validate_accept_privacy(self, accepted):
+        if not accepted:
+            raise serializers.ValidationError("Please confirm you've read the privacy statement.")
+        return accepted
+
+    def validate(self, attrs):
+        candidate = User(email=attrs["email"], first_name=attrs["first_name"], last_name=attrs["last_name"])
+        try:
+            validate_password(attrs["password"], user=candidate)
+        except DjangoValidationError as err:
+            raise serializers.ValidationError({"password": list(err.messages)}) from err
+        return attrs
 
 
 class LoginSerializer(serializers.Serializer):

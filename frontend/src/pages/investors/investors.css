@@ -1,0 +1,60 @@
+/* Investor link (Site Managers) */
+.investor-link__card {
+  display: grid;
+  gap: 1rem;
+  max-width: 760px;
+}
+
+.investor-link__url {
+  margin: 0;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius);
+  background: var(--knet-gray-100);
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+
+.investor-link__notes {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 0.9rem;
+  color: var(--knet-gray-600);
+}
+
+/* The investor page itself (standalone) */
+.investor {
+  flex: 1;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 2rem;
+  padding: 3rem var(--gutter);
+  text-align: center;
+}
+
+.investor__logo {
+  width: min(320px, 80vw);
+  height: auto;
+}
+
+.investor__construction {
+  max-width: 520px;
+}
+
+.investor__construction h1 {
+  margin: 0.25rem 0 0.75rem;
+}
+
+.investor__construction p {
+  margin: 0;
+}
+
+.investor__icon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.investor__loading {
+  padding: 3rem var(--gutter);
+}

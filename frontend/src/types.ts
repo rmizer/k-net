@@ -5,6 +5,8 @@ import type { Role } from './auth/roles'
 export interface Department {
   id: number
   name: string
+  /** Active people in the department. */
+  member_count?: number
 }
 
 export interface Announcement {

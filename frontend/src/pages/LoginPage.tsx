@@ -1,9 +1,10 @@
 import { useState, type FormEvent } from 'react'
-import { Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { ApiError } from '../api'
 import { useAuth } from '../auth/useAuth'
 import { isSiteManager } from '../auth/roles'
 import wordmark from '../assets/brand/knet-wordmark.png'
+import './signup/signup.css'
 
 export function LoginPage() {
   const { user, loading, login } = useAuth()
@@ -33,6 +34,10 @@ export function LoginPage() {
       // Site Managers land on their own dashboard.
       navigate(from ?? (isSiteManager(signedIn) ? '/site-manager' : '/'), { replace: true })
     } catch (err) {
+      if (err instanceof ApiError && (err.data as { code?: string } | null)?.code === 'email_unverified') {
+        navigate(`/check-email?email=${encodeURIComponent(email.trim().toLowerCase())}`)
+        return
+      }
       setError(err instanceof ApiError ? err.message : 'Something went wrong. Please try again.')
     } finally {
       setSubmitting(false)
@@ -74,6 +79,9 @@ export function LoginPage() {
             {submitting ? 'Logging in…' : 'Log in'}
           </button>
         </form>
+        <p className="login__alt">
+          New to K-Net? <Link to="/signup">Create an account</Link>
+        </p>
       </section>
     </main>
   )

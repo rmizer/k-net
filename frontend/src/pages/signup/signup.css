@@ -1,0 +1,71 @@
+.login--wide {
+  max-width: 520px;
+}
+
+.login__alt {
+  margin: 1.25rem 0 0;
+}
+
+.signup__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 480px) {
+  .signup__row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.signup__rules {
+  margin: -0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85rem;
+  color: var(--knet-gray-600);
+}
+
+.signup__rules li.is-met {
+  color: var(--knet-success);
+}
+
+.signup__privacy {
+  align-items: flex-start;
+  line-height: 1.4;
+}
+
+.signup__privacy input {
+  margin-top: 0.15rem;
+}
+
+/* Off-screen trap field for bots. */
+.signup__honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.check-email {
+  display: grid;
+  gap: 0.75rem;
+  justify-items: center;
+  text-align: center;
+}
+
+.check-email p {
+  margin: 0;
+}
+
+.check-email__icon {
+  font-size: 2.5rem;
+  line-height: 1;
+  color: var(--knet-dark-red);
+}
+
+.check-email__hint {
+  font-size: 0.9rem;
+  color: var(--knet-gray-600);
+}

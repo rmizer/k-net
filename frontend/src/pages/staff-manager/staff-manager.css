@@ -1,4 +1,4 @@
-/* Task Manager (the /staff-manager pages). Stat tiles, filters and tables come from finance.css. */
+/* Director’s Dashboard (the /staff-manager pages). Stat tiles, filters and tables come from finance.css. */
 
 .sm-filters {
   grid-template-columns: 2fr 1fr 1fr 1fr;
@@ -286,4 +286,96 @@
     flex-basis: 100%;
     margin-left: 0;
   }
+}
+
+/* Departments */
+
+.departments__add {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+  margin: 1.5rem 0 1rem;
+}
+
+.departments__add .form__field {
+  flex: 1 1 240px;
+}
+
+.departments__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.departments__item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.departments__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.departments__head h2,
+.departments__unassigned h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.departments__rename {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.departments__members {
+  flex: 1;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.departments__actions {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.departments__unassigned {
+  border-top-color: var(--knet-gray-600);
+}
+
+.departments__search {
+  margin: 1rem 0 0.5rem;
+}
+
+.departments__picker {
+  display: grid;
+  gap: 0.15rem;
+  max-height: 50vh;
+  margin: 0 0 1rem;
+  padding: 0.25rem 0;
+  overflow-y: auto;
+  list-style: none;
+  border-block: 1px solid var(--knet-gray-300);
+}
+
+.departments__picker label {
+  padding: 0.4rem 0.25rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.departments__picker label:hover {
+  background: var(--knet-gray-100);
+}
+
+/* Inline department picker in the master staff list */
+.sm-department {
+  max-width: 11rem;
 }

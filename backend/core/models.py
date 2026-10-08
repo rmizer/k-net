@@ -1,3 +1,4 @@
+import secrets
 from zoneinfo import ZoneInfo, available_timezones
 
 from django.core.exceptions import ValidationError
@@ -52,3 +53,35 @@ class ProductionSettings(models.Model):
     @property
     def zone(self):
         return ZoneInfo(self.time_zone)
+
+
+def new_investor_token():
+    return secrets.token_urlsafe(24)
+
+
+class InvestorPage(models.Model):
+    """The private investor page. There is only ever one row (pk=1). It isn't
+    behind a login: anyone with the link (which includes the secret token) can
+    view it, and replacing the token stops old links from working."""
+
+    token = models.CharField(max_length=64, unique=True, default=new_investor_token)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "investor page"
+
+    def __str__(self):
+        return "Investor page"
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def load(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def rotate_token(self):
+        self.token = new_investor_token()
+        self.save(update_fields=["token", "updated_at"])

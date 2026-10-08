@@ -13,7 +13,48 @@ const REFRESH_MS = 60_000
 /** Locations older than this are shown greyed out. */
 const STALE_MINUTES = 30
 
+// Live tracking is off for the trial: no trackers are set up yet, so the page
+// shows a greyed-out preview instead. Set to true once a location source is connected.
+const CREWFINDER_LIVE = false
+
 export function CrewFinderPage() {
+  return CREWFINDER_LIVE ? <LiveCrewFinder /> : <CrewFinderPreview />
+}
+
+function CrewFinderPreview() {
+  return (
+    <section className="crewfinder">
+      <div className="page-header">
+        <div>
+          <h1>CrewFinder</h1>
+          <p className="subtitle">Where the crew is right now</p>
+        </div>
+        <span className="badge crewfinder__soon">Coming soon</span>
+      </div>
+
+      <div className="crewfinder-preview">
+        <div className="crewfinder-preview__map" aria-hidden="true" inert>
+          <CrewMap points={[]} selectedId={null} onSelect={() => {}} />
+        </div>
+        <div className="tile crewfinder-preview__note">
+          <h2>A future feature</h2>
+          <p>
+            CrewFinder will show where crew members are on a live map, so Directors and Assistants can find people
+            quickly on set, at lodging and between locations.
+          </p>
+          <ul>
+            <li>Each person’s location updates automatically from a tracker or their phone.</li>
+            <li>Locations that are out of date are greyed out, so you know what to trust.</li>
+            <li>Sharing a location will be opt-in, and only the people who need it will see it.</li>
+          </ul>
+          <p className="muted">It isn’t part of the trial; no locations are collected.</p>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function LiveCrewFinder() {
   const { user } = useAuth()
   const finder = useFetch<CrewFinderEntry[]>('/crewfinder/')
   const [selectedId, setSelectedId] = useState<number | null>(null)

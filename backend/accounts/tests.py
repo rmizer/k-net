@@ -1,8 +1,13 @@
+import re
+
+from django.core import mail
+from django.core.cache import cache
+from django.test import override_settings
 from rest_framework.test import APITestCase
 
 from .models import User
 
-PASSWORD = "a-strong-test-password-1"
+PASSWORD = "A-strong-test-password-1"
 
 
 def make_user(email, role, **extra):
@@ -189,3 +194,112 @@ class EmergencyContactVisibilityTests(APITestCase):
 
     def test_user_sees_own_emergency_contact(self):
         self.assertEqual(self.get_other(self.other)["emergency_contact_phone"], "555-9999")
+
+
+@override_settings(SITE_URL="https://knet.example.com")
+class SignupTests(APITestCase):
+    FORM = {
+        "first_name": "Sam",
+        "last_name": "Rivera",
+        "email": "Sam.Rivera@Example.com",
+        "password": "Clapperboard#42",
+        "phone": "813-555-0100",
+        "accept_privacy": True,
+    }
+
+    def setUp(self):
+        cache.clear()  # Reset the sign-up rate limits between tests.
+
+    def signup(self, **changes):
+        return self.client.post("/api/auth/signup/", {**self.FORM, **changes}, format="json")
+
+    def verification_link(self):
+        match = re.search(r"https://knet\.example\.com/verify-email\?(\S+)", mail.outbox[-1].body)
+        return dict(item.split("=", 1) for item in match.group(1).split("&"))
+
+    def test_signup_creates_unverified_staff_and_sends_email(self):
+        response = self.signup()
+        self.assertEqual(response.status_code, 201, response.data)
+        user = User.objects.get(email="sam.rivera@example.com")
+        self.assertEqual(user.role, User.Role.STAFF)
+        self.assertFalse(user.email_verified)
+        self.assertIsNotNone(user.privacy_accepted_at)
+        self.assertEqual(user.phone, "813-555-0100")
+        self.assertEqual(mail.outbox[0].to, ["sam.rivera@example.com"])
+        self.assertIn("support.knet@gmail.com", mail.outbox[0].from_email)
+
+    def test_unverified_user_cannot_log_in(self):
+        self.signup()
+        response = self.client.post(
+            "/api/auth/login/", {"email": "sam.rivera@example.com", "password": self.FORM["password"]}
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data["code"], "email_unverified")
+
+    def test_verification_link_signs_in_once(self):
+        self.signup()
+        link = self.verification_link()
+        response = self.client.post("/api/auth/verify-email/", link, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["email"], "sam.rivera@example.com")
+        self.assertEqual(self.client.get("/api/auth/me/").data["role"], "staff")
+        self.assertTrue(User.objects.get(email="sam.rivera@example.com").email_verified)
+        # The link can't be used again.
+        self.client.logout()
+        self.assertEqual(self.client.post("/api/auth/verify-email/", link, format="json").status_code, 400)
+
+    def test_bad_verification_token_rejected(self):
+        self.signup()
+        link = self.verification_link() | {"token": "nope"}
+        self.assertEqual(self.client.post("/api/auth/verify-email/", link, format="json").status_code, 400)
+        self.assertEqual(self.client.post("/api/auth/verify-email/", {}, format="json").status_code, 400)
+
+    def test_all_fields_and_privacy_required(self):
+        for field in ["first_name", "last_name", "email", "password", "phone"]:
+            response = self.signup(**{field: ""})
+            self.assertEqual(response.status_code, 400, field)
+            self.assertIn(field, response.data)
+        response = self.signup(accept_privacy=False)
+        self.assertIn("accept_privacy", response.data)
+        self.assertFalse(User.objects.exists())
+
+    def test_password_rules(self):
+        for password in ["Short#1", "nocapital#123", "NoNumber#here", "NoSpecial123x"]:
+            response = self.signup(password=password)
+            self.assertEqual(response.status_code, 400, password)
+            self.assertIn("password", response.data)
+
+    def test_existing_account_email_rejected(self):
+        make_user("sam.rivera@example.com", User.Role.STAFF)
+        response = self.signup()
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("email", response.data)
+
+    def test_signing_up_again_before_verifying_resends(self):
+        self.signup()
+        response = self.signup(first_name="Samantha")
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(User.objects.get().first_name, "Samantha")
+        self.assertEqual(len(mail.outbox), 2)
+
+    def test_honeypot_creates_nothing(self):
+        response = self.signup(website="http://spam.example")
+        self.assertEqual(response.status_code, 201)
+        self.assertFalse(User.objects.exists())
+        self.assertEqual(mail.outbox, [])
+
+    def test_resend_verification(self):
+        self.signup()
+        response = self.client.post("/api/auth/resend-verification/", {"email": "SAM.RIVERA@example.com"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 2)
+        # Unknown and already-verified addresses get the same answer and no email.
+        make_user("verified@test.com", User.Role.STAFF)
+        for email in ["nobody@test.com", "verified@test.com"]:
+            self.assertEqual(self.client.post("/api/auth/resend-verification/", {"email": email}).status_code, 200)
+        self.assertEqual(len(mail.outbox), 2)
+
+    def test_signup_is_rate_limited(self):
+        for i in range(10):
+            self.signup(email=f"person{i}@example.com")
+        self.assertEqual(self.signup(email="one-more@example.com").status_code, 429)

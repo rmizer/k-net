@@ -19,6 +19,7 @@ urlpatterns = [
     path("api/", include("influencers.urls")),
     path("api/", include("documents.urls")),
     path("api/", include("locations.urls")),
+    path("api/", include("support.urls")),
     path("api/finance/", include("finance.urls")),
 ]
 

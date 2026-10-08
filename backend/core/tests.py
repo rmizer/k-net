@@ -12,7 +12,7 @@ from schedule.models import Event
 from tasks.models import Task
 
 from . import weather
-from .models import ProductionSettings
+from .models import InvestorPage, ProductionSettings
 
 PASSWORD = "a-strong-test-password-1"
 
@@ -319,3 +319,38 @@ class ProductionLocationTests(BaseTestCase):
     def test_staff_cannot_set_location(self):
         self.client.force_authenticate(self.staff)
         self.assertEqual(self.client.post("/api/production/location/", {"query": "Atlanta"}).status_code, 403)
+
+
+class InvestorPageTests(APITestCase):
+    def setUp(self):
+        self.manager = make_user("sm@test.com", User.Role.SITE_MANAGER)
+
+    def test_only_site_managers_get_the_link(self):
+        for role in [User.Role.DIRECTOR, User.Role.ASSISTANT, User.Role.STAFF]:
+            self.client.force_authenticate(make_user(f"{role}@test.com", role))
+            self.assertEqual(self.client.get("/api/investor-link/").status_code, 403)
+        self.client.force_authenticate(None)
+        self.assertEqual(self.client.get("/api/investor-link/").status_code, 403)
+        self.client.force_authenticate(self.manager)
+        response = self.client.get("/api/investor-link/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["token"], InvestorPage.load().token)
+
+    def test_anyone_with_the_link_can_view(self):
+        token = InvestorPage.load().token
+        response = self.client.get(f"/api/investors/{token}/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["status"], "under_construction")
+
+    def test_wrong_token_is_not_found(self):
+        InvestorPage.load()
+        self.assertEqual(self.client.get("/api/investors/guess/").status_code, 404)
+
+    def test_replacing_the_link_stops_the_old_one(self):
+        old = InvestorPage.load().token
+        self.client.force_authenticate(self.manager)
+        new = self.client.post("/api/investor-link/").data["token"]
+        self.assertNotEqual(old, new)
+        self.client.force_authenticate(None)
+        self.assertEqual(self.client.get(f"/api/investors/{old}/").status_code, 404)
+        self.assertEqual(self.client.get(f"/api/investors/{new}/").status_code, 200)

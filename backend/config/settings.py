@@ -61,6 +61,8 @@ INSTALLED_APPS = [
     "documents",
     "locations",
     "finance",
+    "notifications",
+    "support",
 ]
 
 MIDDLEWARE = [
@@ -111,9 +113,10 @@ AUTH_USER_MODEL = "accounts.User"
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator", "OPTIONS": {"min_length": 10}},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+    {"NAME": "accounts.validators.PasswordComplexityValidator"},
 ]
 
 SESSION_COOKIE_HTTPONLY = True
@@ -131,7 +134,17 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    # Per-IP limits on the public sign-up endpoints, to slow down bots.
+    "DEFAULT_THROTTLE_RATES": {
+        "signup": "10/hour",
+        "verification": "20/hour",
+        "support": "20/hour",
+    },
 }
+
+# The app's public address (e.g. https://knet.example.com), used for links in
+# verification emails and Slack messages.
+SITE_URL = os.environ.get("SITE_URL", "http://localhost:5173")
 
 
 # Internationalization
@@ -156,9 +169,42 @@ PRIVATE_MEDIA_ROOT = BASE_DIR / "private"
 
 
 # Email
+# Sent from the support Gmail account through Gmail's SMTP server, using an app
+# password (Google Account > Security > App passwords). Without one, emails
+# are printed to the console instead.
 
-MAILERS = {
-    "default": {
-        "BACKEND": "django.core.mail.backends.console.EmailBackend",
-    },
-}
+SUPPORT_EMAIL = os.environ.get("SUPPORT_EMAIL", "support.knet@gmail.com")
+DEFAULT_FROM_EMAIL = f"K-Net Support <{SUPPORT_EMAIL}>"
+EMAIL_APP_PASSWORD = os.environ.get("EMAIL_APP_PASSWORD", "")
+
+if EMAIL_APP_PASSWORD:
+    MAILERS = {
+        "default": {
+            "BACKEND": "django.core.mail.backends.smtp.EmailBackend",
+            "OPTIONS": {
+                "host": "smtp.gmail.com",
+                "port": 587,
+                "username": SUPPORT_EMAIL,
+                "password": EMAIL_APP_PASSWORD,
+                "use_tls": True,
+                "timeout": 20,
+            },
+        },
+    }
+else:
+    MAILERS = {
+        "default": {
+            "BACKEND": "django.core.mail.backends.console.EmailBackend",
+        },
+    }
+
+
+# Slack
+# Notifications are off unless SLACK_BOT_TOKEN is set. Channels can be a name
+# (#announcements) or an ID; the bot must be invited to each one. The invite
+# link is shown to signed-in users so they can join the workspace.
+
+SLACK_BOT_TOKEN = os.environ.get("SLACK_BOT_TOKEN", "")
+SLACK_ANNOUNCEMENTS_CHANNEL = os.environ.get("SLACK_ANNOUNCEMENTS_CHANNEL", "")
+SLACK_ALERTS_CHANNEL = os.environ.get("SLACK_ALERTS_CHANNEL", "") or SLACK_ANNOUNCEMENTS_CHANNEL
+SLACK_INVITE_URL = os.environ.get("SLACK_INVITE_URL", "")

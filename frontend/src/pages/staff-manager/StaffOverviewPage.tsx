@@ -1,10 +1,13 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../../api'
+import type { User } from '../../auth/roles'
+import { useAuth } from '../../auth/useAuth'
 import { SortHeader, useSort } from '../../components/sorting'
 import { TaskFormDialog } from '../../components/TaskFormDialog'
 import { dayKey, formatDay, formatTimeRange } from '../../format'
 import { useFetch } from '../../hooks/useFetch'
+import { StaffFormDialog } from '../directory/StaffFormDialog'
 import type { Department, ProductionSettings, StaffOverviewRow, Task } from '../../types'
 import { Stat } from '../finance/shared'
 import '../finance/finance.css'
@@ -13,6 +16,7 @@ import './staff-manager.css'
 type SortKey = 'name' | 'department' | 'role' | 'tasks' | 'next' | 'hours'
 
 export function StaffOverviewPage() {
+  const { user } = useAuth()
   const people = useFetch<StaffOverviewRow[]>('/staff-manager/staff/')
   const myTasks = useFetch<Task[]>('/tasks/?mine=1')
   const departments = useFetch<Department[]>('/departments/')
@@ -23,6 +27,10 @@ export function StaffOverviewPage() {
   const [crewOnly, setCrewOnly] = useState(false)
   const [assigning, setAssigning] = useState<number | null | undefined>(undefined)
   const [saving, setSaving] = useState<number | null>(null)
+  // The person being edited (null to add someone new), or undefined when the dialog is closed.
+  const [editing, setEditing] = useState<User | null | undefined>(undefined)
+  const [movingId, setMovingId] = useState<number | null>(null)
+  const [rowError, setRowError] = useState('')
   const sort = useSort<SortKey>('name')
   const timeZone = production.data?.time_zone ?? 'UTC'
   const today = production.data?.today
@@ -68,6 +76,35 @@ export function StaffOverviewPage() {
     }
   }
 
+  // Directors and Assistants can edit people at their own level or below, and themselves.
+  const canEdit = (person: StaffOverviewRow) =>
+    person.id === user?.id || !!user?.assignable_roles?.includes(person.role)
+
+  const edit = async (person: StaffOverviewRow) => {
+    setRowError('')
+    try {
+      setEditing(await api<User>(`/users/${person.id}/`))
+    } catch {
+      setRowError(`Couldn’t load ${person.name}’s details.`)
+    }
+  }
+
+  const moveToDepartment = async (person: StaffOverviewRow, value: string) => {
+    setMovingId(person.id)
+    setRowError('')
+    try {
+      await api(`/users/${person.id}/`, {
+        method: 'PATCH',
+        body: JSON.stringify({ department: value ? Number(value) : null }),
+      })
+      people.reload()
+    } catch {
+      setRowError(`Couldn’t change ${person.name}’s department.`)
+    } finally {
+      setMovingId(null)
+    }
+  }
+
   const nextUp = (event: StaffOverviewRow['next_event']) => {
     if (!event) return <span className="muted">Nothing scheduled</span>
     const day = dayKey(event.start, timeZone)
@@ -89,12 +126,20 @@ export function StaffOverviewPage() {
     <section className="finance staff-manager">
       <div className="page-header">
         <div>
-          <h1>Task Manager</h1>
-          <p className="subtitle">Your tasks and the master staff list</p>
+          <h1>Director’s Dashboard</h1>
+          <p className="subtitle">Staff, departments, schedules and tasks in one place</p>
         </div>
-        <button type="button" className="button" onClick={() => setAssigning(null)}>
-          + Assign task
-        </button>
+        <div className="inline-form__actions">
+          <button type="button" className="button" onClick={() => setAssigning(null)}>
+            + Assign task
+          </button>
+          <button type="button" className="button button--secondary" onClick={() => setEditing(null)}>
+            + Add staff
+          </button>
+          <Link to="/crew/invite" className="button button--secondary">
+            Invite crew
+          </Link>
+        </div>
       </div>
 
       <dl className="fin-stats">
@@ -152,7 +197,10 @@ export function StaffOverviewPage() {
       </section>
 
       <section className="fin-section" aria-labelledby="staff-heading">
-        <h2 id="staff-heading">Master staff list</h2>
+        <div className="fin-section__head">
+          <h2 id="staff-heading">Master staff list</h2>
+          <Link to="/staff-manager/departments">Manage departments</Link>
+        </div>
         <div className="fin-filters" role="search">
           <label className="form__field">
             <span>Search</span>
@@ -192,6 +240,11 @@ export function StaffOverviewPage() {
           </label>
         </div>
 
+        {rowError && (
+          <p className="form__error" role="alert">
+            {rowError}
+          </p>
+        )}
         <div className="tile">
           {visible.length === 0 ? (
             <p className="muted">No one matches those filters.</p>
@@ -233,7 +286,26 @@ export function StaffOverviewPage() {
                           {person.is_active_crew ? ' · Active crew' : ''}
                         </span>
                       </td>
-                      <td data-label="Department">{person.department_name ?? '—'}</td>
+                      <td data-label="Department">
+                        {canEdit(person) ? (
+                          <select
+                            className="sm-status sm-department"
+                            value={person.department ?? ''}
+                            disabled={movingId === person.id}
+                            onChange={(e) => moveToDepartment(person, e.target.value)}
+                            aria-label={`${person.name}’s department`}
+                          >
+                            <option value="">No department</option>
+                            {(departments.data ?? []).map((d) => (
+                              <option key={d.id} value={d.id}>
+                                {d.name}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          (person.department_name ?? '—')
+                        )}
+                      </td>
                       <td data-label="Contact">
                         {person.phone && (
                           <a className="contact-link" href={`tel:${person.phone}`}>
@@ -259,6 +331,11 @@ export function StaffOverviewPage() {
                       </td>
                       <td className="fin-actions">
                         <span className="row-actions">
+                          {canEdit(person) && (
+                            <button type="button" className="text-button" onClick={() => edit(person)}>
+                              Edit
+                            </button>
+                          )}
                           <button type="button" className="text-button" onClick={() => setAssigning(person.id)}>
                             Assign task
                           </button>
@@ -275,6 +352,20 @@ export function StaffOverviewPage() {
           )}
         </div>
       </section>
+
+      {editing !== undefined && (
+        <StaffFormDialog
+          person={editing}
+          departments={departments.data ?? []}
+          assignableRoles={user?.assignable_roles ?? []}
+          onClose={() => setEditing(undefined)}
+          onSaved={() => {
+            setEditing(undefined)
+            people.reload()
+            departments.reload()
+          }}
+        />
+      )}
 
       {assigning !== undefined && (
         <TaskFormDialog

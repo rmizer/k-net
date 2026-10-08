@@ -287,3 +287,54 @@
     max-height: none;
   }
 }
+
+/* CrewFinder preview (live tracking isn't part of the trial) */
+.crewfinder__soon {
+  align-self: center;
+  margin: 0;
+  background: var(--knet-gray-600);
+}
+
+.crewfinder-preview {
+  position: relative;
+  margin-top: 1.5rem;
+}
+
+.crewfinder-preview__map {
+  filter: grayscale(1);
+  opacity: 0.45;
+  pointer-events: none;
+  user-select: none;
+}
+
+.crewfinder-preview__note {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(460px, calc(100% - 2rem));
+  transform: translate(-50%, -50%);
+  border-top-color: var(--knet-gray-600);
+}
+
+.crewfinder-preview__note h2 {
+  margin-top: 0;
+}
+
+.crewfinder-preview__note ul {
+  margin: 0 0 0.75rem;
+  padding-left: 1.2rem;
+}
+
+.crewfinder-preview__note p:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 600px) {
+  /* Too narrow to overlay: show the note under the map. */
+  .crewfinder-preview__note {
+    position: static;
+    width: auto;
+    margin-top: 1rem;
+    transform: none;
+  }
+}

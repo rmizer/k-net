@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 
 from accounts.permissions import ReadOnlyOrManagerLevel
+from notifications import slack
 
 from .models import Alert, Announcement
 from .serializers import AlertSerializer, AnnouncementSerializer
@@ -14,7 +15,7 @@ class AnnouncementViewSet(viewsets.ModelViewSet):
     permission_classes = [ReadOnlyOrManagerLevel]
 
     def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user)
+        slack.notify_announcement(serializer.save(created_by=self.request.user))
 
 
 class AlertViewSet(viewsets.ModelViewSet):
@@ -26,4 +27,4 @@ class AlertViewSet(viewsets.ModelViewSet):
         return Alert.objects.active()
 
     def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user)
+        slack.notify_alert(serializer.save(created_by=self.request.user))

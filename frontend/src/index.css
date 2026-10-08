@@ -121,8 +121,16 @@ a:hover {
   padding: 0 var(--gutter);
 }
 
-.site {
+/* The trial banner sits above every screen; the screen fills the rest of the window. */
+.app {
   min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.site {
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
@@ -491,8 +499,7 @@ a:hover {
 
 /* Login: full-screen, centered, without the site header/nav/footer. */
 .login-screen {
-  min-height: 100vh;
-  min-height: 100dvh;
+  flex: 1;
   display: grid;
   place-items: center;
   padding: 2rem var(--gutter);

@@ -2,12 +2,14 @@ from collections import OrderedDict
 from datetime import datetime, time, timedelta
 
 from django.utils import timezone
+from django.utils.crypto import constant_time_compare
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from accounts.models import User
-from accounts.permissions import IsManagerLevel, ReadOnlyOrManagerLevel
+from accounts.permissions import IsManagerLevel, IsSiteManager, ReadOnlyOrManagerLevel
 from announcements.models import Alert, Announcement
 from announcements.serializers import AlertSerializer, AnnouncementSerializer
 from schedule.models import Event
@@ -16,7 +18,7 @@ from tasks.models import Task
 from tasks.serializers import TaskSerializer
 
 from . import weather
-from .models import ProductionSettings
+from .models import InvestorPage, ProductionSettings
 from .serializers import LocationQuerySerializer, ProductionSettingsSerializer
 
 ANNOUNCEMENT_LIMIT = 5
@@ -212,3 +214,32 @@ class StaffOverviewView(APIView):
                 }
             )
         return Response(rows)
+
+
+class InvestorLinkView(APIView):
+    """Site Managers get the investor page's share link, or replace it
+    (POST), which stops the old link from working."""
+
+    permission_classes = [IsSiteManager]
+
+    def get(self, request):
+        return Response({"token": InvestorPage.load().token})
+
+    def post(self, request):
+        page = InvestorPage.load()
+        page.rotate_token()
+        return Response({"token": page.token})
+
+
+class InvestorPageView(APIView):
+    """The investor page itself. Public, but only with the current token;
+    anything else is a 404 so it doesn't reveal that the page exists."""
+
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
+    def get(self, request, token):
+        if not constant_time_compare(token, InvestorPage.load().token):
+            return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+        # The page is a placeholder until the copy is written.
+        return Response({"status": "under_construction"})

@@ -15,6 +15,7 @@ export interface NavItem {
 
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Site Manager', path: '/site-manager', icon: 'shield', roles: ['site_manager'] },
+  { label: 'Investors', path: '/investors', icon: 'trend', roles: ['site_manager'] },
   { label: 'Dashboard', path: '/', icon: 'home' },
   {
     label: 'Schedule',
@@ -27,12 +28,13 @@ export const NAV_ITEMS: NavItem[] = [
     ],
   },
   {
-    label: 'Task Manager',
+    label: 'Director’s Dashboard',
     path: '/staff-manager',
     icon: 'clipboard',
     roles: MANAGER_ROLES,
     children: [
       { label: 'Overview', path: '/staff-manager' },
+      { label: 'Departments', path: '/staff-manager/departments' },
       { label: 'Scheduling', path: '/staff-manager/scheduling' },
       { label: 'Task Management', path: '/staff-manager/tasks' },
     ],
@@ -44,6 +46,7 @@ export const NAV_ITEMS: NavItem[] = [
     children: [
       { label: 'Active Crew', path: '/crew' },
       { label: 'CrewFinder', path: '/crew/finder' },
+      { label: 'Invite Crew', path: '/crew/invite' },
     ],
   },
   { label: 'Influencers', path: '/influencers', icon: 'star' },
@@ -66,6 +69,7 @@ export const NAV_ITEMS: NavItem[] = [
       { label: 'Payment Options', path: '/finance/payment-options' },
     ],
   },
+  { label: 'Contact', path: '/contact', icon: 'mail' },
 ]
 
 export const canSee = (item: NavItem, role: Role | undefined) =>
