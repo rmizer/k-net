@@ -1092,3 +1092,40 @@ th.is-numeric .sort-header {
     padding: 0;
   }
 }
+
+/* A password box with a show/hide eye button inside it. */
+.password-box {
+  position: relative;
+  display: block;
+}
+
+.password-box input {
+  padding-right: 2.75rem;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.35rem;
+  display: grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--knet-gray-600);
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.password-toggle:hover,
+.password-toggle[aria-pressed='true'] {
+  color: var(--knet-dark-red);
+}
+
+.password-toggle:focus-visible {
+  outline: 2px solid var(--knet-red);
+  outline-offset: 1px;
+}

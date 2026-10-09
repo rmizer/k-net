@@ -69,3 +69,13 @@
   font-size: 0.9rem;
   color: var(--knet-gray-600);
 }
+
+.signup__match {
+  margin: -0.4rem 0 0;
+  font-size: 0.85rem;
+  color: var(--knet-red);
+}
+
+.signup__match.is-met {
+  color: var(--knet-success);
+}
