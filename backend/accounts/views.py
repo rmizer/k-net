@@ -19,7 +19,7 @@ from rest_framework.views import APIView
 
 from .emails import send_verification_email
 from .models import Department, User
-from .permissions import ReadOnlyOrManagerLevel
+from .permissions import IsSiteManager, ReadOnlyOrManagerLevel
 from .serializers import (
     DepartmentSerializer,
     LoginSerializer,
@@ -207,6 +207,15 @@ class UserViewSet(viewsets.ModelViewSet):
         # Deactivate instead of deleting so records tied to the person are kept.
         instance.is_active = False
         instance.save()
+
+    @action(detail=True, methods=["post"], permission_classes=[IsSiteManager])
+    def verify(self, request, pk=None):
+        """Site Managers can verify a sign-up by hand, e.g. when the email never arrives."""
+        user = self.get_object()
+        if not user.email_verified:
+            user.email_verified = True
+            user.save(update_fields=["email_verified"])
+        return Response(self.get_serializer(user).data)
 
     @action(detail=False, permission_classes=[IsAuthenticated])
     def crew(self, request):

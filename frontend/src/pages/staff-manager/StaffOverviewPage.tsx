@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { api } from '../../api'
 import type { User } from '../../auth/roles'
 import { useAuth } from '../../auth/useAuth'
+import { NewAccountNotice } from '../../components/NewAccountNotice'
+import { BlockScheduleDialog } from '../../components/schedule/BlockScheduleDialog'
 import { SortHeader, useSort } from '../../components/sorting'
 import { TaskFormDialog } from '../../components/TaskFormDialog'
 import { dayKey, formatDay, formatTimeRange } from '../../format'
@@ -26,6 +28,10 @@ export function StaffOverviewPage() {
   const [role, setRole] = useState('')
   const [crewOnly, setCrewOnly] = useState(false)
   const [assigning, setAssigning] = useState<number | null | undefined>(undefined)
+  // Who a new block is for (null for no one in particular), or undefined when closed.
+  const [blocking, setBlocking] = useState<number | null | undefined>(undefined)
+  const [notice, setNotice] = useState('')
+  const [created, setCreated] = useState<User | null>(null)
   const [saving, setSaving] = useState<number | null>(null)
   // The person being edited (null to add someone new), or undefined when the dialog is closed.
   const [editing, setEditing] = useState<User | null | undefined>(undefined)
@@ -130,7 +136,10 @@ export function StaffOverviewPage() {
           <p className="subtitle">Staff, departments, schedules and tasks in one place</p>
         </div>
         <div className="inline-form__actions">
-          <button type="button" className="button" onClick={() => setAssigning(null)}>
+          <button type="button" className="button" onClick={() => setBlocking(null)} disabled={!today}>
+            + Schedule a block
+          </button>
+          <button type="button" className="button button--secondary" onClick={() => setAssigning(null)}>
             + Assign task
           </button>
           <button type="button" className="button button--secondary" onClick={() => setEditing(null)}>
@@ -141,6 +150,8 @@ export function StaffOverviewPage() {
           </Link>
         </div>
       </div>
+
+      {created && <NewAccountNotice person={created} onDismiss={() => setCreated(null)} />}
 
       <dl className="fin-stats">
         <Stat label="Active crew" value={crew.length} note={`${all.length} people in all`} />
@@ -240,6 +251,11 @@ export function StaffOverviewPage() {
           </label>
         </div>
 
+        {notice && (
+          <p className="notice notice--success" role="status">
+            {notice}
+          </p>
+        )}
         {rowError && (
           <p className="form__error" role="alert">
             {rowError}
@@ -342,6 +358,14 @@ export function StaffOverviewPage() {
                           <Link to={`/staff-manager/scheduling?person=${person.id}`} className="text-button">
                             Schedule
                           </Link>
+                          <button
+                            type="button"
+                            className="text-button"
+                            onClick={() => setBlocking(person.id)}
+                            disabled={!today}
+                          >
+                            Block
+                          </button>
                         </span>
                       </td>
                     </tr>
@@ -359,10 +383,27 @@ export function StaffOverviewPage() {
           departments={departments.data ?? []}
           assignableRoles={user?.assignable_roles ?? []}
           onClose={() => setEditing(undefined)}
-          onSaved={() => {
+          onSaved={(saved) => {
             setEditing(undefined)
+            if (saved.temporary_password) setCreated(saved)
             people.reload()
             departments.reload()
+          }}
+        />
+      )}
+
+      {blocking !== undefined && today && (
+        <BlockScheduleDialog
+          defaultDay={today}
+          defaultAttendees={blocking === null ? [] : [blocking]}
+          people={all.map((p) => ({ id: p.id, name: p.name }))}
+          departments={departments.data ?? []}
+          timeZone={timeZone}
+          onClose={() => setBlocking(undefined)}
+          onSaved={(count) => {
+            setBlocking(undefined)
+            setNotice(`Added ${count} ${count === 1 ? 'day' : 'days'} to the schedule.`)
+            people.reload()
           }}
         />
       )}

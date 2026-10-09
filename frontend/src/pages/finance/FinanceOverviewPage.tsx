@@ -34,6 +34,28 @@ export function FinanceOverviewPage() {
         </div>
       </div>
 
+      <nav className="fin-quick-add" aria-label="Add to finance">
+        <span className="fin-quick-add__label">Add</span>
+        <Link to="/finance/invoices?add=1" className="button button--secondary">
+          + Invoice
+        </Link>
+        <Link to="/finance/outgoing?add=payment" className="button button--secondary">
+          + Payment
+        </Link>
+        <Link to="/finance/outgoing?add=draft" className="button button--secondary">
+          + Auto draft
+        </Link>
+        <Link to="/finance/incoming?add=1" className="button button--secondary">
+          + Deposit
+        </Link>
+        <Link to="/finance/payroll" className="button button--secondary">
+          + Paycheck
+        </Link>
+        <Link to="/finance/payment-options?add=1" className="button button--secondary">
+          + Payment option
+        </Link>
+      </nav>
+
       <dl className="fin-stats">
         <Stat
           label="Vendor payments due this week"

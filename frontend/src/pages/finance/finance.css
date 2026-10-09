@@ -735,3 +735,20 @@
     text-decoration: none;
   }
 }
+
+/* Quick "add" links on the overview. */
+.fin-quick-add {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.fin-quick-add__label {
+  margin-right: 0.25rem;
+  color: var(--knet-dark-red);
+  font-size: 0.85rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}

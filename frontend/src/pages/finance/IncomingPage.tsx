@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { api, ApiError } from '../../api'
 import { useFetch } from '../../hooks/useFetch'
 import { formatDay } from '../../format'
@@ -13,7 +14,9 @@ export function IncomingPage() {
   const production = useFetch<ProductionSettings>('/production/')
   // The production period starts with the first item on the Master Timeline.
   const timeline = useFetch<TimelineItem[]>('/timeline/')
-  const [editing, setEditing] = useState<Deposit | null | undefined>(undefined)
+  // ?add=1 (from the Finance overview) opens the form straight away.
+  const [params] = useSearchParams()
+  const [editing, setEditing] = useState<Deposit | null | undefined>(params.has('add') ? null : undefined)
   const [error, setError] = useState('')
 
   const remove = async (deposit: Deposit) => {

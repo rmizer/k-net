@@ -749,6 +749,16 @@ a:hover {
   margin: 0;
 }
 
+/* A one-time password to copy, inside a notice. */
+.temp-password {
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  background: var(--knet-white);
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.95em;
+  user-select: all;
+}
+
 /* Segmented switch (My Tasks, Finance) */
 .segmented {
   display: inline-flex;

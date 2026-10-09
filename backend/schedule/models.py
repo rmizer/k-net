@@ -36,6 +36,9 @@ class Event(models.Model):
     )
     attendees = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name="events")
     influencers = models.ManyToManyField("influencers.Influencer", blank=True, related_name="events")
+    # Shared by the events created together as one block (e.g. Oct 5-30, weekdays,
+    # 9 to 5), so the whole block can be removed at once.
+    block = models.UUIDField(null=True, blank=True, editable=False, db_index=True)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="+"
     )

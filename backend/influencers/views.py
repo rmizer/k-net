@@ -1,3 +1,5 @@
+from django.db.models import Count, Min, Q
+from django.utils import timezone
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import FormParser, MultiPartParser
@@ -7,9 +9,9 @@ from accounts.permissions import ReadOnlyOrManagerLevel
 
 from .models import Influencer, InfluencerNote, TravelArrangement
 from .serializers import (
-    InfluencerListSerializer,
     InfluencerNoteSerializer,
     InfluencerPhotoSerializer,
+    InfluencerRowSerializer,
     InfluencerSerializer,
     TravelArrangementSerializer,
 )
@@ -26,10 +28,17 @@ class InfluencerViewSet(viewsets.ModelViewSet):
         influencers = Influencer.objects.all()
         if self.action == "retrieve":
             influencers = influencers.prefetch_related("notes__author", "travel")
+        elif self.action == "list":
+            now = timezone.now()
+            influencers = influencers.annotate(
+                travel_count=Count("travel", distinct=True),
+                next_travel_at=Min("travel__starts_at", filter=Q(travel__starts_at__gte=now)),
+                next_event_at=Min("events__start", filter=Q(events__end__gte=now)),
+            )
         return influencers
 
     def get_serializer_class(self):
-        return InfluencerListSerializer if self.action == "list" else InfluencerSerializer
+        return InfluencerRowSerializer if self.action == "list" else InfluencerSerializer
 
     @action(detail=True, methods=["post"], parser_classes=[MultiPartParser, FormParser])
     def photo(self, request, pk=None):

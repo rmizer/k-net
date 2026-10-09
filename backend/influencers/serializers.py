@@ -69,6 +69,25 @@ class InfluencerListSerializer(serializers.ModelSerializer):
         read_only_fields = ["photo"]
 
 
+class InfluencerRowSerializer(InfluencerListSerializer):
+    """A row in the roster table: the summary plus contact details and counts
+    (annotated by the view)."""
+
+    travel_count = serializers.IntegerField(read_only=True)
+    next_travel_at = serializers.DateTimeField(read_only=True, allow_null=True)
+    next_event_at = serializers.DateTimeField(read_only=True, allow_null=True)
+
+    class Meta(InfluencerListSerializer.Meta):
+        fields = InfluencerListSerializer.Meta.fields + [
+            "phone",
+            "email",
+            "agent_name",
+            "travel_count",
+            "next_travel_at",
+            "next_event_at",
+        ]
+
+
 class InfluencerSerializer(InfluencerListSerializer):
     """Full profile, with notes, travel and upcoming schedule."""
 

@@ -87,7 +87,7 @@ class User(AbstractUser):
         return self.get_full_name() or self.email
 
     def save(self, *args, **kwargs):
-        # Only Site Managers get into the Django admin (the footer's admin sign-in).
+        # Only Site Managers get into the Django admin (the footer's Dev Login).
         self.is_staff = self.role == self.Role.SITE_MANAGER
         self.is_superuser = self.role == self.Role.SITE_MANAGER
         super().save(*args, **kwargs)

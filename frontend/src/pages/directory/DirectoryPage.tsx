@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { api } from '../../api'
 import { canManageUser, isManagerLevel, ROLE_LABELS, type Role, type User } from '../../auth/roles'
 import { useAuth } from '../../auth/useAuth'
+import { NewAccountNotice } from '../../components/NewAccountNotice'
 import { useFetch } from '../../hooks/useFetch'
 import type { Department } from '../../types'
 import { StaffFormDialog } from './StaffFormDialog'
@@ -78,20 +79,7 @@ export function DirectoryPage() {
         )}
       </div>
 
-      {created && (
-        <div className="notice notice--success notice--with-action" role="status">
-          <p>
-            <strong>
-              {created.first_name} {created.last_name}
-            </strong>{' '}
-            was added. Their temporary password is <code className="temp-password">{created.temporary_password}</code>
-            . Share it with them now; it won’t be shown again.
-          </p>
-          <button type="button" className="icon-button" onClick={() => setCreated(null)} aria-label="Dismiss">
-            ×
-          </button>
-        </div>
-      )}
+      {created && <NewAccountNotice person={created} onDismiss={() => setCreated(null)} />}
 
       <div className="filters" role="search">
         <label className="form__field filters__search">

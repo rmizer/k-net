@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { api, ApiError } from '../../api'
+import { BlockScheduleDialog } from '../../components/schedule/BlockScheduleDialog'
 import { EventFormDialog } from '../../components/schedule/EventFormDialog'
 import { addDays, eventDays, formatDay, formatTimeRange } from '../../format'
 import { useFetch } from '../../hooks/useFetch'
@@ -40,6 +41,8 @@ function Scheduling({ today, timeZone }: { today: string; timeZone: string }) {
   const [search, setSearch] = useState('')
   const [dialog, setDialog] = useState<{ event: CalendarEvent | null; day: string } | null>(null)
   const [error, setError] = useState('')
+  const [blocking, setBlocking] = useState(false)
+  const [notice, setNotice] = useState('')
 
   const weekParam = params.get('week') ?? ''
   const weekStart = mondayOf(DAY_PATTERN.test(weekParam) ? weekParam : today)
@@ -69,6 +72,7 @@ function Scheduling({ today, timeZone }: { today: string; timeZone: string }) {
   )
 
   const go = (changes: Record<string, string | null>) => {
+    setNotice('')
     const next = new URLSearchParams(params)
     for (const [key, value] of Object.entries(changes)) {
       if (value) next.set(key, value)
@@ -155,13 +159,18 @@ function Scheduling({ today, timeZone }: { today: string; timeZone: string }) {
                     {[person.role_display, person.department_name, person.lodging].filter(Boolean).join(' · ')}
                   </p>
                 </div>
-                <button
-                  type="button"
-                  className="button"
-                  onClick={() => setDialog({ event: null, day: days.includes(today) ? today : weekStart })}
-                >
-                  + Add to {person.first_name}’s schedule
-                </button>
+                <div className="inline-form__actions">
+                  <button type="button" className="button" onClick={() => setBlocking(true)}>
+                    + Schedule a block
+                  </button>
+                  <button
+                    type="button"
+                    className="button button--secondary"
+                    onClick={() => setDialog({ event: null, day: days.includes(today) ? today : weekStart })}
+                  >
+                    + Add one day
+                  </button>
+                </div>
               </div>
 
               <div className="sm-week__nav">
@@ -199,6 +208,11 @@ function Scheduling({ today, timeZone }: { today: string; timeZone: string }) {
               {error && (
                 <p className="form__error" role="alert">
                   {error}
+                </p>
+              )}
+              {notice && (
+                <p className="notice notice--success" role="status">
+                  {notice}
                 </p>
               )}
 
@@ -270,6 +284,22 @@ function Scheduling({ today, timeZone }: { today: string; timeZone: string }) {
           )}
         </div>
       </div>
+
+      {blocking && person && (
+        <BlockScheduleDialog
+          defaultDay={days.includes(today) ? today : weekStart}
+          defaultAttendees={[person.id]}
+          people={(people.data ?? []).map((p) => ({ id: p.id, name: p.name }))}
+          departments={departments.data ?? []}
+          timeZone={timeZone}
+          onClose={() => setBlocking(false)}
+          onSaved={(count) => {
+            setBlocking(false)
+            setNotice(`Added ${count} ${count === 1 ? 'day' : 'days'} to the schedule.`)
+            refresh()
+          }}
+        />
+      )}
 
       {dialog && person && (
         <EventFormDialog

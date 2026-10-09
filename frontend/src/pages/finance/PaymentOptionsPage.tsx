@@ -1,4 +1,5 @@
 import { useState, type FormEvent, type InputHTMLAttributes } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { api, ApiError } from '../../api'
 import { useFetch } from '../../hooks/useFetch'
 import type { PaymentMethod, PaymentMethodKind } from '../../types'
@@ -13,7 +14,11 @@ const KINDS: { value: PaymentMethodKind; label: string; plural: string }[] = [
 
 export function PaymentOptionsPage() {
   const methods = useFetch<PaymentMethod[]>('/finance/payment-methods/')
-  const [editing, setEditing] = useState<{ method: PaymentMethod | null; kind: PaymentMethodKind } | null>(null)
+  // ?add=1 (from the Finance overview) opens the form straight away.
+  const [params] = useSearchParams()
+  const [editing, setEditing] = useState<{ method: PaymentMethod | null; kind: PaymentMethodKind } | null>(
+    params.has('add') ? { method: null, kind: 'card' } : null,
+  )
   const [error, setError] = useState('')
 
   const remove = async (method: PaymentMethod) => {

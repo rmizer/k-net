@@ -33,6 +33,7 @@ class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False, validators=[validate_password])
 
     EMERGENCY_FIELDS = ("emergency_contact_name", "emergency_contact_phone")
+    ACCOUNT_FIELDS = ("email_verified", "date_joined", "last_login")
 
     class Meta:
         model = User
@@ -51,9 +52,12 @@ class UserSerializer(serializers.ModelSerializer):
             "emergency_contact_name",
             "emergency_contact_phone",
             "is_active_crew",
+            "email_verified",
+            "date_joined",
+            "last_login",
             "password",
         ]
-        read_only_fields = ["profile_picture"]
+        read_only_fields = ["profile_picture", "email_verified", "date_joined", "last_login"]
         extra_kwargs = {
             # Uniqueness is checked in validate_email, with clearer messages.
             "email": {"validators": []},
@@ -72,6 +76,10 @@ class UserSerializer(serializers.ModelSerializer):
         # Managers), plus the person themselves.
         if not (viewer and (viewer.is_manager_level or viewer.pk == instance.pk)):
             for field in self.EMERGENCY_FIELDS:
+                data.pop(field, None)
+        # Account activity is for Site Managers (and the person themselves).
+        if not (viewer and (viewer.is_site_manager or viewer.pk == instance.pk)):
+            for field in self.ACCOUNT_FIELDS:
                 data.pop(field, None)
         # Shown once, right after creating an account without choosing a password.
         temporary_password = getattr(instance, "_temporary_password", None)
@@ -96,6 +104,8 @@ class UserSerializer(serializers.ModelSerializer):
     def validate_role(self, role):
         viewer = self._viewer()
         unchanged = self.instance is not None and self.instance.role == role
+        if not unchanged and viewer and self.instance is not None and self.instance.pk == viewer.pk:
+            raise serializers.ValidationError("You can't change your own role.")
         if not unchanged and not (viewer and viewer.can_assign_role(role)):
             raise serializers.ValidationError("You don't have permission to assign this role.")
         return role

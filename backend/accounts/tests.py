@@ -173,6 +173,42 @@ class DirectoryManagementTests(APITestCase):
         self.assertEqual(self.client.post("/api/departments/", {"name": "X"}).status_code, 403)
 
 
+class SiteManagerTests(APITestCase):
+    def setUp(self):
+        self.manager = make_user("sm@test.com", User.Role.SITE_MANAGER)
+        self.director = make_user("dir@test.com", User.Role.DIRECTOR)
+        self.pending = make_user("new@test.com", User.Role.STAFF, email_verified=False)
+
+    def test_site_manager_assigns_any_role(self):
+        self.client.force_authenticate(self.manager)
+        for role in ("director", "assistant", "site_manager", "staff"):
+            response = self.client.patch(f"/api/users/{self.pending.pk}/", {"role": role})
+            self.assertEqual(response.status_code, 200, role)
+            self.assertEqual(response.data["role"], role)
+
+    def test_nobody_changes_their_own_role(self):
+        self.client.force_authenticate(self.manager)
+        response = self.client.patch(f"/api/users/{self.manager.pk}/", {"role": "staff"})
+        self.assertEqual(response.status_code, 400)
+        self.manager.refresh_from_db()
+        self.assertEqual(self.manager.role, "site_manager")
+
+    def test_account_status_visible_to_site_managers_only(self):
+        self.client.force_authenticate(self.manager)
+        self.assertFalse(self.client.get(f"/api/users/{self.pending.pk}/").data["email_verified"])
+        self.client.force_authenticate(self.director)
+        self.assertNotIn("last_login", self.client.get(f"/api/users/{self.pending.pk}/").data)
+
+    def test_site_manager_verifies_by_hand(self):
+        self.client.force_authenticate(self.director)
+        self.assertEqual(self.client.post(f"/api/users/{self.pending.pk}/verify/").status_code, 403)
+        self.client.force_authenticate(self.manager)
+        response = self.client.post(f"/api/users/{self.pending.pk}/verify/")
+        self.assertTrue(response.data["email_verified"])
+        self.pending.refresh_from_db()
+        self.assertTrue(self.pending.email_verified)
+
+
 class EmergencyContactVisibilityTests(APITestCase):
     def setUp(self):
         self.director = make_user("dir@test.com", User.Role.DIRECTOR)

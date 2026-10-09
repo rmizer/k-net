@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './auth/AuthContext'
-import { MANAGER_ROLES, type Role } from './auth/roles'
+import { MANAGER_ROLES } from './auth/roles'
 import { Layout } from './components/Layout'
 import { RequireAuth, RequireRole } from './components/RouteGuards'
 import { AccountPage } from './pages/AccountPage'
@@ -24,6 +24,7 @@ import { InvestorLinkPage } from './pages/investors/InvestorLinkPage'
 import { InvestorPage } from './pages/investors/InvestorPage'
 import { LocationsPage } from './pages/locations/LocationsPage'
 import { ResourcesPage } from './pages/resources/ResourcesPage'
+import { SiteManagerPage } from './pages/site-manager/SiteManagerPage'
 import { MyTasksPage } from './pages/schedule/MyTasksPage'
 import { SchedulePage } from './pages/schedule/SchedulePage'
 import { DepartmentsPage } from './pages/staff-manager/DepartmentsPage'
@@ -33,38 +34,11 @@ import { TaskManagementPage } from './pages/staff-manager/TaskManagementPage'
 import { TimelinePage } from './pages/schedule/TimelinePage'
 import { LoginPage } from './pages/LoginPage'
 import { NotFoundPage } from './pages/NotFoundPage'
-import { PlaceholderPage } from './pages/PlaceholderPage'
 import { CheckEmailPage } from './pages/signup/CheckEmailPage'
 import { SignupPage } from './pages/signup/SignupPage'
 import { VerifyEmailPage } from './pages/signup/VerifyEmailPage'
 import { TrialBanner } from './trial/TrialBanner'
 import { TrialPage } from './trial/TrialPage'
-
-// Pages not built yet, with the contents planned for each (from the site plan).
-const PLACEHOLDERS: { path: string; title: string; planned: string[]; roles?: Role[] }[] = [
-
-
-
-
-
-
-
-
-
-
-
-
-  {
-    path: '/site-manager',
-    title: 'Site Manager Dashboard',
-    roles: ['site_manager'],
-    planned: [
-      'System status and support requests',
-      'Support tools only Site Managers can use',
-      'Add location trackers for staff',
-    ],
-  },
-]
 
 export default function App() {
   return (
@@ -113,6 +87,14 @@ export default function App() {
               <Route path="/account" element={<AccountPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route
+                path="/site-manager"
+                element={
+                  <RequireRole roles={['site_manager']}>
+                    <SiteManagerPage />
+                  </RequireRole>
+                }
+              />
+              <Route
                 path="/investors"
                 element={
                   <RequireRole roles={['site_manager']}>
@@ -120,16 +102,6 @@ export default function App() {
                   </RequireRole>
                 }
               />
-              {PLACEHOLDERS.map(({ path, title, planned, roles }) => {
-                const page = <PlaceholderPage title={title} planned={planned} />
-                return (
-                  <Route
-                    key={path}
-                    path={path}
-                    element={roles ? <RequireRole roles={roles}>{page}</RequireRole> : page}
-                  />
-                )
-              })}
               <Route path="*" element={<NotFoundPage />} />
             </Route>
           </Route>

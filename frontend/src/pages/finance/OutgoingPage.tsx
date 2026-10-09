@@ -1,5 +1,5 @@
 import { useMemo, useState, type FormEvent } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { api, ApiError } from '../../api'
 import { useFetch } from '../../hooks/useFetch'
 import type {
@@ -29,8 +29,12 @@ export function OutgoingPage() {
   // Receipts waiting to be reimbursed come with the overview.
   const overview = useFetch<FinanceOverview>('/finance/overview/')
   const [kind, setKind] = useState<OutgoingKind | 'all'>('all')
-  const [addingPayment, setAddingPayment] = useState(false)
-  const [editingDraft, setEditingDraft] = useState<AutoDraft | null | undefined>(undefined)
+  // ?add=payment or ?add=draft (from the Finance overview) opens that form straight away.
+  const [params] = useSearchParams()
+  const [addingPayment, setAddingPayment] = useState(params.get('add') === 'payment')
+  const [editingDraft, setEditingDraft] = useState<AutoDraft | null | undefined>(
+    params.get('add') === 'draft' ? null : undefined,
+  )
   const [recording, setRecording] = useState<AutoDraft | null>(null)
   const [error, setError] = useState('')
 

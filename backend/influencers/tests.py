@@ -32,6 +32,19 @@ class InfluencerApiTests(APITestCase):
         self.assertEqual(profile["lodging_needs"], "Ground-floor room.")
         self.assertIn("travel", profile)
 
+    def test_roster_rows_have_contact_and_upcoming_travel(self):
+        now = timezone.now()
+        TravelArrangement.objects.create(influencer=self.influencer, kind="flight", starts_at=now - timedelta(days=2))
+        TravelArrangement.objects.create(influencer=self.influencer, kind="hotel", starts_at=now + timedelta(days=3))
+        Influencer.objects.create(name="Zed")
+        self.client.force_authenticate(self.staff)
+        rows = {row["name"]: row for row in self.client.get("/api/influencers/").data}
+        self.assertEqual(rows["Nilla"]["travel_count"], 2)
+        self.assertEqual(rows["Nilla"]["next_travel_at"][:10], (now + timedelta(days=3)).date().isoformat())
+        self.assertIsNone(rows["Zed"]["next_travel_at"])
+        self.assertEqual(rows["Zed"]["travel_count"], 0)
+        self.assertIn("agent_name", rows["Zed"])
+
     def test_staff_cannot_change_roster(self):
         self.client.force_authenticate(self.staff)
         self.assertEqual(self.client.post("/api/influencers/", {"name": "X"}).status_code, 403)

@@ -88,6 +88,19 @@ console. Set `SITE_URL` to the public address so the links in emails point to th
 The **Invite Crew** page (Staff / Crew > Invite Crew) shows a QR code and link to the sign-up
 page for the address K-Net is running at, with download, share and print options.
 
+## Managing people and schedules
+
+- **Site Manager Dashboard** (`/site-manager`, Site Managers only): add users, change anyone's role
+  or department inline, remove accounts, add or delete departments, and see who hasn't verified
+  their email yet (resend the link or mark them verified). Nobody can change their own role.
+- **Director's Dashboard** (`/staff-manager`, Directors, Assistants and Site Managers): the master
+  staff list, departments, per-person schedules and tasks.
+- **Block scheduling:** "Schedule a block" (Director's Dashboard and Scheduling) adds the same hours
+  over one or more date ranges on chosen weekdays, e.g. Oct 5–30, weekdays, 9 to 5
+  (`POST /api/events/block/`). Each day is its own event sharing a `block` ID, so one day can be
+  edited on its own or the whole block deleted (`DELETE /api/events/block/<id>/`).
+- The footer's **Dev Login** link is the Django admin (Site Managers only).
+
 ## Slack notifications
 
 K-Net can post announcements and alerts to Slack channels and send people a direct message

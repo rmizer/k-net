@@ -1,12 +1,16 @@
+import uuid
+
 from django.utils.dateparse import parse_datetime
-from rest_framework import viewsets
-from rest_framework.exceptions import ValidationError
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from rest_framework.exceptions import NotFound, ValidationError
+from rest_framework.response import Response
 
 from accounts.models import User
 from accounts.permissions import ReadOnlyOrManagerLevel
 
 from .models import Event, TimelineItem
-from .serializers import EventSerializer, TimelineItemSerializer
+from .serializers import BlockScheduleSerializer, EventSerializer, TimelineItemSerializer
 
 
 class EventViewSet(viewsets.ModelViewSet):
@@ -43,6 +47,35 @@ class EventViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
+
+    @action(detail=False, methods=["post"], url_path="block")
+    def create_block(self, request):
+        """Schedule the same thing over date ranges and chosen weekdays in one go."""
+        serializer = BlockScheduleSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        created = serializer.save(created_by=request.user)
+        events = self.get_queryset().filter(pk__in=[event.pk for event in created])
+        return Response(
+            {
+                "block": str(created[0].block),
+                "count": len(created),
+                "events": self.get_serializer(events, many=True).data,
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+    @action(detail=False, methods=["delete"], url_path=r"block/(?P<block>[0-9a-f-]{36})")
+    def delete_block(self, request, block=None):
+        """Remove every event in a block."""
+        try:
+            events = Event.objects.filter(block=uuid.UUID(block))
+        except ValueError:
+            raise NotFound("No such block.") from None
+        deleted = events.count()
+        if not deleted:
+            raise NotFound("No such block.")
+        events.delete()
+        return Response({"deleted": deleted})
 
 
 class TimelineItemViewSet(viewsets.ModelViewSet):

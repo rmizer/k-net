@@ -63,6 +63,8 @@ export interface CalendarEvent {
   department: number | null
   department_name: string | null
   attendees: number[]
+  /** Shared by the events scheduled together as one block; null for one-offs. */
+  block: string | null
   is_mine: boolean
 }
 
@@ -536,6 +538,18 @@ export interface InfluencerSummary {
   platform_display: string
   photo: string | null
   is_active: boolean
+}
+
+/** A row in the roster table. */
+export interface InfluencerRow extends InfluencerSummary {
+  phone: string
+  email: string
+  agent_name: string
+  travel_count: number
+  /** The next travel arrangement that hasn't started yet. */
+  next_travel_at: string | null
+  /** The next schedule item that hasn't ended yet. */
+  next_event_at: string | null
 }
 
 export interface InfluencerNote {

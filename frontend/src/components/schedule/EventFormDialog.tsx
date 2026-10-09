@@ -101,6 +101,17 @@ export function EventFormDialog(props: EventFormDialogProps) {
     props.onDeleted()
   }
 
+  const removeBlock = async () => {
+    if (
+      !event?.block ||
+      !window.confirm(`Delete every day of the “${event.title}” block from the schedule? It’s removed for everyone.`)
+    ) {
+      return
+    }
+    await api(`/events/block/${event.block}/`, { method: 'DELETE' })
+    props.onDeleted()
+  }
+
   const toggle = (id: number, on: boolean) => setAttendees(on ? [...attendees, id] : attendees.filter((a) => a !== id))
   const error = (name: string) => errors[name] && <small className="form__field-error">{errors[name]}</small>
 
@@ -171,7 +182,10 @@ export function EventFormDialog(props: EventFormDialogProps) {
           <input type="checkbox" checked={allDay} onChange={(e) => setAllDay(e.target.checked)} />
           <span>All day</span>
         </label>
-        <p className="form__hint">Times are production time ({timeZone.replace(/_/g, ' ')}).</p>
+        <p className="form__hint">
+          Times are production time ({timeZone.replace(/_/g, ' ')}).
+          {event?.block && ' This day is part of a block; changes here apply to this day only.'}
+        </p>
 
         <div className="form__grid">
           <label className="form__field">
@@ -233,7 +247,12 @@ export function EventFormDialog(props: EventFormDialogProps) {
           </button>
           {event && (
             <button type="button" className="text-button text-button--danger" onClick={remove}>
-              Delete for everyone
+              {event.block ? 'Delete this day' : 'Delete for everyone'}
+            </button>
+          )}
+          {event?.block && (
+            <button type="button" className="text-button text-button--danger" onClick={removeBlock}>
+              Delete the whole block
             </button>
           )}
         </div>

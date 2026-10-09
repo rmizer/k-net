@@ -1,4 +1,5 @@
 import { useMemo, useState, type FormEvent } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { api, ApiError } from '../../api'
 import { useFetch } from '../../hooks/useFetch'
 import type { Invoice, InvoiceStatus, PaymentMethod } from '../../types'
@@ -29,7 +30,9 @@ export function InvoicesPage() {
   const [show, setShow] = useState<Show>('open')
   const [search, setSearch] = useState('')
   const sort = useSort<SortKey>('due_on')
-  const [editing, setEditing] = useState<Invoice | null | undefined>(undefined)
+  // ?add=1 (from the Finance overview) opens the form straight away.
+  const [params] = useSearchParams()
+  const [editing, setEditing] = useState<Invoice | null | undefined>(params.has('add') ? null : undefined)
   const [paying, setPaying] = useState<Invoice | null>(null)
   const [error, setError] = useState('')
 

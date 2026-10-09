@@ -20,7 +20,7 @@ export function Footer() {
           <li>
             {/* Django admin; only Site Manager accounts can sign in there. */}
             <a href="/admin/" className="site-footer__admin">
-              Admin sign-in
+              Dev Login
             </a>
           </li>
         </ul>

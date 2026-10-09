@@ -15,6 +15,10 @@ export interface User {
   emergency_contact_name?: string
   emergency_contact_phone?: string
   is_active_crew: boolean
+  /** Account status: only sent to Site Managers (and the person themselves). */
+  email_verified?: boolean
+  date_joined?: string
+  last_login?: string | null
   /** Only on the signed-in user's own profile: roles they may give others. */
   assignable_roles?: Role[]
   /** Only on the signed-in user's own profile: Slack messages for new tasks. */
