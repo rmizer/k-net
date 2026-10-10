@@ -53,6 +53,7 @@ export default function App() {
           <Route path="/check-email" element={<CheckEmailPage />} />
           <Route path="/verify-email" element={<VerifyEmailPage />} />
           {/* The private investor page: public to anyone with the link, no site chrome. */}
+          <Route path="/for-investors" element={<InvestorPage />} />
           <Route path="/investors/:token" element={<InvestorPage />} />
           <Route element={<Layout />}>
             {/* Public, so people can read about the trial before signing up. */}

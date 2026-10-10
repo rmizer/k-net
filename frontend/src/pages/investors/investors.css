@@ -22,14 +22,34 @@
   color: var(--knet-gray-600);
 }
 
-/* The investor page itself (standalone) */
+/* The investor page itself (standalone, no site header or footer) */
 .investor {
   flex: 1;
   display: grid;
-  place-content: center;
-  justify-items: center;
-  gap: 2rem;
+  gap: 3rem;
+  width: 100%;
+  max-width: calc(1100px + 2 * var(--gutter));
+  margin: 0 auto;
+  padding: 2.5rem var(--gutter) 4rem;
+}
+
+.investor__loading {
   padding: 3rem var(--gutter);
+}
+
+.investor h2 {
+  margin-bottom: 0.75rem;
+}
+
+.investor h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1.1rem;
+}
+
+.investor__hero {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
   text-align: center;
 }
 
@@ -38,23 +58,225 @@
   height: auto;
 }
 
-.investor__construction {
-  max-width: 520px;
+.investor__hero h1 {
+  margin: 0.5rem 0 0;
 }
 
-.investor__construction h1 {
-  margin: 0.25rem 0 0.75rem;
+.investor__lede {
+  max-width: 44rem;
+  margin: 0;
+  font-size: 1.15rem;
+  line-height: 1.55;
 }
 
-.investor__construction p {
+.investor__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 0.5rem 0 0;
+}
+
+.investor__intro {
+  max-width: 48rem;
+  color: var(--knet-gray-600);
+}
+
+/* What K-Net replaces */
+.investor__replaces {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.investor__replaces p {
   margin: 0;
 }
 
-.investor__icon {
-  font-size: 2.5rem;
-  line-height: 1;
+.investor__before {
+  margin-bottom: 0.4rem !important;
+  color: var(--knet-gray-600);
+  font-size: 0.9rem;
+  text-decoration: line-through;
+  text-decoration-color: var(--knet-red);
 }
 
-.investor__loading {
-  padding: 3rem var(--gutter);
+/* Savings estimate */
+.investor__estimate {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+  align-items: start;
+  gap: 1.25rem;
+}
+
+.investor__inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem 1rem;
+}
+
+.investor__inputs .form__hint {
+  font-size: 0.8rem;
+}
+
+.investor__inputs .text-button {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+
+.investor__results {
+  display: grid;
+  gap: 1rem;
+}
+
+.investor__hero-figure p,
+.investor__stats dd {
+  margin: 0;
+}
+
+.investor__figure-label,
+.investor__stats dt {
+  color: var(--knet-dark-red);
+  font-size: 0.8rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.investor__figure-value {
+  color: var(--knet-black);
+  font-size: clamp(2.75rem, 7vw, 3.75rem);
+  font-weight: var(--weight-bold);
+  line-height: 1.1;
+}
+
+.investor__figure-note,
+.investor__stat-note {
+  color: var(--knet-gray-600);
+  font-size: 0.9rem;
+}
+
+.investor__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 0;
+}
+
+.investor__stats dd:not(.investor__stat-note) {
+  margin: 0.2rem 0;
+  color: var(--knet-black);
+  font-size: 1.6rem;
+  font-weight: var(--weight-bold);
+}
+
+.investor__stats dd.investor__negative {
+  color: var(--knet-red);
+}
+
+.investor__how ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--knet-gray-600);
+  font-size: 0.9rem;
+}
+
+.investor__how li + li {
+  margin-top: 0.3rem;
+}
+
+.investor__how strong {
+  color: var(--knet-black);
+}
+
+/* The offer */
+.investor__offer {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.investor__price {
+  border-top: 5px solid var(--knet-dark-red);
+}
+
+.investor__price p {
+  margin: 0;
+}
+
+.investor__price-label {
+  color: var(--knet-dark-red);
+  font-size: 0.85rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.investor__price-value {
+  font-size: 2.75rem;
+  font-weight: var(--weight-bold);
+  line-height: 1.1;
+}
+
+.investor__price-term {
+  color: var(--knet-gray-600);
+}
+
+.investor__price ul {
+  margin: 1rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.investor__price li + li {
+  margin-top: 0.35rem;
+}
+
+/* How long changes take */
+.investor__time {
+  font-weight: var(--weight-bold);
+  white-space: nowrap;
+}
+
+.investor__today {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.investor__today p:last-child {
+  margin-bottom: 0;
+}
+
+.investor__contact {
+  text-align: center;
+}
+
+.investor__contact p {
+  margin: 0;
+}
+
+@media (max-width: 860px) {
+  .investor__estimate,
+  .investor__offer,
+  .investor__today {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .investor {
+    gap: 2.25rem;
+    padding-top: 1.5rem;
+  }
+
+  .investor__stats {
+    grid-template-columns: 1fr;
+  }
+
+  .investor__inputs {
+    grid-template-columns: 1fr;
+  }
 }

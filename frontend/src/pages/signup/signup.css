@@ -79,3 +79,37 @@
 .signup__match.is-met {
   color: var(--knet-success);
 }
+
+/* "New to K-Net?" on the login page: most visitors during the trial are new. */
+.login__new {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 1.25rem;
+  padding: 1.25rem;
+  border: 2px solid var(--knet-dark-red);
+  border-radius: var(--radius);
+  background: var(--knet-red-wash);
+  text-align: center;
+}
+
+.login__new p {
+  margin: 0;
+}
+
+.login__new-title {
+  color: var(--knet-dark-red);
+  font-size: 1.4rem;
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.login__new-text {
+  color: var(--knet-gray-600);
+}
+
+.login__new-button {
+  justify-self: stretch;
+  margin-top: 0.5rem;
+  font-size: 1.1rem;
+}

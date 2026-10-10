@@ -340,11 +340,16 @@ class InvestorPageTests(APITestCase):
         token = InvestorPage.load().token
         response = self.client.get(f"/api/investors/{token}/")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["status"], "under_construction")
+        self.assertEqual(response.data["status"], "ok")
 
     def test_wrong_token_is_not_found(self):
         InvestorPage.load()
         self.assertEqual(self.client.get("/api/investors/guess/").status_code, 404)
+
+    def test_public_page_needs_no_token(self):
+        response = self.client.get("/api/investors/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["status"], "ok")
 
     def test_replacing_the_link_stops_the_old_one(self):
         old = InvestorPage.load().token

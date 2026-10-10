@@ -123,3 +123,17 @@
 .trial-page__list--muted dt {
   color: var(--knet-gray-600);
 }
+
+.trial-page__investors {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  margin-top: 1.5rem;
+}
+
+.trial-page__investors p {
+  margin: 0;
+  font-weight: var(--weight-bold);
+}

@@ -20,7 +20,7 @@ export function TrialBanner() {
   }, [])
 
   // Investors aren't part of the trial.
-  if (pathname.startsWith('/investors/')) return null
+  if (pathname.startsWith('/investors/') || pathname === '/for-investors') return null
 
   const parts = countdownParts(now)
   const finalHour = parts !== null && TRIAL_ENDS_AT - now < 60 * 60 * 1000

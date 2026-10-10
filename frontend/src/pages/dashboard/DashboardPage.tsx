@@ -5,6 +5,7 @@ import { useFetch } from '../../hooks/useFetch'
 import type { Dashboard } from '../../types'
 import { AnnouncementsSection } from './AnnouncementsSection'
 import { DailyRundown } from './DailyRundown'
+import { SlackLink } from './SlackLink'
 import { StaffTasks, YourTasks } from './TaskSections'
 import { TodaysCrew } from './TodaysCrew'
 import { WeatherSection } from './WeatherSection'
@@ -28,10 +29,10 @@ export function DashboardPage() {
         <h1>Dashboard</h1>
         <p className="subtitle">
           {formatDay(production.today, { weekday: 'long', month: 'long', day: 'numeric' })}
-          {production.name ? ` · ${production.name}` : ''}
         </p>
       </header>
 
+      {user?.slack_invite_url && <SlackLink url={user.slack_invite_url} />}
       <WeatherSection canEdit={manager} onLocationChange={reload} />
       <AnnouncementsSection
         announcements={data.announcements}

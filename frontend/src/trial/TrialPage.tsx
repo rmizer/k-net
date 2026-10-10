@@ -101,6 +101,13 @@ export function TrialPage() {
           </p>
         )}
       </div>
+
+      <div className="tile trial-page__investors">
+        <p>Interested in investing in K-Net?</p>
+        <Link to="/for-investors" className="button">
+          Investors click here
+        </Link>
+      </div>
     </section>
   )
 }

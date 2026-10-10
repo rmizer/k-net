@@ -232,14 +232,15 @@ class InvestorLinkView(APIView):
 
 
 class InvestorPageView(APIView):
-    """The investor page itself. Public, but only with the current token;
-    anything else is a 404 so it doesn't reveal that the page exists."""
+    """The investor page itself, open to anyone: it's linked from the public
+    About the trial page. Share links with a token (from before the page went
+    public) keep working while the token is current; other tokens are a 404."""
 
     authentication_classes = []
     permission_classes = [AllowAny]
 
-    def get(self, request, token):
-        if not constant_time_compare(token, InvestorPage.load().token):
+    def get(self, request, token=None):
+        if token is not None and not constant_time_compare(token, InvestorPage.load().token):
             return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
-        # The page is a placeholder until the copy is written.
-        return Response({"status": "under_construction"})
+        # The page content lives in the frontend; this only checks access.
+        return Response({"status": "ok"})

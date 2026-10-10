@@ -15,7 +15,6 @@ export interface NavItem {
 
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Site Manager', path: '/site-manager', icon: 'shield', roles: ['site_manager'] },
-  { label: 'Investors', path: '/investors', icon: 'trend', roles: ['site_manager'] },
   { label: 'Dashboard', path: '/', icon: 'home' },
   {
     label: 'Schedule',

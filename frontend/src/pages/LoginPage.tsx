@@ -79,9 +79,13 @@ export function LoginPage() {
             {submitting ? 'Logging in…' : 'Log in'}
           </button>
         </form>
-        <p className="login__alt">
-          New to K-Net? <Link to="/signup">Create an account</Link>
-        </p>
+        <div className="login__new">
+          <p className="login__new-title">New to K-Net?</p>
+          <p className="login__new-text">Sign up with your own email to join the trial.</p>
+          <Link to="/signup" className="button login__new-button">
+            Create an account
+          </Link>
+        </div>
       </section>
     </main>
   )

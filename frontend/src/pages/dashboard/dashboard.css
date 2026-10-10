@@ -9,6 +9,11 @@
   margin-bottom: 0;
 }
 
+/* Sit the weather closer to the date than the 2rem between sections. */
+.dashboard__header {
+  margin-bottom: -1.25rem;
+}
+
 .dash-section {
   min-width: 0;
 }
@@ -478,4 +483,27 @@
   .week__day {
     min-height: 0;
   }
+}
+
+/* Join-Slack strip under the date. */
+.dash-slack {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.9rem;
+  padding: 0.7rem 1rem;
+  border-left: 4px solid var(--knet-dark-red);
+  border-radius: var(--radius);
+  background: var(--knet-red-wash);
+  color: var(--knet-dark-red);
+}
+
+.dash-slack p {
+  flex: 1 1 18rem;
+  margin: 0;
+  color: var(--knet-black);
+}
+
+.dash-slack__button {
+  flex: none;
 }

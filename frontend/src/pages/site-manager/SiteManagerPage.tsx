@@ -491,8 +491,8 @@ export function SiteManagerPage() {
             <span className="fin-sub">The Django admin: every record, contact messages, production settings.</span>
           </li>
           <li className="tile">
-            <Link to="/investors">Investor page</Link>
-            <span className="fin-sub">The private share link for investors.</span>
+            <Link to="/for-investors">Investor page</Link>
+            <span className="fin-sub">Public; linked from About the trial.</span>
           </li>
           <li className="tile">
             <Link to="/staff-manager">Director’s Dashboard</Link>
