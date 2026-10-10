@@ -90,7 +90,7 @@ export function TaskManagementPage() {
       <div className="page-header">
         <div>
           <h1>Task Management</h1>
-          <p className="subtitle">Assign tasks to staff; they show up on that person’s dashboard</p>
+          <p className="subtitle">Assign tasks to staff; they show up on that person’s Staff Hub</p>
         </div>
         <button
           type="button"

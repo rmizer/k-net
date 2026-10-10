@@ -278,7 +278,7 @@ function Scheduling({ today, timeZone }: { today: string; timeZone: string }) {
               </ol>
               <p className="form__hint">
                 Changes show on the <Link to={`/schedule?date=${weekStart}`}>Schedule</Link> and on {person.first_name}
-                ’s dashboard.
+                ’s Staff Hub.
               </p>
             </>
           )}

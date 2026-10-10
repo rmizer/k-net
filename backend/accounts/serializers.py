@@ -120,6 +120,8 @@ class UserSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
+        from tasks.onboarding import add_starter_tasks
+
         password = validated_data.pop("password", None)
         temporary_password = None
         if not password:
@@ -127,6 +129,7 @@ class UserSerializer(serializers.ModelSerializer):
             password = temporary_password
         user = User.objects.create_user(password=password, **validated_data)
         user._temporary_password = temporary_password
+        add_starter_tasks(user)
         return user
 
     def update(self, instance, validated_data):
@@ -151,6 +154,7 @@ class ProfileSerializer(UserSerializer):
 
     class Meta(UserSerializer.Meta):
         fields = [f for f in UserSerializer.Meta.fields if f != "password"] + [
+            "slack_joined",
             "slack_notifications",
             "assignable_roles",
             "slack_available",

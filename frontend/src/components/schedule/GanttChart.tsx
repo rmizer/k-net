@@ -51,6 +51,7 @@ export function eventClasses(base: string, event: CalendarEvent, selectedId?: nu
   return [
     base,
     event.event_type === 'influencer' && 'is-influencer',
+    event.event_type === 'support' && 'is-support',
     event.is_mine && 'is-mine',
     event.id === selectedId && 'is-selected',
   ]

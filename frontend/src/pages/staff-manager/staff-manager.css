@@ -234,6 +234,10 @@
   border-left: 3px dashed var(--knet-black);
 }
 
+.sm-event--support {
+  border-left-color: var(--knet-black);
+}
+
 .sm-event.is-clash {
   box-shadow: inset 0 0 0 1px var(--knet-red);
 }

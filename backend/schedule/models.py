@@ -22,6 +22,8 @@ class Event(models.Model):
         PRODUCTION = "production", "Production"
         STAFF = "staff", "Staff"
         INFLUENCER = "influencer", "Influencer"
+        # Site upkeep and maintenance windows, often overnight.
+        SUPPORT = "support", "Support"
         OTHER = "other", "Other"
 
     title = models.CharField(max_length=200)

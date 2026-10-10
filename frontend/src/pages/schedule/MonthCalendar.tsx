@@ -1,4 +1,4 @@
-import { addDays, eventDays, formatDay, formatTime } from '../../format'
+import { addDays, dayKey, eventDays, formatDay, formatTime } from '../../format'
 import type { CalendarEvent } from '../../types'
 
 interface MonthCalendarProps {
@@ -106,12 +106,19 @@ export function MonthCalendar(props: MonthCalendarProps) {
                     className={[
                       'month__chip',
                       event.event_type === 'influencer' && 'is-influencer',
+                      event.event_type === 'support' && 'is-support',
                       event.is_mine && 'is-mine',
                     ]
                       .filter(Boolean)
                       .join(' ')}
                   >
-                    {!event.all_day && <span className="month__chip-time">{formatTime(event.start, timeZone)}</span>}
+                    {!event.all_day && (
+                      <span className="month__chip-time">
+                        {dayKey(event.start, timeZone) < day
+                          ? `Until ${formatTime(event.end, timeZone)}` // Overnight, from the day before.
+                          : formatTime(event.start, timeZone)}
+                      </span>
+                    )}
                     {event.title}
                   </span>
                 ))}

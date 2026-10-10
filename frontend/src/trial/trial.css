@@ -80,8 +80,16 @@
 }
 
 /* About the trial page */
+
+/* Tighter than the site's 1.5 for all body text here; the intro sets its own. */
+.trial-page p,
+.trial-page dd {
+  line-height: 1.3;
+}
+
 .trial-page h2 {
   margin-top: 2rem;
+  margin-bottom: 0.4rem;
 }
 
 .trial-page .tile p {
@@ -90,6 +98,12 @@
 
 .trial-page .tile p:last-child {
   margin-bottom: 0;
+}
+
+/* The intro reads as a lede: bigger, with tighter lines. */
+.trial-page__intro p:not(.trial-page__actions) {
+  font-size: 1.2rem;
+  line-height: 1.2;
 }
 
 .trial-page__actions {
@@ -101,11 +115,14 @@
 .trial-page__list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
-  gap: 1rem;
+  gap: 0.75rem;
   margin: 0;
 }
 
 .trial-page__list dt {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
   font-weight: var(--weight-bold);
   color: var(--knet-dark-red);
   text-transform: uppercase;
@@ -124,16 +141,18 @@
   color: var(--knet-gray-600);
 }
 
-.trial-page__investors {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem 1rem;
+/* The investors band (a CalloutBand) sits under the intro. */
+.trial-page .callout {
   margin-top: 1.5rem;
 }
 
-.trial-page__investors p {
-  margin: 0;
-  font-weight: var(--weight-bold);
+.trial-page__icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: var(--knet-red-tint);
+  color: var(--knet-dark-red);
 }

@@ -329,6 +329,20 @@ a:hover {
   cursor: default;
 }
 
+/* Second row, for a page that has its own pages (e.g. Finance). */
+.sub-nav--nested {
+  background: var(--knet-white);
+}
+
+.sub-nav--nested .sub-nav__links {
+  padding-top: 0.45rem;
+  padding-bottom: 0.45rem;
+}
+
+.sub-nav--nested .sub-nav__link {
+  font-size: 0.82rem;
+}
+
 /* Footer */
 
 .site-footer {
@@ -380,7 +394,7 @@ a:hover {
   border-top: 4px solid var(--knet-dark-red);
   border-radius: var(--radius);
   box-shadow: var(--shadow-tile);
-  padding: 1.25rem;
+  padding: 0.85rem 1rem;
 }
 
 .placeholder__badge {
@@ -634,6 +648,10 @@ a:hover {
 .badge--muted {
   background: var(--knet-gray-300);
   color: var(--knet-black);
+}
+
+.badge--support {
+  background: var(--knet-gray-600);
 }
 
 .badge--influencer {
@@ -1128,4 +1146,128 @@ th.is-numeric .sort-header {
 .password-toggle:focus-visible {
   outline: 2px solid var(--knet-red);
   outline-offset: 1px;
+}
+
+/* Callout band (CalloutBand): black and red, like the trial banner, for the one thing
+   on a page people shouldn't miss. */
+.callout {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  padding: 1.5rem 1.75rem;
+  overflow: hidden;
+  border-left: 6px solid var(--knet-red);
+  border-radius: var(--radius);
+  background: linear-gradient(120deg, var(--knet-black) 55%, var(--knet-dark-red) 130%);
+  box-shadow: 0 10px 24px rgb(0 0 0 / 0.18);
+  color: var(--knet-white);
+}
+
+.callout__icon {
+  display: grid;
+  place-items: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border: 2px solid var(--knet-red);
+  border-radius: 50%;
+  color: var(--knet-red);
+}
+
+.callout__text p,
+.callout__text h2 {
+  margin: 0;
+}
+
+.callout__eyebrow {
+  color: #ff5a5a;
+  font-size: 0.8rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.callout h2 {
+  margin: 0.15rem 0 0.3rem;
+  color: var(--knet-white);
+  font-size: clamp(1.3rem, 3vw, 1.65rem);
+}
+
+.callout__text p:last-child {
+  color: rgb(255 255 255 / 0.78);
+}
+
+.callout__button {
+  gap: 0.5rem;
+  border-color: var(--knet-white);
+  background: var(--knet-white);
+  color: var(--knet-dark-red);
+  white-space: nowrap;
+}
+
+.callout__button:hover {
+  border-color: var(--knet-red);
+  background: var(--knet-red);
+  color: var(--knet-white);
+  text-decoration: none;
+}
+
+.callout__button:focus-visible {
+  outline: 3px solid var(--knet-white);
+  outline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+  .callout {
+    grid-template-columns: auto 1fr;
+    padding: 1.25rem;
+  }
+
+  .callout__button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}
+
+.callout__actions {
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+}
+
+.callout__secondary {
+  padding: 0.2rem 0.4rem;
+  border: 0;
+  background: none;
+  color: rgb(255 255 255 / 0.85);
+  font: inherit;
+  font-size: 0.9rem;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.callout__secondary:hover {
+  color: var(--knet-white);
+}
+
+.callout__secondary:focus-visible {
+  outline: 2px solid var(--knet-white);
+  outline-offset: 2px;
+}
+
+.callout__error {
+  color: #ff9a9a;
+  font-weight: var(--weight-bold);
+}
+
+@media (max-width: 640px) {
+  .callout__actions {
+    grid-column: 1 / -1;
+  }
+
+  .callout__actions .callout__button {
+    width: 100%;
+  }
 }

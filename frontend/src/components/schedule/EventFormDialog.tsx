@@ -28,6 +28,7 @@ const TYPES: { value: EventType; label: string }[] = [
   { value: 'production', label: 'Production' },
   { value: 'staff', label: 'Staff' },
   { value: 'influencer', label: 'Influencer' },
+  { value: 'support', label: 'Support' },
   { value: 'other', label: 'Other' },
 ]
 

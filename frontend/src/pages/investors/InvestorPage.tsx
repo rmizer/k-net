@@ -19,7 +19,7 @@ const REPLACES: [string, string, string][] = [
   [
     'Tasks lost in chat threads',
     'Assigned tasks with owners',
-    'Tasks go to a person or a whole department, show on their dashboard, flag when overdue and can message them on Slack.',
+    'Tasks go to a person or a whole department, show on their Staff Hub, flag when overdue and can message them on Slack.',
   ],
   [
     'Contact spreadsheets that are always out of date',

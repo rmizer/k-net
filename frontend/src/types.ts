@@ -49,7 +49,7 @@ export interface Task {
   completed_at: string | null
 }
 
-export type EventType = 'production' | 'staff' | 'influencer' | 'other'
+export type EventType = 'production' | 'staff' | 'influencer' | 'support' | 'other'
 
 export interface CalendarEvent {
   id: number

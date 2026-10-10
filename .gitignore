@@ -20,3 +20,6 @@ Thumbs.db
 
 # Planning docs, brand source files and local notes (kept out of the repo)
 dev/
+
+# Local Netlify folder
+.netlify

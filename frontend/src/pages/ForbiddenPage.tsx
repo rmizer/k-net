@@ -6,7 +6,7 @@ export function ForbiddenPage() {
       <h1>Access restricted</h1>
       <p>Your role doesn't have access to this page. If you think it should, contact a Director or Assistant.</p>
       <p>
-        <Link to="/">Back to the dashboard</Link>
+        <Link to="/">Back to the Staff Hub</Link>
       </p>
     </section>
   )

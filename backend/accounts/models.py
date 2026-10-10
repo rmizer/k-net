@@ -71,6 +71,8 @@ class User(AbstractUser):
     privacy_accepted_at = models.DateTimeField(null=True, blank=True)
     # Slack member ID, found by email the first time K-Net messages this person.
     slack_user_id = models.CharField(max_length=20, blank=True)
+    # Set when they say they've joined the Slack workspace (or finish that task).
+    slack_joined = models.BooleanField(default=False)
     slack_notifications = models.BooleanField(
         default=True, help_text="Send this person a Slack message when they're assigned a task."
     )

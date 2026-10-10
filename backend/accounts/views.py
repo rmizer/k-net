@@ -17,6 +17,9 @@ from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
 
+from tasks.models import Task
+from tasks.onboarding import add_starter_tasks
+
 from .emails import send_verification_email
 from .models import Department, User
 from .permissions import IsSiteManager, ReadOnlyOrManagerLevel
@@ -96,6 +99,7 @@ class SignupView(APIView):
             user.privacy_accepted_at = timezone.now()
             user.set_password(data["password"])
             user.save()
+            add_starter_tasks(user)
         try:
             send_verification_email(user)
         except Exception:
@@ -178,7 +182,14 @@ class MeView(APIView):
             request.user, data=request.data, partial=True, context={"request": request}
         )
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        user = serializer.save()
+        if user.slack_joined:
+            # Saying "I've joined" on the Staff Hub also ticks off the task.
+            for task in Task.objects.filter(
+                assigned_to=user, key=Task.Key.JOIN_SLACK
+            ).exclude(status=Task.Status.DONE):
+                task.status = Task.Status.DONE
+                task.save()
         return Response(serializer.data)
 
 

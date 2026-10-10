@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { addDays, eventDays, formatDay, formatTime } from '../../format'
+import { addDays, dayKey, eventDays, formatDay, formatTime } from '../../format'
 import type { CalendarEvent } from '../../types'
 import '../../components/schedule/schedule.css'
 import { DashboardSection } from './DashboardSection'
@@ -46,11 +46,18 @@ export function WeekPreview({ events, weekStart, today, timeZone, ownScheduleOnl
                       className={[
                         'week__event',
                         event.event_type === 'influencer' ? 'is-influencer' : '',
+                        event.event_type === 'support' ? 'is-support' : '',
                         event.is_mine && !ownScheduleOnly ? 'is-mine' : '',
                       ].join(' ')}
                     >
                       <Link to={`/schedule?date=${day}&event=${event.id}`}>
-                        <span className="week__time">{event.all_day ? 'All day' : formatTime(event.start, timeZone)}</span>
+                        <span className="week__time">
+                          {event.all_day
+                            ? 'All day'
+                            : dayKey(event.start, timeZone) < day
+                              ? `Until ${formatTime(event.end, timeZone)}` // Overnight, from the day before.
+                              : formatTime(event.start, timeZone)}
+                        </span>
                         {event.title}
                       </Link>
                     </li>

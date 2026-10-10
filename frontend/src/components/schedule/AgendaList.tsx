@@ -22,6 +22,7 @@ export function AgendaList({ events, timeZone, eventHref, selectedId }: AgendaLi
               {event.title}
             </Link>
             {event.event_type === 'influencer' && <span className="badge badge--influencer">Influencer</span>}
+            {event.event_type === 'support' && <span className="badge badge--support">Support</span>}
             {(event.location || event.department_name) && (
               <span className="agenda__meta">
                 {[event.location, event.department_name].filter(Boolean).join(' · ')}

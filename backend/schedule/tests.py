@@ -103,6 +103,23 @@ class BlockScheduleTests(APITestCase):
         self.block(all_day=True, start_time=None, end_time=None)
         self.assertEqual(Event.objects.filter(all_day=True).count(), 5)
 
+    def test_weekly_overnight_support_window(self):
+        # Every Tuesday, 11 PM to 2 AM Wednesday.
+        response = self.block(
+            title="Maintenance",
+            event_type="support",
+            ranges=[{"start_date": "2026-10-12", "end_date": "2026-10-25"}],
+            weekdays=[1],
+            start_time="23:00",
+            end_time="02:00",
+        )
+        self.assertEqual(response.data["count"], 2)
+        first = Event.objects.order_by("start").first()
+        self.assertEqual(first.event_type, "support")
+        # 11 PM EDT Tue Oct 13 is 03:00 UTC Wed; 2 AM EDT Wed is 06:00 UTC.
+        self.assertEqual(first.start.isoformat(), "2026-10-14T03:00:00+00:00")
+        self.assertEqual(first.end.isoformat(), "2026-10-14T06:00:00+00:00")
+
     def test_validation(self):
         self.assertIn("weekdays", self.block(weekdays=[5, 6]).data)  # Mon-Fri range, weekends only.
         self.assertIn("ranges", self.block(ranges=[{"start_date": "2026-01-01", "end_date": "2028-01-01"}],

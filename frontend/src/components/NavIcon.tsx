@@ -14,6 +14,8 @@ export type NavIconName =
   | 'clipboard'
   | 'trend'
   | 'mail'
+  | 'tasks'
+  | 'briefcase'
 
 // 24×24 line icons, drawn with the current text color.
 const PATHS: Record<NavIconName, ReactNode> = {
@@ -83,6 +85,21 @@ const PATHS: Record<NavIconName, ReactNode> = {
     <>
       <path d="m3 17 6-6 4 4 8-8" />
       <path d="M15 7h6v6" />
+    </>
+  ),
+  briefcase: (
+    <>
+      <rect x="3" y="7" width="18" height="13" rx="2" />
+      <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+      <path d="M3 13h18" />
+    </>
+  ),
+  tasks: (
+    <>
+      <path d="m3.5 6 1.5 1.5 3-3" />
+      <path d="m3.5 13 1.5 1.5 3-3" />
+      <path d="M11 6h10M11 13h10M11 20h10" />
+      <circle cx="5.25" cy="20" r="1.25" />
     </>
   ),
 }

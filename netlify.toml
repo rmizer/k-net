@@ -1,0 +1,47 @@
+# Netlify serves the React app; the Django backend runs on Railway. Requests to
+# the backend's paths are proxied (status 200), so the browser only ever talks
+# to k-network.netlify.app and the login cookies stay first-party.
+
+[build]
+  base = "frontend"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[[redirects]]
+  from = "/api/*"
+  to = "https://k-net-production.up.railway.app/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/admin"
+  to = "https://k-net-production.up.railway.app/admin/"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/admin/*"
+  to = "https://k-net-production.up.railway.app/admin/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/static/*"
+  to = "https://k-net-production.up.railway.app/static/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/media/*"
+  to = "https://k-net-production.up.railway.app/media/:splat"
+  status = 200
+  force = true
+
+# Every other address is a page in the React app.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

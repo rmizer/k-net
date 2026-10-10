@@ -118,6 +118,15 @@
   background: var(--knet-gray-100);
 }
 
+/* Support (site upkeep): solid black. */
+.is-support .gantt__bar {
+  background: var(--knet-black);
+}
+
+.is-support .gantt__bar:hover {
+  background: var(--knet-gray-600);
+}
+
 .gantt__tip {
   position: absolute;
   bottom: calc(100% + 0.4rem);
@@ -219,6 +228,10 @@
   border-left: 3px dashed var(--knet-black);
 }
 
+.agenda__item.is-support {
+  border-left: 3px solid var(--knet-black);
+}
+
 .agenda__item.is-mine {
   background: var(--knet-red-tint);
 }
@@ -279,6 +292,10 @@
 .legend__item--influencer::before {
   box-shadow: inset 0 0 0 1px var(--knet-gray-300);
   border-left: 3px dashed var(--knet-black);
+}
+
+.legend__item--support::before {
+  background: var(--knet-black);
 }
 
 .legend__item--mine::before {

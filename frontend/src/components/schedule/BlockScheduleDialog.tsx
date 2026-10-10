@@ -41,12 +41,14 @@ const SHIFTS: { label: string; start: string; end: string }[] = [
   { label: '8 AM – 4 PM', start: '08:00', end: '16:00' },
   { label: '7 AM – 7 PM', start: '07:00', end: '19:00' },
   { label: '7 PM – 7 AM', start: '19:00', end: '07:00' },
+  { label: '11 PM – 2 AM (overnight)', start: '23:00', end: '02:00' },
 ]
 
 const TYPES: { value: EventType; label: string }[] = [
   { value: 'staff', label: 'Staff' },
   { value: 'production', label: 'Production' },
   { value: 'influencer', label: 'Influencer' },
+  { value: 'support', label: 'Support' },
   { value: 'other', label: 'Other' },
 ]
 

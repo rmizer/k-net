@@ -13,12 +13,12 @@ import { WeekPreview } from './WeekPreview'
 import './dashboard.css'
 
 export function DashboardPage() {
-  const { user } = useAuth()
+  const { user, setUser } = useAuth()
   const { data, error, loading, reload } = useFetch<Dashboard>('/dashboard/')
   const manager = isManagerLevel(user)
 
-  if (loading && !data) return <p className="loading">Loading dashboard…</p>
-  if (!data) return <p className="form__error">Couldn’t load the dashboard. {error?.message}</p>
+  if (loading && !data) return <p className="loading">Loading the Staff Hub…</p>
+  if (!data) return <p className="form__error">Couldn’t load the Staff Hub. {error?.message}</p>
 
   const { production } = data
   const timeZone = production.time_zone
@@ -26,13 +26,21 @@ export function DashboardPage() {
   return (
     <div className="dashboard">
       <header className="dashboard__header">
-        <h1>Dashboard</h1>
+        <h1>Staff Hub</h1>
         <p className="subtitle">
           {formatDay(production.today, { weekday: 'long', month: 'long', day: 'numeric' })}
         </p>
       </header>
 
-      {user?.slack_invite_url && <SlackLink url={user.slack_invite_url} />}
+      {user?.slack_invite_url && !user.slack_joined && (
+        <SlackLink
+          url={user.slack_invite_url}
+          onJoined={(updated) => {
+            setUser(updated)
+            reload() // Their "Join the K-Net Slack" task is now done.
+          }}
+        />
+      )}
       <WeatherSection canEdit={manager} onLocationChange={reload} />
       <AnnouncementsSection
         announcements={data.announcements}

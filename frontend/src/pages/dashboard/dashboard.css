@@ -430,6 +430,15 @@
   color: var(--knet-black);
 }
 
+/* Support (site upkeep): solid black edge. */
+.week__event.is-support a {
+  border-left-color: var(--knet-black);
+}
+
+.week__event.is-support .week__time {
+  color: var(--knet-black);
+}
+
 /* The signed-in person's own entries. */
 .week__event.is-mine a {
   background: var(--knet-red-tint);
@@ -483,27 +492,4 @@
   .week__day {
     min-height: 0;
   }
-}
-
-/* Join-Slack strip under the date. */
-.dash-slack {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem 0.9rem;
-  padding: 0.7rem 1rem;
-  border-left: 4px solid var(--knet-dark-red);
-  border-radius: var(--radius);
-  background: var(--knet-red-wash);
-  color: var(--knet-dark-red);
-}
-
-.dash-slack p {
-  flex: 1 1 18rem;
-  margin: 0;
-  color: var(--knet-black);
-}
-
-.dash-slack__button {
-  flex: none;
 }

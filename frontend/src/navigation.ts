@@ -15,7 +15,7 @@ export interface NavItem {
 
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Site Manager', path: '/site-manager', icon: 'shield', roles: ['site_manager'] },
-  { label: 'Dashboard', path: '/', icon: 'home' },
+  { label: 'Staff Hub', path: '/', icon: 'home' },
   {
     label: 'Schedule',
     path: '/schedule',
@@ -49,23 +49,36 @@ export const NAV_ITEMS: NavItem[] = [
     ],
   },
   { label: 'Influencers', path: '/influencers', icon: 'star' },
-  { label: 'Locations', path: '/locations', icon: 'pin' },
-  { label: 'Directory', path: '/directory', icon: 'contacts' },
-  { label: 'Resources', path: '/resources', icon: 'resources' },
-  { label: 'Documents', path: '/documents', icon: 'document' },
-  // Last, for those who can see it.
+  // Groups: the main link opens one page, and the submenu lists the rest.
   {
-    label: 'Finance',
-    path: '/finance',
-    icon: 'dollar',
-    roles: MANAGER_ROLES,
+    label: 'Resources',
+    path: '/resources',
+    icon: 'resources',
     children: [
-      { label: 'Overview', path: '/finance' },
-      { label: 'Payroll', path: '/finance/payroll' },
-      { label: 'Incoming', path: '/finance/incoming' },
-      { label: 'Outgoing', path: '/finance/outgoing' },
-      { label: 'Invoices', path: '/finance/invoices' },
-      { label: 'Payment Options', path: '/finance/payment-options' },
+      { label: 'Locations', path: '/locations' },
+      { label: 'Directory', path: '/directory' },
+      { label: 'Resources', path: '/resources' },
+    ],
+  },
+  {
+    label: 'Operations',
+    path: '/documents',
+    icon: 'briefcase',
+    children: [
+      { label: 'Documents', path: '/documents' },
+      {
+        label: 'Finance',
+        path: '/finance',
+        roles: MANAGER_ROLES,
+        children: [
+          { label: 'Overview', path: '/finance' },
+          { label: 'Payroll', path: '/finance/payroll' },
+          { label: 'Incoming', path: '/finance/incoming' },
+          { label: 'Outgoing', path: '/finance/outgoing' },
+          { label: 'Invoices', path: '/finance/invoices' },
+          { label: 'Payment Options', path: '/finance/payment-options' },
+        ],
+      },
     ],
   },
   { label: 'Contact', path: '/contact', icon: 'mail' },
@@ -77,3 +90,7 @@ export const canSee = (item: NavItem, role: Role | undefined) =>
 /** True when `pathname` is `path` or inside it ('/' only matches exactly). */
 export const isInSection = (pathname: string, path: string) =>
   path === '/' ? pathname === '/' : pathname === path || pathname.startsWith(`${path}/`)
+
+/** True when `pathname` is the item's page or any page in its submenu. */
+export const isInItem = (pathname: string, item: NavItem): boolean =>
+  isInSection(pathname, item.path) || !!item.children?.some((child) => isInItem(pathname, child))

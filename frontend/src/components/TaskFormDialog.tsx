@@ -172,7 +172,7 @@ export function TaskFormDialog(props: TaskFormDialogProps) {
           <textarea rows={3} value={form.description} onChange={(e) => set('description', e.target.value)} />
         </label>
         <p className="form__hint">
-          Tasks assigned to a person show on their dashboard and in My Tasks. Department-only tasks stay here in Task
+          Tasks assigned to a person show on their Staff Hub and in My Tasks. Department-only tasks stay here in Task
           Management until someone is assigned.
         </p>
 

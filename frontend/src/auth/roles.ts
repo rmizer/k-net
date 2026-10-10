@@ -21,6 +21,8 @@ export interface User {
   last_login?: string | null
   /** Only on the signed-in user's own profile: roles they may give others. */
   assignable_roles?: Role[]
+  /** Only on the signed-in user's own profile: whether they've said they joined Slack. */
+  slack_joined?: boolean
   /** Only on the signed-in user's own profile: Slack messages for new tasks. */
   slack_notifications?: boolean
   /** Only on the signed-in user's own profile: whether the server has Slack set up. */

@@ -14,6 +14,12 @@ class Task(models.Model):
         NORMAL = "normal", "Normal"
         HIGH = "high", "High"
 
+    class Key(models.TextChoices):
+        """Marks tasks K-Net creates itself, so finishing one can update the account."""
+
+        NONE = "", "None"
+        JOIN_SLACK = "join_slack", "Join the K-Net Slack"
+
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     # A task can go to one person, to a whole department, or both.
@@ -31,6 +37,7 @@ class Task(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     completed_at = models.DateTimeField(null=True, blank=True)
+    key = models.CharField(max_length=40, choices=Key.choices, blank=True, default="", db_index=True)
 
     class Meta:
         ordering = ["status", models.F("due_date").asc(nulls_last=True), "-created_at"]
@@ -44,6 +51,11 @@ class Task(models.Model):
         elif self.status != self.Status.DONE:
             self.completed_at = None
         super().save(*args, **kwargs)
+        # Finishing "Join the K-Net Slack" also hides the Slack band on their Staff Hub.
+        if self.key == self.Key.JOIN_SLACK and self.status == self.Status.DONE and self.assigned_to_id:
+            type(self.assigned_to).objects.filter(pk=self.assigned_to_id, slack_joined=False).update(
+                slack_joined=True
+            )
 
     @property
     def is_overdue(self):

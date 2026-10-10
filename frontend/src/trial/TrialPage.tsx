@@ -1,19 +1,21 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/useAuth'
+import { CalloutBand } from '../components/CalloutBand'
+import { NavIcon, type NavIconName } from '../components/NavIcon'
 import { TRIAL_END_LABEL } from './trial'
 
 const SUPPORT_EMAIL = 'support.knet@gmail.com'
 
-const FEATURES: [string, string][] = [
-  ['Dashboard', 'Weather, announcements and alerts, the daily rundown, your tasks, the week ahead and today’s crew.'],
-  ['Schedule', 'Daily, weekly and monthly views with staff, department and influencer filters, plus the Master Timeline.'],
-  ['Tasks', 'Directors and Assistants assign tasks to people or departments; they show up on each person’s dashboard.'],
-  ['Directory and crew', 'Contact details, departments, roles and lodging for everyone on the production.'],
-  ['Influencer Roster', 'Profiles for each creator: contacts, agents, notes, needs, schedules and travel.'],
-  ['Locations and Resources', 'Lodging and shooting locations on a map, and the vendors and services the production uses.'],
-  ['Documents', 'Permits, insurance, contracts, invoices and receipts. Staff can upload their own receipts.'],
-  ['Finance', 'For Directors and Assistants: payroll, money in and out, invoices and a finance calendar.'],
-  ['Director’s Dashboard', 'For Directors and Assistants: departments, staff details, schedules and task assignments in one place.'],
+const FEATURES: [string, string, NavIconName][] = [
+  ['Staff Hub', 'Weather, announcements and alerts, the daily rundown, your tasks, the week ahead and today’s crew.', 'home'],
+  ['Schedule', 'Daily, weekly and monthly views with staff, department and influencer filters, plus the Master Timeline.', 'calendar'],
+  ['Tasks', 'Directors and Assistants assign tasks to people or departments; they show up on each person’s dashboard.', 'tasks'],
+  ['Directory and crew', 'Contact details, departments, roles and lodging for everyone on the production.', 'contacts'],
+  ['Influencer Roster', 'Profiles for each creator: contacts, agents, notes, needs, schedules and travel.', 'star'],
+  ['Locations and Resources', 'Lodging and shooting locations on a map, and the vendors and services the production uses.', 'pin'],
+  ['Documents', 'Permits, insurance, contracts, invoices and receipts. Staff can upload their own receipts.', 'document'],
+  ['Finance', 'For Directors and Assistants: payroll, money in and out, invoices and a finance calendar.', 'dollar'],
+  ['Director’s Dashboard', 'For Directors and Assistants: departments, staff details, schedules and task assignments in one place.', 'clipboard'],
 ]
 
 const NOT_INCLUDED: [string, string][] = [
@@ -49,11 +51,30 @@ export function TrialPage() {
         )}
       </div>
 
+      <CalloutBand
+        id="trial-investors-heading"
+        icon={<NavIcon name="trend" size={26} />}
+        eyebrow="For investors"
+        title="Interested in investing in K-Net?"
+        action={
+          <Link to="/for-investors" className="button callout__button">
+            Investors click here <span aria-hidden="true">→</span>
+          </Link>
+        }
+      >
+        See the offer, what K-Net could save a production, and how to get in touch.
+      </CalloutBand>
+
       <h2>What you can do</h2>
       <dl className="trial-page__list">
-        {FEATURES.map(([name, text]) => (
+        {FEATURES.map(([name, text, icon]) => (
           <div key={name} className="tile">
-            <dt>{name}</dt>
+            <dt>
+              <span className="trial-page__icon" aria-hidden="true">
+                <NavIcon name={icon} size={20} />
+              </span>
+              {name}
+            </dt>
             <dd>{text}</dd>
           </div>
         ))}
@@ -69,7 +90,7 @@ export function TrialPage() {
         ))}
       </dl>
 
-      <h2>Your information</h2>
+      <h2>Data privacy</h2>
       <div className="tile">
         <p>
           What you enter in K-Net is private to the production. It isn’t shared with or sold to any third parties. Contact
@@ -100,13 +121,6 @@ export function TrialPage() {
             .
           </p>
         )}
-      </div>
-
-      <div className="tile trial-page__investors">
-        <p>Interested in investing in K-Net?</p>
-        <Link to="/for-investors" className="button">
-          Investors click here
-        </Link>
       </div>
     </section>
   )

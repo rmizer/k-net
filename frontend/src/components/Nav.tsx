@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/useAuth'
-import { canSee, isInSection, NAV_ITEMS } from '../navigation'
+import { canSee, isInItem, NAV_ITEMS } from '../navigation'
 import { GearIcon } from './GearIcon'
 import { NavIcon } from './NavIcon'
 
@@ -42,7 +42,7 @@ export function Nav() {
         <div id="site-nav-menu" className={`site-nav__menu${open ? ' is-open' : ''}`}>
           <ul className="site-nav__links">
             {items.map((item) => {
-              const active = isInSection(pathname, item.path)
+              const active = isInItem(pathname, item)
               return (
                 <li key={item.path}>
                   <Link

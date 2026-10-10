@@ -136,13 +136,13 @@ def notify_announcement(announcement):
         if len(body) > PREVIEW_LENGTH:
             body = body[:PREVIEW_LENGTH].rstrip() + "…"
         lines.append(escape(body))
-    lines.append(app_link("/", "View on the K-Net dashboard"))
+    lines.append(app_link("/", "View on the K-Net Staff Hub"))
     _dispatch(_post_to_channel, settings.SLACK_ANNOUNCEMENTS_CHANNEL, "\n".join(lines))
 
 
 def notify_alert(alert):
     prefix = ALERT_PREFIXES.get(alert.level, ALERT_PREFIXES["info"])
-    text = f"{prefix} {escape(alert.message)}\n{app_link('/', 'View on the K-Net dashboard')}"
+    text = f"{prefix} {escape(alert.message)}\n{app_link('/', 'View on the K-Net Staff Hub')}"
     _dispatch(_post_to_channel, settings.SLACK_ALERTS_CHANNEL, text)
 
 
