@@ -7,7 +7,7 @@ from rest_framework import serializers
 
 from notifications import slack
 
-from .models import Department, User
+from .models import Department, RemovalRequest, User
 
 
 class DepartmentSerializer(serializers.ModelSerializer):
@@ -218,3 +218,25 @@ class SignupSerializer(serializers.Serializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(trim_whitespace=False)
+
+
+class RemovalRequestSerializer(serializers.ModelSerializer):
+    person_name = serializers.CharField(source="person.get_full_name", read_only=True)
+    person_email = serializers.CharField(source="person.email", read_only=True)
+    person_role_display = serializers.CharField(source="person.get_role_display", read_only=True)
+    requested_by_name = serializers.CharField(source="requested_by.get_full_name", read_only=True, default=None)
+
+    class Meta:
+        model = RemovalRequest
+        fields = [
+            "id",
+            "person",
+            "person_name",
+            "person_email",
+            "person_role_display",
+            "requested_by_name",
+            "reason",
+            "status",
+            "created_at",
+        ]
+        read_only_fields = fields

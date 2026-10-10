@@ -1,12 +1,18 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from .models import Department, User
+from .models import Department, RemovalRequest, User
 
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
     search_fields = ["name"]
+
+
+@admin.register(RemovalRequest)
+class RemovalRequestAdmin(admin.ModelAdmin):
+    list_display = ["person", "requested_by", "status", "created_at", "resolved_by"]
+    list_filter = ["status"]
 
 
 @admin.register(User)

@@ -4,6 +4,7 @@ import { api } from '../../api'
 import type { User } from '../../auth/roles'
 import { useAuth } from '../../auth/useAuth'
 import { NewAccountNotice } from '../../components/NewAccountNotice'
+import { RequestRemovalDialog } from '../../components/RequestRemovalDialog'
 import { BlockScheduleDialog } from '../../components/schedule/BlockScheduleDialog'
 import { SortHeader, useSort } from '../../components/sorting'
 import { TaskFormDialog } from '../../components/TaskFormDialog'
@@ -32,6 +33,7 @@ export function StaffOverviewPage() {
   const [blocking, setBlocking] = useState<number | null | undefined>(undefined)
   const [notice, setNotice] = useState('')
   const [created, setCreated] = useState<User | null>(null)
+  const [requesting, setRequesting] = useState<StaffOverviewRow | null>(null)
   const [saving, setSaving] = useState<number | null>(null)
   // The person being edited (null to add someone new), or undefined when the dialog is closed.
   const [editing, setEditing] = useState<User | null | undefined>(undefined)
@@ -85,6 +87,27 @@ export function StaffOverviewPage() {
   // Directors and Assistants can edit people at their own level or below, and themselves.
   const canEdit = (person: StaffOverviewRow) =>
     person.id === user?.id || !!user?.assignable_roles?.includes(person.role)
+
+  // Only Site Managers delete accounts; Directors and Assistants request removal.
+  const canRemove = (person: StaffOverviewRow) =>
+    person.id !== user?.id && !!user?.assignable_roles?.includes(person.role)
+
+  const remove = async (person: StaffOverviewRow) => {
+    if (
+      !window.confirm(
+        `Delete ${person.name}'s account? They won't be able to log in. Their records are kept, and the account can be restored from Dev Login.`,
+      )
+    )
+      return
+    setRowError('')
+    try {
+      await api(`/users/${person.id}/`, { method: 'DELETE' })
+      setNotice(`${person.name}'s account was deleted.`)
+      people.reload()
+    } catch {
+      setRowError(`Couldn’t delete ${person.name}.`)
+    }
+  }
 
   const edit = async (person: StaffOverviewRow) => {
     setRowError('')
@@ -368,6 +391,16 @@ export function StaffOverviewPage() {
                           >
                             Block
                           </button>
+                          {canRemove(person) &&
+                            (user?.role === 'site_manager' ? (
+                              <button type="button" className="text-button" onClick={() => remove(person)}>
+                                Delete
+                              </button>
+                            ) : (
+                              <button type="button" className="text-button" onClick={() => setRequesting(person)}>
+                                Request removal
+                              </button>
+                            ))}
                         </span>
                       </td>
                     </tr>
@@ -406,6 +439,17 @@ export function StaffOverviewPage() {
             setBlocking(undefined)
             setNotice(`Added ${count} ${count === 1 ? 'day' : 'days'} to the schedule.`)
             people.reload()
+          }}
+        />
+      )}
+
+      {requesting && (
+        <RequestRemovalDialog
+          person={requesting}
+          onClose={() => setRequesting(null)}
+          onSent={(message) => {
+            setRequesting(null)
+            setNotice(message)
           }}
         />
       )}

@@ -7,7 +7,7 @@ import { NewAccountNotice } from '../../components/NewAccountNotice'
 import { SortHeader, useSort } from '../../components/sorting'
 import { formatDateTime, timeAgo } from '../../format'
 import { useFetch } from '../../hooks/useFetch'
-import type { Department } from '../../types'
+import type { Department, RemovalRequest } from '../../types'
 import { StaffFormDialog } from '../directory/StaffFormDialog'
 import { Stat } from '../finance/shared'
 import '../finance/finance.css'
@@ -29,6 +29,7 @@ export function SiteManagerPage() {
   const { user } = useAuth()
   const people = useFetch<User[]>('/users/')
   const departments = useFetch<Department[]>('/departments/')
+  const removals = useFetch<RemovalRequest[]>('/removal-requests/')
   const [search, setSearch] = useState('')
   const [roleFilter, setRoleFilter] = useState('')
   const [departmentFilter, setDepartmentFilter] = useState('')
@@ -66,6 +67,7 @@ export function SiteManagerPage() {
   const reload = () => {
     people.reload()
     departments.reload()
+    removals.reload()
   }
 
   /** PATCH one field on someone's account, with a busy state and a message either way. */
@@ -127,18 +129,46 @@ export function SiteManagerPage() {
 
   const remove = async (person: User) => {
     const name = `${person.first_name} ${person.last_name}`
-    if (!window.confirm(`Remove ${name}? Their account is deactivated and they can’t log in. Their records are kept.`))
+    if (
+      !window.confirm(
+        `Delete ${name}'s account? They won't be able to log in. Their records are kept, and the account can be restored from Dev Login.`,
+      )
+    )
       return
     setBusyId(person.id)
     setMessage(null)
     try {
       await api(`/users/${person.id}/`, { method: 'DELETE' })
-      setMessage({ kind: 'success', text: `${name} was removed.` })
+      setMessage({ kind: 'success', text: `${name}'s account was deleted.` })
       reload()
     } catch (err) {
-      setMessage({ kind: 'error', text: errorText(err, `Couldn’t remove ${name}.`) })
+      setMessage({ kind: 'error', text: errorText(err, `Couldn’t delete ${name}.`) })
     } finally {
       setBusyId(null)
+    }
+  }
+
+  const resolveRemoval = async (removal: RemovalRequest, action: 'approve' | 'dismiss') => {
+    if (
+      action === 'approve' &&
+      !window.confirm(
+        `Delete ${removal.person_name}'s account? They won't be able to log in. Their records are kept, and the account can be restored from Dev Login.`,
+      )
+    )
+      return
+    setMessage(null)
+    try {
+      await api(`/removal-requests/${removal.id}/${action}/`, { method: 'POST' })
+      setMessage({
+        kind: 'success',
+        text:
+          action === 'approve'
+            ? `${removal.person_name}'s account was deleted.`
+            : `Dismissed the request to remove ${removal.person_name}.`,
+      })
+      reload()
+    } catch (err) {
+      setMessage({ kind: 'error', text: errorText(err, 'Couldn’t update that request.') })
     }
   }
 
@@ -227,6 +257,41 @@ export function SiteManagerPage() {
           note={`${all.filter((p) => !p.department).length} people without one`}
         />
       </dl>
+
+      {(removals.data ?? []).length > 0 && (
+        <section className="tile sm-removals" aria-labelledby="removals-heading">
+          <div className="fin-section__head">
+            <h2 id="removals-heading">Removal requests</h2>
+          </div>
+          <p className="muted sm-pending__hint">
+            Directors and Assistants asked for these accounts to be removed. Only Site Managers can delete accounts.
+          </p>
+          <ul className="sm-pending">
+            {(removals.data ?? []).map((removal) => (
+              <li key={removal.id}>
+                <span>
+                  <strong>{removal.person_name}</strong>
+                  <span className="fin-sub">
+                    {removal.person_role_display} · {removal.person_email}
+                  </span>
+                  <span className="fin-sub">
+                    Requested by {removal.requested_by_name ?? 'a former manager'} {timeAgo(removal.created_at)}
+                    {removal.reason && <>: “{removal.reason}”</>}
+                  </span>
+                </span>
+                <span className="row-actions">
+                  <button type="button" className="text-button" onClick={() => resolveRemoval(removal, 'approve')}>
+                    Delete account
+                  </button>
+                  <button type="button" className="text-button" onClick={() => resolveRemoval(removal, 'dismiss')}>
+                    Dismiss
+                  </button>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {pending.length > 0 && (
         <section className="tile" aria-labelledby="pending-heading">
@@ -422,7 +487,7 @@ export function SiteManagerPage() {
                                 disabled={busy}
                                 onClick={() => remove(person)}
                               >
-                                Remove
+                                Delete
                               </button>
                             )}
                           </span>

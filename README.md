@@ -93,6 +93,9 @@ page for the address K-Net is running at, with download, share and print options
 - **Site Manager Dashboard** (`/site-manager`, Site Managers only): add users, change anyone's role
   or department inline, remove accounts, add or delete departments, and see who hasn't verified
   their email yet (resend the link or mark them verified). Nobody can change their own role.
+- **Only Site Managers delete accounts** (deleting deactivates: no sign-in, records kept, restorable
+  in the admin). Directors and Assistants use **Request removal**, which emails every Site Manager
+  and lists the request on the Site Manager Dashboard to delete or dismiss.
 - **Director's Dashboard** (`/staff-manager`, Directors, Assistants and Site Managers): the master
   staff list, departments, per-person schedules and tasks.
 - **Block scheduling:** "Schedule a block" (Director's Dashboard and Scheduling) adds the same hours

@@ -7,9 +7,11 @@ interface StaffTileProps {
   /** Edit / remove controls, only for people the viewer may manage. */
   onEdit?: () => void
   onRemove?: () => void
+  /** Directors and Assistants ask a Site Manager instead of deleting. */
+  onRequestRemoval?: () => void
 }
 
-export function StaffTile({ person, onEdit, onRemove }: StaffTileProps) {
+export function StaffTile({ person, onEdit, onRemove, onRequestRemoval }: StaffTileProps) {
   const name = `${person.first_name} ${person.last_name}`.trim()
   // The API only includes emergency contact fields for Directors, Assistants and
   // Site Managers (and the person themselves).
@@ -26,15 +28,31 @@ export function StaffTile({ person, onEdit, onRemove }: StaffTileProps) {
             {person.department_name ? ` · ${person.department_name}` : ''}
           </p>
         </div>
-        {(onEdit || onRemove) && (
+        {(onEdit || onRemove || onRequestRemoval) && (
           <div className="staff-tile__actions">
             {onEdit && (
               <button type="button" className="text-button" onClick={onEdit} aria-label={`Edit ${name}`}>
                 Edit
               </button>
             )}
+            {onRequestRemoval && (
+              <button
+                type="button"
+                className="text-button"
+                onClick={onRequestRemoval}
+                aria-label={`Request removal of ${name}`}
+              >
+                Request removal
+              </button>
+            )}
             {onRemove && (
-              <button type="button" className="icon-button" onClick={onRemove} aria-label={`Remove ${name}`}>
+              <button
+                type="button"
+                className="icon-button"
+                onClick={onRemove}
+                aria-label={`Delete ${name}`}
+                title="Delete account"
+              >
                 ×
               </button>
             )}

@@ -20,14 +20,15 @@ from rest_framework.views import APIView
 from tasks.models import Task
 from tasks.onboarding import add_starter_tasks
 
-from .emails import send_verification_email
-from .models import Department, User
-from .permissions import IsSiteManager, ReadOnlyOrManagerLevel
+from .emails import send_removal_request_email, send_verification_email
+from .models import Department, RemovalRequest, User
+from .permissions import IsManagerLevel, IsSiteManager, ReadOnlyOrManagerLevel
 from .serializers import (
     DepartmentSerializer,
     LoginSerializer,
     ProfilePictureSerializer,
     ProfileSerializer,
+    RemovalRequestSerializer,
     SignupSerializer,
     UserSerializer,
 )
@@ -213,11 +214,32 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [ReadOnlyOrManagerLevel]
 
     def perform_destroy(self, instance):
-        if instance.pk == self.request.user.pk or not self.request.user.can_assign_role(instance.role):
-            raise PermissionDenied("You don't have permission to remove this account.")
-        # Deactivate instead of deleting so records tied to the person are kept.
-        instance.is_active = False
-        instance.save()
+        # Only Site Managers delete accounts; Directors and Assistants request removal.
+        if not self.request.user.is_site_manager:
+            raise PermissionDenied("Only Site Managers can delete accounts. Use Request removal instead.")
+        if instance.pk == self.request.user.pk:
+            raise PermissionDenied("You can't delete your own account.")
+        deactivate(instance, by=self.request.user)
+
+    @action(detail=True, methods=["post"], url_path="request-removal", permission_classes=[IsManagerLevel])
+    def request_removal(self, request, pk=None):
+        """Directors and Assistants ask the Site Managers to remove someone they manage."""
+        person = self.get_object()
+        if person.pk == request.user.pk or not request.user.can_assign_role(person.role):
+            raise PermissionDenied("You can't request removal of this account.")
+        reason = str(request.data.get("reason", "")).strip()[:2000]
+        removal = RemovalRequest.objects.filter(person=person, status=RemovalRequest.Status.PENDING).first()
+        created = removal is None
+        if created:
+            removal = RemovalRequest.objects.create(person=person, requested_by=request.user, reason=reason)
+            try:
+                send_removal_request_email(removal)
+            except Exception:
+                logger.exception("Couldn't email the Site Managers about removal request %s", removal.pk)
+        return Response(
+            RemovalRequestSerializer(removal).data,
+            status=status.HTTP_201_CREATED if created else status.HTTP_200_OK,
+        )
 
     @action(detail=True, methods=["post"], permission_classes=[IsSiteManager])
     def verify(self, request, pk=None):
@@ -233,6 +255,47 @@ class UserViewSet(viewsets.ModelViewSet):
         """Active crew only, for the Staff / Crew page."""
         users = self.get_queryset().filter(is_active_crew=True)
         return Response(self.get_serializer(users, many=True).data)
+
+
+def deactivate(person, by):
+    """Deletes an account the K-Net way: it's deactivated (can't sign in, hidden
+    everywhere) but its records are kept, and a Site Manager can restore it in
+    the admin. Any open removal requests for the person are closed."""
+    person.is_active = False
+    person.save()
+    person.removal_requests.filter(status=RemovalRequest.Status.PENDING).update(
+        status=RemovalRequest.Status.APPROVED, resolved_at=timezone.now(), resolved_by=by
+    )
+
+
+class RemovalRequestViewSet(viewsets.ReadOnlyModelViewSet):
+    """Open removal requests, for Site Managers to act on."""
+
+    serializer_class = RemovalRequestSerializer
+    permission_classes = [IsSiteManager]
+
+    def get_queryset(self):
+        return RemovalRequest.objects.filter(
+            status=RemovalRequest.Status.PENDING, person__is_active=True
+        ).select_related("person", "requested_by")
+
+    @action(detail=True, methods=["post"])
+    def approve(self, request, pk=None):
+        """Delete the account."""
+        removal = self.get_object()
+        if removal.person.pk == request.user.pk:
+            raise PermissionDenied("You can't delete your own account.")
+        deactivate(removal.person, by=request.user)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=["post"])
+    def dismiss(self, request, pk=None):
+        removal = self.get_object()
+        removal.status = RemovalRequest.Status.DISMISSED
+        removal.resolved_at = timezone.now()
+        removal.resolved_by = request.user
+        removal.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class DepartmentViewSet(viewsets.ModelViewSet):

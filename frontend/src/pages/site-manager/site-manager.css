@@ -44,3 +44,7 @@
 .sm-tools a {
   font-weight: var(--weight-bold);
 }
+
+.sm-removals {
+  border-top-color: var(--knet-red);
+}

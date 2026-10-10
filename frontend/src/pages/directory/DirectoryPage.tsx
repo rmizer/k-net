@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react'
 import { api } from '../../api'
-import { canManageUser, isManagerLevel, ROLE_LABELS, type Role, type User } from '../../auth/roles'
+import { canManageUser, isManagerLevel, isSiteManager, ROLE_LABELS, type Role, type User } from '../../auth/roles'
 import { useAuth } from '../../auth/useAuth'
 import { NewAccountNotice } from '../../components/NewAccountNotice'
+import { RequestRemovalDialog } from '../../components/RequestRemovalDialog'
 import { useFetch } from '../../hooks/useFetch'
 import type { Department } from '../../types'
 import { StaffFormDialog } from './StaffFormDialog'
@@ -21,6 +22,8 @@ export function DirectoryPage() {
   // undefined = dialog closed, null = adding someone new, User = editing.
   const [editing, setEditing] = useState<User | null | undefined>(undefined)
   const [created, setCreated] = useState<User | null>(null)
+  const [requesting, setRequesting] = useState<User | null>(null)
+  const [notice, setNotice] = useState('')
 
   const manager = isManagerLevel(user)
   const assignableRoles = user?.assignable_roles ?? []
@@ -56,7 +59,12 @@ export function DirectoryPage() {
 
   const handleRemove = async (person: User) => {
     const name = `${person.first_name} ${person.last_name}`
-    if (!window.confirm(`Remove ${name} from the directory? Their account will be deactivated.`)) return
+    if (
+      !window.confirm(
+        `Delete ${name}'s account? They won't be able to log in. Their records are kept, and the account can be restored from Dev Login.`,
+      )
+    )
+      return
     await api(`/users/${person.id}/`, { method: 'DELETE' })
     people.reload()
   }
@@ -80,6 +88,11 @@ export function DirectoryPage() {
       </div>
 
       {created && <NewAccountNotice person={created} onDismiss={() => setCreated(null)} />}
+      {notice && (
+        <p className="notice notice--success" role="status">
+          {notice}
+        </p>
+      )}
 
       <div className="filters" role="search">
         <label className="form__field filters__search">
@@ -143,13 +156,25 @@ export function DirectoryPage() {
                   key={person.id}
                   person={person}
                   onEdit={manageable ? () => setEditing(person) : undefined}
-                  onRemove={manageable ? () => handleRemove(person) : undefined}
+                  onRemove={manageable && isSiteManager(user) ? () => handleRemove(person) : undefined}
+                  onRequestRemoval={manageable && !isSiteManager(user) ? () => setRequesting(person) : undefined}
                 />
               )
             })}
           </ul>
         </section>
       ))}
+
+      {requesting && (
+        <RequestRemovalDialog
+          person={{ id: requesting.id, name: `${requesting.first_name} ${requesting.last_name}` }}
+          onClose={() => setRequesting(null)}
+          onSent={(message) => {
+            setRequesting(null)
+            setNotice(message)
+          }}
+        />
+      )}
 
       {editing !== undefined && (
         <StaffFormDialog

@@ -106,3 +106,27 @@ class User(AbstractUser):
 
     def can_assign_role(self, role):
         return role in self.ASSIGNABLE_ROLES.get(self.role, set())
+
+
+class RemovalRequest(models.Model):
+    """A Director or Assistant asking a Site Manager to remove someone. Only
+    Site Managers can delete (deactivate) accounts."""
+
+    class Status(models.TextChoices):
+        PENDING = "pending", "Pending"
+        APPROVED = "approved", "Removed"
+        DISMISSED = "dismissed", "Dismissed"
+
+    person = models.ForeignKey(User, on_delete=models.CASCADE, related_name="removal_requests")
+    requested_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    reason = models.TextField(blank=True)
+    status = models.CharField(max_length=10, choices=Status.choices, default=Status.PENDING)
+    created_at = models.DateTimeField(auto_now_add=True)
+    resolved_at = models.DateTimeField(null=True, blank=True)
+    resolved_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Remove {self.person}"

@@ -602,3 +602,16 @@ export interface Influencer extends InfluencerSummary {
   travel: TravelArrangement[]
   upcoming_events: { id: number; title: string; start: string; end: string; all_day: boolean; location: string }[]
 }
+
+/** A Director's or Assistant's request for a Site Manager to remove someone. */
+export interface RemovalRequest {
+  id: number
+  person: number
+  person_name: string
+  person_email: string
+  person_role_display: string
+  requested_by_name: string | null
+  reason: string
+  status: 'pending' | 'approved' | 'dismissed'
+  created_at: string
+}

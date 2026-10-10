@@ -113,11 +113,12 @@ class AccountCreationTests(APITestCase):
         response = self.client.patch(f"/api/users/{self.manager.pk}/", {"phone": "555-0000"})
         self.assertEqual(response.status_code, 400)
 
-    def test_director_can_remove_staff_but_not_other_director(self):
-        other_director = make_user("dir2@test.com", User.Role.DIRECTOR)
+    def test_only_site_managers_delete_accounts(self):
         self.client.force_authenticate(self.director)
+        self.assertEqual(self.client.delete(f"/api/users/{self.staff.pk}/").status_code, 403)
+        self.client.force_authenticate(self.manager)
+        self.assertEqual(self.client.delete(f"/api/users/{self.manager.pk}/").status_code, 403)
         self.assertEqual(self.client.delete(f"/api/users/{self.staff.pk}/").status_code, 204)
-        self.assertEqual(self.client.delete(f"/api/users/{other_director.pk}/").status_code, 403)
         self.staff.refresh_from_db()
         self.assertFalse(self.staff.is_active)
 
@@ -151,7 +152,7 @@ class DirectoryManagementTests(APITestCase):
 
     def test_readding_removed_person_explains_restore(self):
         user = self.add().data
-        self.client.delete(f"/api/users/{user['id']}/")
+        User.objects.filter(pk=user["id"]).update(is_active=False)
         response = self.add()
         self.assertIn("removed account", str(response.data["email"]))
 
@@ -339,3 +340,51 @@ class SignupTests(APITestCase):
         for i in range(10):
             self.signup(email=f"person{i}@example.com")
         self.assertEqual(self.signup(email="one-more@example.com").status_code, 429)
+
+
+class RemovalRequestTests(APITestCase):
+    def setUp(self):
+        self.manager = make_user("sm@test.com", User.Role.SITE_MANAGER)
+        self.director = make_user("dir@test.com", User.Role.DIRECTOR)
+        self.staff = make_user("staff@test.com", User.Role.STAFF)
+
+    def request_removal(self, viewer, person, reason="Left the production."):
+        self.client.force_authenticate(viewer)
+        return self.client.post(f"/api/users/{person.pk}/request-removal/", {"reason": reason})
+
+    def test_director_requests_and_site_managers_are_emailed(self):
+        from django.core import mail
+
+        response = self.request_removal(self.director, self.staff)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to, ["sm@test.com"])
+        self.assertIn("Left the production.", mail.outbox[0].body)
+        self.staff.refresh_from_db()
+        self.assertTrue(self.staff.is_active)  # Nothing is deleted until a Site Manager acts.
+        # Asking again doesn't duplicate the request or the email.
+        self.assertEqual(self.request_removal(self.director, self.staff).status_code, 200)
+        self.assertEqual(len(mail.outbox), 1)
+
+    def test_cannot_request_removal_above_own_level_or_as_staff(self):
+        self.assertEqual(self.request_removal(self.director, self.manager).status_code, 403)
+        self.assertEqual(self.request_removal(self.staff, self.director).status_code, 403)
+
+    def test_site_manager_approves_or_dismisses(self):
+        removal = self.request_removal(self.director, self.staff).data
+        self.client.force_authenticate(self.director)
+        self.assertEqual(self.client.get("/api/removal-requests/").status_code, 403)
+        self.client.force_authenticate(self.manager)
+        self.assertEqual([r["person_name"] for r in self.client.get("/api/removal-requests/").data], ["Test staff"])
+        self.client.post(f"/api/removal-requests/{removal['id']}/approve/")
+        self.staff.refresh_from_db()
+        self.assertFalse(self.staff.is_active)
+        self.assertEqual(self.client.get("/api/removal-requests/").data, [])
+
+        other = make_user("other@test.com", User.Role.STAFF)
+        removal = self.request_removal(self.director, other).data
+        self.client.force_authenticate(self.manager)
+        self.client.post(f"/api/removal-requests/{removal['id']}/dismiss/")
+        other.refresh_from_db()
+        self.assertTrue(other.is_active)
+        self.assertEqual(self.client.get("/api/removal-requests/").data, [])
