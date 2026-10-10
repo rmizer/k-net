@@ -17,6 +17,7 @@ from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
 
+from notifications import slack
 from tasks.models import Task
 from tasks.onboarding import add_starter_tasks
 
@@ -249,6 +250,19 @@ class UserViewSet(viewsets.ModelViewSet):
             user.email_verified = True
             user.save(update_fields=["email_verified"])
         return Response(self.get_serializer(user).data)
+
+    @action(detail=False, methods=["post"], url_path="slack-check", permission_classes=[IsSiteManager])
+    def slack_check(self, request):
+        """Site Managers: match every account to Slack by email now, so the
+        Slack column is current before anyone is assigned a task."""
+        if not slack.is_enabled():
+            return Response({"detail": "Slack isn't set up on the server."}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            linked = slack.match_users()
+        except slack.SlackError as err:
+            logger.warning("Slack check failed: %s", err)
+            return Response({"detail": f"Slack said: {err}"}, status=status.HTTP_502_BAD_GATEWAY)
+        return Response({"linked": linked})
 
     @action(detail=False, permission_classes=[IsAuthenticated])
     def crew(self, request):

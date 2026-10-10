@@ -16,6 +16,7 @@ from schedule.models import Event
 from schedule.serializers import EventSerializer
 from tasks.models import Task
 from tasks.serializers import TaskSerializer
+from tasks.views import visible_to
 
 from . import weather
 from .models import InvestorPage, ProductionSettings
@@ -102,7 +103,7 @@ class DashboardView(APIView):
 
         my_tasks = (
             Task.objects.select_related("assigned_to", "department")
-            .filter(assigned_to=user)
+            .filter(visible_to(user))
             .exclude(status=Task.Status.DONE)
         )
 

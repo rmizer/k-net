@@ -60,6 +60,34 @@ export const ARTICLES: HelpArticle[] = [
           </li>
         </ol>
 
+        <h2>Make sure task messages reach your phone</h2>
+        <p>K-Net sends your tasks to Slack as a direct message. To be sure your phone shows them:</p>
+        <ul>
+          <li>
+            <strong>Allow notifications.</strong> If you tapped “Don’t Allow” when Slack first asked, turn them on in
+            your phone’s <strong>Settings</strong> → <strong>Slack</strong> → <strong>Notifications</strong> (on
+            Android: <strong>Settings</strong> → <strong>Apps</strong> → <strong>Slack</strong> →{' '}
+            <strong>Notifications</strong>).
+          </li>
+          <li>
+            <strong>Check Slack’s own settings.</strong> In the Slack app, tap <strong>You</strong> →{' '}
+            <strong>Notifications</strong>. Make sure notifications aren’t set to “Nothing”, and that a notification
+            schedule or <strong>Pause notifications</strong> isn’t silencing them during your shifts.
+          </li>
+          <li>
+            <strong>Using Slack on a computer too?</strong> Slack shows messages there first and only sends them to
+            your phone once you’re away from the computer. That’s normal.
+          </li>
+          <li>
+            <strong>Keep task messages on</strong> in K-Net: the “Message me on Slack when I’m assigned a task” box on
+            your <Link to="/account">Account page</Link>.
+          </li>
+        </ul>
+        <p>
+          Tasks given to your whole department come to you as a message too, and show up in your{' '}
+          <Link to="/schedule/tasks">My Tasks</Link>.
+        </p>
+
         <h2>Already have Slack with a different email?</h2>
         <p>
           That’s fine. Slack lets you use a different email for each workspace. Open the invite link and join with{' '}
@@ -78,9 +106,6 @@ export const ARTICLES: HelpArticle[] = [
           </li>
           <li>
             Task messages come from the <strong>K-Net</strong> app, under <strong>Apps</strong> in Slack’s sidebar.
-          </li>
-          <li>
-            Don’t want task messages? Turn them off on your <Link to="/account">Account page</Link>.
           </li>
         </ul>
 

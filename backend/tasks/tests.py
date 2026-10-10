@@ -1,7 +1,8 @@
 from django.test import override_settings
 from rest_framework.test import APITestCase
 
-from accounts.models import User
+from accounts.models import Department, User
+from accounts.tests import make_user
 
 from .models import Task
 
@@ -64,3 +65,19 @@ class JoinSlackTaskTests(APITestCase):
 
         add_starter_tasks(self.director)
         self.assertFalse(Task.objects.filter(key=Task.Key.JOIN_SLACK).exists())
+
+
+class DepartmentTaskVisibilityTests(APITestCase):
+    def test_staff_see_their_department_tasks_but_not_teammates_personal_ones(self):
+        tech = Department.objects.create(name="Tech")
+        staff = make_user("staff@test.com", User.Role.STAFF, department=tech)
+        teammate = make_user("mate@test.com", User.Role.STAFF, department=tech)
+        Task.objects.create(title="Whole department", department=tech)
+        Task.objects.create(title="Teammate only", assigned_to=teammate, department=tech)
+        Task.objects.create(title="Mine", assigned_to=staff)
+        Task.objects.create(title="Other department", department=Department.objects.create(name="Wardrobe"))
+        self.client.force_authenticate(staff)
+        titles = {t["title"] for t in self.client.get("/api/tasks/?mine=1").data}
+        self.assertEqual(titles, {"Whole department", "Mine"})
+        dashboard = {t["title"] for t in self.client.get("/api/dashboard/").data["my_tasks"]}
+        self.assertEqual(dashboard, {"Whole department", "Mine"})

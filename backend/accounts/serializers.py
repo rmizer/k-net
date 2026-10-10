@@ -31,9 +31,10 @@ class UserSerializer(serializers.ModelSerializer):
     department_name = serializers.CharField(source="department.name", read_only=True, default=None)
     role_display = serializers.CharField(source="get_role_display", read_only=True)
     password = serializers.CharField(write_only=True, required=False, validators=[validate_password])
+    slack_status = serializers.SerializerMethodField()
 
     EMERGENCY_FIELDS = ("emergency_contact_name", "emergency_contact_phone")
-    ACCOUNT_FIELDS = ("email_verified", "date_joined", "last_login")
+    ACCOUNT_FIELDS = ("email_verified", "date_joined", "last_login", "slack_status")
 
     class Meta:
         model = User
@@ -56,6 +57,7 @@ class UserSerializer(serializers.ModelSerializer):
             "email_verified",
             "date_joined",
             "last_login",
+            "slack_status",
             "password",
         ]
         read_only_fields = ["profile_picture", "email_verified", "date_joined", "last_login"]
@@ -101,6 +103,16 @@ class UserSerializer(serializers.ModelSerializer):
                 )
             raise serializers.ValidationError("An account with this email already exists.")
         return email
+
+    def get_slack_status(self, user):
+        """Whether task messages can reach this person on Slack:
+        connected, off (they turned them off), joined (said they joined, but no
+        Slack account matches their email yet) or missing."""
+        if not user.slack_notifications:
+            return "off"
+        if user.slack_user_id:
+            return "connected"
+        return "joined" if user.slack_joined else "missing"
 
     def validate_role(self, role):
         viewer = self._viewer()

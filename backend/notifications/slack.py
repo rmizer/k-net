@@ -80,6 +80,36 @@ def post_message(channel, text):
     call("chat.postMessage", {"channel": channel, "text": text, "unfurl_links": False})
 
 
+def workspace_member_ids():
+    """Every active, human Slack member's ID, keyed by lowercased email."""
+    members, cursor = {}, ""
+    while True:
+        page = call("users.list", {"limit": 200, "cursor": cursor}, http_method="GET")
+        for member in page.get("members", []):
+            email = member.get("profile", {}).get("email")
+            if email and not (member.get("deleted") or member.get("is_bot")):
+                members[email.lower()] = member["id"]
+        cursor = page.get("response_metadata", {}).get("next_cursor", "")
+        if not cursor:
+            return members
+
+
+def match_users():
+    """Links every active K-Net account to its Slack member by email, right now
+    rather than on their first message. Returns how many accounts are linked."""
+    from accounts.models import User
+
+    members = workspace_member_ids()
+    linked = 0
+    for user in User.objects.filter(is_active=True):
+        member_id = members.get(user.email.lower(), "")
+        if member_id and user.slack_user_id != member_id:
+            user.slack_user_id = member_id
+            user.save(update_fields=["slack_user_id"])
+        linked += bool(member_id or user.slack_user_id)
+    return linked
+
+
 def lookup_user_id(email):
     """The Slack member ID for an email address, or None if nobody in the workspace has it."""
     try:
@@ -112,6 +142,15 @@ def _dispatch(job, *args):
 def _post_to_channel(channel, text):
     if channel:
         post_message(channel, text)
+
+
+def _direct_messages(recipients, text):
+    """Messages each (user_id, email, slack_user_id); one failure doesn't stop the rest."""
+    for recipient in recipients:
+        try:
+            _direct_message(*recipient, text)
+        except Exception:
+            logger.exception("Slack direct message to %s failed", recipient[1])
 
 
 def _direct_message(user_id, email, slack_user_id, text):
@@ -162,3 +201,26 @@ def notify_task_assigned(task):
         lines.append(" · ".join(details))
     lines.append(app_link("/schedule/tasks", "Open My Tasks in K-Net"))
     _dispatch(_direct_message, user.pk, user.email, user.slack_user_id, "\n".join(lines))
+
+
+def notify_department_task(task, exclude=()):
+    """Messages everyone in the department about a task given to the whole department."""
+    department = task.department
+    if department is None or task.assigned_to_id is not None:
+        return
+    members = department.members.filter(is_active=True, slack_notifications=True).exclude(pk__in=exclude)
+    recipients = [(m.pk, m.email, m.slack_user_id) for m in members]
+    if not recipients:
+        return
+    lines = [f":clipboard: *New task for {escape(department.name)}: {escape(task.title)}*"]
+    details = []
+    if task.due_date:
+        details.append(f"Due {task.due_date:%a %b} {task.due_date.day}")
+    if task.priority == task.Priority.HIGH:
+        details.append("High priority")
+    if task.created_by:
+        details.append(f"From {escape(task.created_by.get_full_name())}")
+    if details:
+        lines.append(" · ".join(details))
+    lines.append(app_link("/schedule/tasks", "Open My Tasks in K-Net"))
+    _dispatch(_direct_messages, recipients, "\n".join(lines))

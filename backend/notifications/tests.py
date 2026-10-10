@@ -101,11 +101,72 @@ class SlackNotificationTests(APITestCase):
         self.post("/api/tasks/", {"title": "Load the truck", "assigned_to": self.staff.pk})
         self.assertEqual(self.calls, [])
 
-    def test_no_message_for_department_or_own_tasks(self):
+    def test_no_message_for_own_tasks_or_empty_department(self):
         tech = Department.objects.create(name="Tech")
         self.post("/api/tasks/", {"title": "Mine", "assigned_to": self.director.pk})
         self.post("/api/tasks/", {"title": "Department", "department": tech.pk})
         self.assertEqual(self.calls, [])
+
+    def test_department_task_messages_each_member(self):
+        tech = Department.objects.create(name="Tech")
+        self.staff.department = tech
+        self.staff.save()
+        quiet = make_user("quiet@test.com", User.Role.STAFF, department=tech, slack_notifications=False)
+        lost = make_user("lost@test.com", User.Role.STAFF, department=tech)
+        self.director.department = tech
+        self.director.save()
+        self.post("/api/tasks/", {"title": "Strike the set", "department": tech.pk})
+        [message] = self.messages()  # Not the creator, the opted-out or the unmatched.
+        self.assertEqual(message["channel"], "U123")
+        self.assertIn("New task for Tech: Strike the set", message["text"])
+        self.assertNotIn(quiet.email, str(self.calls))
+        self.assertIn(lost.email, str(self.calls))  # Looked up, but not in Slack.
+
+    def test_personal_task_with_a_department_messages_only_the_person(self):
+        tech = Department.objects.create(name="Tech")
+        make_user("teammate@test.com", User.Role.STAFF, department=tech)
+        self.slack_users["teammate@test.com"] = "U456"
+        self.post("/api/tasks/", {"title": "Load the truck", "assigned_to": self.staff.pk, "department": tech.pk})
+        self.assertEqual([m["channel"] for m in self.messages()], ["U123"])
+
+    def test_task_becoming_a_department_task_messages_the_department(self):
+        tech = Department.objects.create(name="Tech")
+        self.staff.department = tech
+        self.staff.save()
+        task = Task.objects.create(title="Strike the set", assigned_to=self.director, department=tech)
+        self.patch(f"/api/tasks/{task.pk}/", {"assigned_to": None})
+        self.assertEqual([m["channel"] for m in self.messages()], ["U123"])
+        self.patch(f"/api/tasks/{task.pk}/", {"title": "Strike stage B"})
+        self.assertEqual(len(self.messages()), 1)
+
+    def test_site_manager_slack_check_links_accounts(self):
+        manager = make_user("sm@test.com", User.Role.SITE_MANAGER)
+        self.client.force_authenticate(manager)
+        quiet = make_user("quiet@test.com", User.Role.STAFF, slack_notifications=False, slack_joined=True)
+        joined = make_user("joined@test.com", User.Role.STAFF, slack_joined=True)
+        members = [
+            {"id": "U123", "profile": {"email": "Staff@Test.com"}},
+            {"id": "U777", "profile": {"email": "quiet@test.com"}},
+            {"id": "UBOT", "is_bot": True, "profile": {"email": "joined@test.com"}},
+        ]
+
+        def fake_call(method, payload, http_method="POST"):
+            self.assertEqual(method, "users.list")
+            return {"ok": True, "members": members, "response_metadata": {"next_cursor": ""}}
+
+        with mock.patch.object(slack, "call", fake_call):
+            response = self.client.post("/api/users/slack-check/")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["linked"], 2)
+        statuses = {p["email"]: p["slack_status"] for p in self.client.get("/api/users/").data}
+        self.assertEqual(statuses[self.staff.email], "connected")
+        self.assertEqual(statuses[quiet.email], "off")
+        self.assertEqual(statuses[joined.email], "joined")
+        self.assertEqual(statuses[self.director.email], "missing")
+
+    def test_only_site_managers_can_run_the_slack_check(self):
+        response = self.client.post("/api/users/slack-check/")
+        self.assertEqual(response.status_code, 403)
 
     def test_person_not_in_slack_is_skipped(self):
         other = make_user("other@test.com", User.Role.STAFF)
@@ -141,7 +202,8 @@ class SlackProfileTests(APITestCase):
         self.client.force_authenticate(self.staff)
 
     def test_profile_reports_whether_slack_is_set_up(self):
-        self.assertFalse(self.client.get("/api/auth/me/").data["slack_available"])
+        with override_settings(SLACK_BOT_TOKEN=""):
+            self.assertFalse(self.client.get("/api/auth/me/").data["slack_available"])
         with override_settings(SLACK_BOT_TOKEN="xoxb-test"):
             self.assertTrue(self.client.get("/api/auth/me/").data["slack_available"])
 

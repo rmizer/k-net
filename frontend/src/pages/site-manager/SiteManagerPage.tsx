@@ -1,7 +1,7 @@
 import { useMemo, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { api, ApiError, fieldErrors } from '../../api'
-import { ROLE_LABELS, type Role, type User } from '../../auth/roles'
+import { ROLE_LABELS, type Role, type SlackStatus, type User } from '../../auth/roles'
 import { useAuth } from '../../auth/useAuth'
 import { NewAccountNotice } from '../../components/NewAccountNotice'
 import { SortHeader, useSort } from '../../components/sorting'
@@ -14,10 +14,22 @@ import '../finance/finance.css'
 import '../staff-manager/staff-manager.css'
 import './site-manager.css'
 
-type SortKey = 'name' | 'role' | 'department' | 'status' | 'joined' | 'login'
+type SortKey = 'name' | 'role' | 'department' | 'status' | 'slack' | 'joined' | 'login'
 
 // Highest first, for sorting and the role filter.
 const ROLES: Role[] = ['site_manager', 'director', 'assistant', 'staff']
+
+// Can task messages reach this person on Slack? Worst first, for sorting.
+const SLACK_STATUSES: Record<SlackStatus, { label: string; hint: string }> = {
+  joined: {
+    label: 'Not matched',
+    hint: 'Said they joined Slack, but isn’t matched to a Slack account. Click Check Slack accounts; if they’re still not matched, their Slack email differs from their K-Net email. Ask them to change it, or enter their Slack member ID in Dev Login.',
+  },
+  missing: { label: 'Not in Slack', hint: 'No Slack account uses their K-Net email yet.' },
+  off: { label: 'Messages off', hint: 'They turned off task messages on their Account page.' },
+  connected: { label: 'Connected', hint: 'Task messages reach them on Slack.' },
+}
+const SLACK_ORDER = Object.keys(SLACK_STATUSES) as SlackStatus[]
 
 const errorText = (err: unknown, fallback: string) => {
   const fields = Object.values(fieldErrors(err))
@@ -39,6 +51,7 @@ export function SiteManagerPage() {
   const [message, setMessage] = useState<{ kind: 'success' | 'error'; text: string } | null>(null)
   const [newDepartment, setNewDepartment] = useState('')
   const [addingDepartment, setAddingDepartment] = useState(false)
+  const [checkingSlack, setCheckingSlack] = useState(false)
   const sort = useSort<SortKey>('role')
 
   const all = useMemo(() => people.data ?? [], [people.data])
@@ -58,11 +71,14 @@ export function SiteManagerPage() {
         role: ROLES.indexOf(p.role),
         department: p.department_name,
         status: p.email_verified === false ? 0 : 1,
+        slack: p.slack_status ? SLACK_ORDER.indexOf(p.slack_status) : -1,
         joined: p.date_joined,
         login: p.last_login,
       })[key],
   )
   const countOf = (role: Role) => all.filter((p) => p.role === role).length
+  const slackOn = !!user?.slack_available
+  const slackConnected = all.filter((p) => p.slack_status === 'connected').length
 
   const reload = () => {
     people.reload()
@@ -124,6 +140,21 @@ export function SiteManagerPage() {
       setMessage({ kind: 'error', text: errorText(err, 'Couldn’t send the email.') })
     } finally {
       setBusyId(null)
+    }
+  }
+
+  /** Match everyone to Slack by email now, instead of on their first task message. */
+  const checkSlack = async () => {
+    setCheckingSlack(true)
+    setMessage(null)
+    try {
+      const result = await api<{ linked: number }>('/users/slack-check/', { method: 'POST' })
+      setMessage({ kind: 'success', text: `Checked Slack: ${result.linked} of ${all.length} people are connected.` })
+      people.reload()
+    } catch (err) {
+      setMessage({ kind: 'error', text: errorText(err, 'Couldn’t reach Slack.') })
+    } finally {
+      setCheckingSlack(false)
     }
   }
 
@@ -256,6 +287,18 @@ export function SiteManagerPage() {
           value={departments.data?.length ?? '—'}
           note={`${all.filter((p) => !p.department).length} people without one`}
         />
+        {slackOn && (
+          <Stat
+            label="On Slack"
+            value={`${slackConnected} of ${all.length}`}
+            alert={slackConnected < all.length}
+            note={
+              slackConnected < all.length
+                ? 'The rest won’t get task messages; see the Slack column'
+                : 'Everyone gets task messages on Slack'
+            }
+          />
+        )}
       </dl>
 
       {(removals.data ?? []).length > 0 && (
@@ -341,6 +384,11 @@ export function SiteManagerPage() {
       <section className="fin-section" aria-labelledby="users-heading">
         <div className="fin-section__head">
           <h2 id="users-heading">Users and roles</h2>
+          {slackOn && (
+            <button type="button" className="text-button" onClick={checkSlack} disabled={checkingSlack}>
+              {checkingSlack ? 'Checking Slack…' : 'Check Slack accounts'}
+            </button>
+          )}
         </div>
         <div className="fin-filters" role="search">
           <label className="form__field">
@@ -397,6 +445,11 @@ export function SiteManagerPage() {
                     <SortHeader sort={sort} column="status">
                       Status
                     </SortHeader>
+                    {slackOn && (
+                      <SortHeader sort={sort} column="slack">
+                        Slack
+                      </SortHeader>
+                    )}
                     <SortHeader sort={sort} column="joined">
                       Joined
                     </SortHeader>
@@ -469,6 +522,18 @@ export function SiteManagerPage() {
                             'Verified'
                           )}
                         </td>
+                        {slackOn && (
+                          <td data-label="Slack">
+                            {person.slack_status && (
+                              <span
+                                className={`badge${person.slack_status === 'connected' ? ' badge--muted' : ''}`}
+                                title={SLACK_STATUSES[person.slack_status].hint}
+                              >
+                                {SLACK_STATUSES[person.slack_status].label}
+                              </span>
+                            )}
+                          </td>
+                        )}
                         <td data-label="Joined">
                           {person.date_joined ? formatDateTime(person.date_joined).split(',')[0] : '—'}
                         </td>

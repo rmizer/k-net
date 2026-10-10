@@ -1,5 +1,7 @@
 export type Role = 'site_manager' | 'director' | 'assistant' | 'staff'
 
+export type SlackStatus = 'connected' | 'off' | 'joined' | 'missing'
+
 export interface User {
   id: number
   email: string
@@ -22,6 +24,8 @@ export interface User {
   last_login?: string | null
   /** Only on the signed-in user's own profile: roles they may give others. */
   assignable_roles?: Role[]
+  /** Site Managers (and the person themselves): whether task messages reach them on Slack. */
+  slack_status?: SlackStatus
   /** Only on the signed-in user's own profile: whether they've said they joined Slack. */
   slack_joined?: boolean
   /** Only on the signed-in user's own profile: Slack messages for new tasks. */
