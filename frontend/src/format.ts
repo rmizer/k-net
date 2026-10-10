@@ -75,6 +75,12 @@ export function initials(firstName: string, lastName = ''): string {
   return (words[0][0] + words[words.length - 1][0]).toUpperCase()
 }
 
+/** "Hilton Westshore, Room 412", or whichever part is filled in. */
+export function lodgingLabel(lodging: string, roomNumber = ''): string {
+  const room = roomNumber.trim() ? `Room ${roomNumber.trim().replace(/^room\s*/i, '')}` : ''
+  return [lodging.trim(), room].filter(Boolean).join(', ')
+}
+
 /** Link to a creator's profile on their platform, when we know both. */
 export function profileUrl(platform: string, handle: string): string | null {
   if (!handle) return null

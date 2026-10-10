@@ -7,7 +7,7 @@ import { NewAccountNotice } from '../../components/NewAccountNotice'
 import { BlockScheduleDialog } from '../../components/schedule/BlockScheduleDialog'
 import { SortHeader, useSort } from '../../components/sorting'
 import { TaskFormDialog } from '../../components/TaskFormDialog'
-import { dayKey, formatDay, formatTimeRange } from '../../format'
+import { dayKey, formatDay, formatTimeRange, lodgingLabel } from '../../format'
 import { useFetch } from '../../hooks/useFetch'
 import { StaffFormDialog } from '../directory/StaffFormDialog'
 import type { Department, ProductionSettings, StaffOverviewRow, Task } from '../../types'
@@ -47,7 +47,7 @@ export function StaffOverviewPage() {
   const visible = sort.apply(
     all.filter(
       (p) =>
-        (!query || `${p.name} ${p.email} ${p.phone} ${p.lodging}`.toLowerCase().includes(query)) &&
+        (!query || `${p.name} ${p.email} ${p.phone} ${p.lodging} ${p.room_number}`.toLowerCase().includes(query)) &&
         (!department || (department === 'none' ? !p.department : String(p.department) === department)) &&
         (!role || p.role === role) &&
         (!crewOnly || p.is_active_crew),
@@ -329,7 +329,9 @@ export function StaffOverviewPage() {
                           </a>
                         )}
                         <span className="fin-sub">{person.email}</span>
-                        {person.lodging && <span className="fin-sub">{person.lodging}</span>}
+                        {person.lodging || person.room_number ? (
+                          <span className="fin-sub">{lodgingLabel(person.lodging, person.room_number)}</span>
+                        ) : null}
                       </td>
                       <td data-label="Tasks">
                         {person.tasks.open ? (

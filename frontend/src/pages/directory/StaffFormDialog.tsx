@@ -22,6 +22,7 @@ type FormState = {
   role: Role
   department: string
   lodging: string
+  room_number: string
   emergency_contact_name: string
   emergency_contact_phone: string
   is_active_crew: boolean
@@ -37,6 +38,7 @@ function initialState(person: User | null, assignableRoles: Role[]): FormState {
     role: person?.role ?? (assignableRoles.includes('staff') ? 'staff' : assignableRoles[0]),
     department: person?.department ? String(person.department) : '',
     lodging: person?.lodging ?? '',
+    room_number: person?.room_number ?? '',
     emergency_contact_name: person?.emergency_contact_name ?? '',
     emergency_contact_phone: person?.emergency_contact_phone ?? '',
     is_active_crew: person?.is_active_crew ?? true,
@@ -177,7 +179,8 @@ export function StaffFormDialog({ person, departments, assignableRoles, onSaved,
             {errors.department && <small className="form__field-error">{errors.department}</small>}
           </label>
 
-          {field('lodging', 'Lodging', { autoComplete: 'off' })}
+          {field('lodging', 'Lodging', { autoComplete: 'off', placeholder: 'e.g. Hilton Tampa Westshore' })}
+          {field('room_number', 'Room number (optional)', { autoComplete: 'off', maxLength: 20 })}
           <div className="form__field form__field--checkbox">
             <label className="form__check">
               <input

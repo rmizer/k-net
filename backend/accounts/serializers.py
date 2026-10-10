@@ -49,6 +49,7 @@ class UserSerializer(serializers.ModelSerializer):
             "department_name",
             "profile_picture",
             "lodging",
+            "room_number",
             "emergency_contact_name",
             "emergency_contact_phone",
             "is_active_crew",

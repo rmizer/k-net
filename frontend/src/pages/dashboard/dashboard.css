@@ -494,52 +494,56 @@
   }
 }
 
-/* Share K-Net: the QR code, always on the Staff Hub. */
-.dash-share {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  gap: 1rem 1.5rem;
+/* Share K-Net: a callout band at the top, with the QR code on a white card. */
+.callout--share {
+  grid-template-columns: auto 1fr auto;
+  padding: 1.25rem 1.75rem 1.25rem 1.25rem;
 }
 
-.dash-share__qr {
+.callout__qr {
+  display: block;
+  padding: 0.5rem;
+  border-radius: 10px;
+  background: var(--knet-white);
+  box-shadow: 0 0 0 3px var(--knet-red), 0 8px 20px rgb(0 0 0 / 0.35);
+  transform: rotate(-2deg);
+}
+
+.callout__qr img {
+  display: block;
   width: 150px;
   height: auto;
-  border-radius: var(--radius);
 }
 
-.dash-share__text p {
-  max-width: 40rem;
-  margin: 0 0 0.6rem;
-  line-height: 1.35;
-}
-
-.dash-share__title {
-  color: var(--knet-dark-red);
-  font-size: 1.2rem;
+.callout__link {
+  color: var(--knet-white);
   font-weight: var(--weight-bold);
-  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  white-space: nowrap;
 }
 
-.dash-share__actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem 1rem;
+.callout__link:hover {
+  color: #ff9a9a;
 }
 
-@media (max-width: 560px) {
-  .dash-share {
+.callout--share strong {
+  color: var(--knet-white);
+}
+
+@media (max-width: 640px) {
+  .callout--share {
     grid-template-columns: 1fr;
     justify-items: center;
+    padding: 1.5rem 1.25rem;
     text-align: center;
   }
 
-  .dash-share__qr {
-    width: min(220px, 70vw);
+  .callout__qr {
+    transform: none;
   }
 
-  .dash-share__actions {
-    justify-content: center;
+  .callout__qr img {
+    width: min(220px, 65vw);
   }
 }

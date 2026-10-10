@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { api, ApiError } from '../../api'
 import { BlockScheduleDialog } from '../../components/schedule/BlockScheduleDialog'
 import { EventFormDialog } from '../../components/schedule/EventFormDialog'
-import { addDays, eventDays, formatDay, formatTimeRange } from '../../format'
+import { addDays, eventDays, formatDay, formatTimeRange, lodgingLabel } from '../../format'
 import { useFetch } from '../../hooks/useFetch'
 import type { CalendarEvent, Department, ProductionSettings, StaffOverviewRow } from '../../types'
 import '../finance/finance.css'
@@ -156,7 +156,7 @@ function Scheduling({ today, timeZone }: { today: string; timeZone: string }) {
                 <div>
                   <h2>{person.name}</h2>
                   <p className="muted">
-                    {[person.role_display, person.department_name, person.lodging].filter(Boolean).join(' · ')}
+                    {[person.role_display, person.department_name, lodgingLabel(person.lodging, person.room_number)].filter(Boolean).join(' · ')}
                   </p>
                 </div>
                 <div className="inline-form__actions">

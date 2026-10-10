@@ -359,6 +359,7 @@ export interface StaffOverviewRow {
   department_name: string | null
   is_active_crew: boolean
   lodging: string
+  room_number: string
   tasks: { open: number; overdue: number; done: number }
   next_event: { id: number; title: string; start: string; end: string; all_day: boolean; location: string } | null
   hours_this_week: number

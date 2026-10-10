@@ -195,6 +195,7 @@ class StaffOverviewView(APIView):
                     "department_name": person.department.name if person.department else None,
                     "is_active_crew": person.is_active_crew,
                     "lodging": person.lodging,
+                    "room_number": person.room_number,
                     "tasks": {
                         "open": len(open_tasks),
                         "overdue": sum(1 for t in open_tasks if t["due_date"] and t["due_date"] < today),

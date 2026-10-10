@@ -60,6 +60,7 @@ class User(AbstractUser):
     )
     profile_picture = models.ImageField(upload_to="profile_pictures/", blank=True)
     lodging = models.CharField(max_length=255, blank=True)
+    room_number = models.CharField(max_length=20, blank=True)
     emergency_contact_name = models.CharField(max_length=150, blank=True)
     emergency_contact_phone = models.CharField(max_length=30, blank=True)
     # Whether this person is on the active crew (shown on the Staff / Crew page).

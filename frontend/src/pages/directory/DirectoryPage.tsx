@@ -31,7 +31,7 @@ export function DirectoryPage() {
       if (departmentFilter && String(person.department ?? '') !== departmentFilter) return false
       if (roleFilter && person.role !== roleFilter) return false
       if (!query) return true
-      return [person.first_name, person.last_name, person.email, person.phone, person.lodging]
+      return [person.first_name, person.last_name, person.email, person.phone, person.lodging, person.room_number]
         .join(' ')
         .toLowerCase()
         .includes(query)

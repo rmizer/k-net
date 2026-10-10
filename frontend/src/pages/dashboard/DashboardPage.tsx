@@ -33,6 +33,7 @@ export function DashboardPage() {
         </p>
       </header>
 
+      <ShareSection />
       {user?.slack_invite_url && !user.slack_joined && (
         <SlackLink
           url={user.slack_invite_url}
@@ -43,7 +44,6 @@ export function DashboardPage() {
         />
       )}
       <WeatherSection canEdit={manager} onLocationChange={reload} />
-      <ShareSection />
       <AnnouncementsSection
         announcements={data.announcements}
         alerts={data.alerts}

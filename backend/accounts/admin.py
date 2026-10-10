@@ -18,7 +18,7 @@ class UserAdmin(BaseUserAdmin):
     fieldsets = [
         (None, {"fields": ["email", "password"]}),
         ("Personal info", {"fields": ["first_name", "last_name", "phone", "profile_picture"]}),
-        ("Role & crew", {"fields": ["role", "department", "is_active_crew", "lodging"]}),
+        ("Role & crew", {"fields": ["role", "department", "is_active_crew", "lodging", "room_number"]}),
         ("Emergency contact", {"fields": ["emergency_contact_name", "emergency_contact_phone"]}),
         (
             "Slack",

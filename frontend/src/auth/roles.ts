@@ -12,6 +12,7 @@ export interface User {
   department_name: string | null
   profile_picture: string | null
   lodging: string
+  room_number: string
   emergency_contact_name?: string
   emergency_contact_phone?: string
   is_active_crew: boolean

@@ -1,5 +1,6 @@
 import type { User } from '../../auth/roles'
 import { Avatar } from '../../components/Avatar'
+import { lodgingLabel } from '../../format'
 
 interface StaffTileProps {
   person: User
@@ -64,7 +65,7 @@ export function StaffTile({ person, onEdit, onRemove }: StaffTileProps) {
         </div>
         <div>
           <dt>Lodging</dt>
-          <dd>{person.lodging || <span className="muted">—</span>}</dd>
+          <dd>{lodgingLabel(person.lodging, person.room_number) || <span className="muted">—</span>}</dd>
         </div>
         {showEmergency && (
           <div className="staff-tile__emergency">
