@@ -527,6 +527,12 @@
   color: #ff9a9a;
 }
 
+/* Invite, download and copy: equal-width buttons stacked on the right. */
+.callout__actions--stack {
+  justify-items: stretch;
+  gap: 0.5rem;
+}
+
 .callout--share strong {
   color: var(--knet-white);
 }

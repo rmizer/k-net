@@ -29,17 +29,17 @@ export function ShareSection() {
         <h2 id="share-heading">Bring your team onto K-Net</h2>
         <p>
           Have a teammate point their phone camera at this code. It opens K-Net, where they tap{' '}
-          <strong>Create an account</strong> and sign up with their own email.{' '}
-          <Link to="/crew/invite" className="callout__link">
-            More ways to invite
-          </Link>
+          <strong>Create an account</strong> and sign up with their own email.
         </p>
       </div>
-      <span className="callout__actions">
+      <span className="callout__actions callout__actions--stack">
+        <Link to="/crew/invite" className="button callout__button">
+          Invite someone
+        </Link>
         <a href={qrCode} download="K-Net-QR-code.png" className="button callout__button">
           Download QR code
         </a>
-        <button type="button" className="callout__secondary" onClick={copy}>
+        <button type="button" className="button callout__button" onClick={copy} aria-live="polite">
           {copied ? 'Link copied ✓' : 'Copy sign-up link'}
         </button>
       </span>
