@@ -280,3 +280,11 @@
     grid-template-columns: 1fr;
   }
 }
+
+.investor__invest p {
+  max-width: 52rem;
+}
+
+.investor__invest p:last-child {
+  margin-bottom: 0;
+}

@@ -43,15 +43,16 @@ const REPLACES: [string, string, string][] = [
   ],
 ]
 
+// Everything here is covered by the weekly maintenance fee.
 const TURNAROUND: [string, string, string][] = [
-  ['Bug fixes', 'Same day', 'Included in the weekly fee; fixed daily.'],
+  ['Bug fixes', 'Same day', 'Fixed daily.'],
   ['Wording, labels and small layout changes', '1 day', 'Shipped in the weekly update.'],
   ['A new field, filter or column on an existing page', '1–3 days', 'Shipped in the weekly update.'],
-  ['A new page or report built on existing data', '1–2 weeks', 'Scoped with you first.'],
+  ['A new page or report built on existing data', '1–2 weeks', 'Planned with you, then shipped in weekly updates.'],
   [
     'Large features (live GPS crew tracking, a native phone app, payment processing)',
     '4–8+ weeks',
-    'Scoped and quoted individually.',
+    'Planned with you and built in stages, shipped in weekly updates.',
   ],
 ]
 
@@ -142,7 +143,8 @@ export function InvestorPage() {
             <ul>
               <li>Bug fixes every day</li>
               <li>A patch and update to the site once a week</li>
-              <li>Small changes from the table below, rolled into the weekly update</li>
+              <li>Hosting included: the server, database and web address</li>
+              <li>New features as your production needs them, at no extra cost</li>
             </ul>
           </div>
         </div>
@@ -152,7 +154,7 @@ export function InvestorPage() {
         <h2 id="turnaround-heading">How long changes take</h2>
         <p className="investor__intro">
           K-Net went from its first line of code to a working alpha trial in under a week (Oct 3 to Oct 9, 2026). These
-          are typical times for changes after purchase.
+          are typical times for changes after purchase, and all of them are included in the weekly fee.
         </p>
         <div className="tile">
           <div className="table-wrap">
@@ -199,6 +201,20 @@ export function InvestorPage() {
               feedback.
             </p>
           </div>
+        </div>
+      </section>
+
+      <section className="investor__section" aria-labelledby="invest-heading">
+        <h2 id="invest-heading">Investing in K-Net</h2>
+        <div className="tile investor__invest">
+          <p>
+            Interested in backing K-Net rather than buying it for one production? We’re open to conversations about
+            funding its next stage: live crew tracking, a native phone app, and bringing K-Net to more productions.
+          </p>
+          <p>
+            Email <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('Investing in K-Net')}`}>{CONTACT_EMAIL}</a>{' '}
+            and we’ll share where K-Net stands, results from the trial, and what investment would go toward.
+          </p>
         </div>
       </section>
 

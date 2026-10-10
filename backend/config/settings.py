@@ -8,6 +8,7 @@ loaded from backend/.env). See .env.example for the full list.
 import os
 from pathlib import Path
 
+import dj_database_url
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -67,6 +68,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    # Serves the built React app and the admin's static files in production.
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -97,13 +100,14 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 
 # Database
-# SQLite for local development. Production should point at PostgreSQL.
+# SQLite for local development; production sets DATABASE_URL (PostgreSQL on Railway).
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    "default": dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 
@@ -123,6 +127,18 @@ SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
+
+
+# HTTPS (production)
+# Railway terminates HTTPS and forwards requests with X-Forwarded-Proto.
+
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SECURE_SSL_REDIRECT = env_bool("DJANGO_SSL_REDIRECT", True)
+    # Railway's health check calls the app directly over HTTP.
+    SECURE_REDIRECT_EXEMPT = [r"^api/health/$"]
+    # Starts short; raise it (e.g. 31536000) once HTTPS is confirmed working.
+    SECURE_HSTS_SECONDS = int(os.environ.get("DJANGO_HSTS_SECONDS", "3600"))
 
 
 # Django REST Framework
@@ -161,11 +177,23 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedStaticFilesStorage"},
+}
 
+# The built React app (frontend/dist). In production Django serves it: its
+# files at the site root, and index.html for every page route (see config.urls).
+FRONTEND_DIST = Path(os.environ.get("FRONTEND_DIST", BASE_DIR.parent / "frontend" / "dist"))
+WHITENOISE_ROOT = FRONTEND_DIST if FRONTEND_DIST.is_dir() else None
+
+# Uploads live under DATA_DIR, which in production is a persistent volume
+# (Railway: mount one at /data and set DATA_DIR=/data).
+DATA_DIR = Path(os.environ.get("DATA_DIR", BASE_DIR))
 MEDIA_URL = "media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = DATA_DIR / "media"
 # Uploaded documents; never served directly, only through the API.
-PRIVATE_MEDIA_ROOT = BASE_DIR / "private"
+PRIVATE_MEDIA_ROOT = DATA_DIR / "private"
 
 
 # Email

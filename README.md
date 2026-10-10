@@ -120,6 +120,24 @@ People are matched to Slack by email. If someone's Slack email differs from thei
 a Site Manager can enter their Slack member ID in the Django admin. Everyone can turn task
 messages off on their Account page.
 
+## Deploying (Railway)
+
+K-Net runs as one Railway service built from the `Dockerfile`: the React app is built, and Django
+(gunicorn + WhiteNoise) serves the API, the admin and the app. `railway.json` sets the health check
+(`/api/health/`). Each deploy runs `migrate` before starting.
+
+The project needs:
+- a **PostgreSQL** service, with its `DATABASE_URL` referenced in the app's variables;
+- a **volume** mounted at `/data` on the app service, for uploads (profile pictures, documents);
+- these app variables: `DJANGO_SECRET_KEY`, `DJANGO_ALLOWED_HOSTS` (the Railway or custom domain),
+  `DJANGO_CSRF_TRUSTED_ORIGINS` (`https://` + that domain), `SITE_URL` (same), `DATA_DIR=/data`,
+  `EMAIL_APP_PASSWORD`, `SUPPORT_EMAIL`, `SLACK_INVITE_URL`, and optionally the Slack bot settings.
+
+**Moving the data:** `python manage.py export_bundle knet-bundle.json` writes every record and
+uploaded file to one file; `python manage.py import_bundle knet-bundle.json` (or `-` for standard
+input) loads it into a fresh, migrated database. It refuses if accounts already exist. The bundle
+contains personal data and password hashes; delete it after use.
+
 ## Checks
 
 ```bash
