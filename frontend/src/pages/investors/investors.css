@@ -53,6 +53,18 @@
   text-align: center;
 }
 
+.investor__back {
+  justify-self: start;
+  margin-top: -1rem;
+  color: var(--knet-dark-red);
+  font-weight: var(--weight-bold);
+  text-decoration: none;
+}
+
+.investor__back:hover {
+  text-decoration: underline;
+}
+
 .investor__logo {
   width: min(320px, 80vw);
   height: auto;

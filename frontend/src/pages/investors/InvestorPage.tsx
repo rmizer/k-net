@@ -105,6 +105,9 @@ export function InvestorPage() {
   return (
     <main className="investor">
       <header className="investor__hero">
+        <Link to="/trial" className="investor__back">
+          <span aria-hidden="true">←</span> About the trial
+        </Link>
         <img src={wordmark} alt="K-Net: K Network Project Center" className="investor__logo" width={900} height={286} />
         <h1>Run the whole production from one place</h1>
         <p className="investor__lede">
