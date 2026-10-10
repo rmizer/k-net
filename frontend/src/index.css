@@ -1252,6 +1252,17 @@ th.is-numeric .sort-header {
   color: var(--knet-white);
 }
 
+.callout__link {
+  color: var(--knet-white);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.callout__link:hover {
+  color: #ff9a9a;
+}
+
+.callout__link:focus-visible,
 .callout__secondary:focus-visible {
   outline: 2px solid var(--knet-white);
   outline-offset: 2px;

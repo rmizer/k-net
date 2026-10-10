@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { api } from '../../api'
 import type { User } from '../../auth/roles'
 import { CalloutBand } from '../../components/CalloutBand'
@@ -43,7 +44,10 @@ export function SlackLink({ url, onJoined }: { url: string; onJoined: (user: Use
       }
     >
       Slack is where the crew talks day to day: quick questions, last-minute changes and updates. Join with the same
-      email you use for K-Net so your task messages reach you, then tap “I’ve joined” to check it off.
+      email you use for K-Net so your task messages reach you, then tap “I’ve joined” to check it off.{' '}
+      <Link to="/help/join-slack" className="callout__link">
+        Step-by-step help
+      </Link>
       {error && (
         <span className="callout__error" role="alert">
           {' '}

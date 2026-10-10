@@ -11,6 +11,8 @@ import { CrewPage } from './pages/crew/CrewPage'
 import { InvitePage } from './pages/crew/InvitePage'
 import { DirectoryPage } from './pages/directory/DirectoryPage'
 import { DocumentsPage } from './pages/documents/DocumentsPage'
+import { HelpArticlePage } from './pages/help/HelpArticlePage'
+import { HelpPage } from './pages/help/HelpPage'
 import { FinanceOverviewPage } from './pages/finance/FinanceOverviewPage'
 import { IncomingPage } from './pages/finance/IncomingPage'
 import { InvoicesPage } from './pages/finance/InvoicesPage'
@@ -87,6 +89,8 @@ export default function App() {
               <Route path="/crew/invite" element={<InvitePage />} />
               <Route path="/account" element={<AccountPage />} />
               <Route path="/contact" element={<ContactPage />} />
+              <Route path="/help" element={<HelpPage />} />
+              <Route path="/help/:slug" element={<HelpArticlePage />} />
               <Route
                 path="/site-manager"
                 element={

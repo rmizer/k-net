@@ -81,6 +81,7 @@ export const NAV_ITEMS: NavItem[] = [
       },
     ],
   },
+  { label: 'Help', path: '/help', icon: 'help' },
   { label: 'Contact', path: '/contact', icon: 'mail' },
 ]
 
