@@ -493,3 +493,53 @@
     min-height: 0;
   }
 }
+
+/* Share K-Net: the QR code, always on the Staff Hub. */
+.dash-share {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 1rem 1.5rem;
+}
+
+.dash-share__qr {
+  width: 150px;
+  height: auto;
+  border-radius: var(--radius);
+}
+
+.dash-share__text p {
+  max-width: 40rem;
+  margin: 0 0 0.6rem;
+  line-height: 1.35;
+}
+
+.dash-share__title {
+  color: var(--knet-dark-red);
+  font-size: 1.2rem;
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+}
+
+.dash-share__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+}
+
+@media (max-width: 560px) {
+  .dash-share {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .dash-share__qr {
+    width: min(220px, 70vw);
+  }
+
+  .dash-share__actions {
+    justify-content: center;
+  }
+}

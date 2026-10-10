@@ -5,6 +5,7 @@ import { useFetch } from '../../hooks/useFetch'
 import type { Dashboard } from '../../types'
 import { AnnouncementsSection } from './AnnouncementsSection'
 import { DailyRundown } from './DailyRundown'
+import { ShareSection } from './ShareSection'
 import { SlackLink } from './SlackLink'
 import { StaffTasks, YourTasks } from './TaskSections'
 import { TodaysCrew } from './TodaysCrew'
@@ -42,6 +43,7 @@ export function DashboardPage() {
         />
       )}
       <WeatherSection canEdit={manager} onLocationChange={reload} />
+      <ShareSection />
       <AnnouncementsSection
         announcements={data.announcements}
         alerts={data.alerts}
