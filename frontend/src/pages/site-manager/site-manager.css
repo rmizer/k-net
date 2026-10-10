@@ -48,3 +48,19 @@
 .sm-removals {
   border-top-color: var(--knet-red);
 }
+
+/* Slack status pills: smaller and tighter than a standard badge, on one line,
+   with the text centered both ways. */
+.sm-slack {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0;
+  /* 1px extra on top optically centers the brand font's capitals. */
+  padding: 2px 0.4rem 1px;
+  font-size: 0.62rem;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+}

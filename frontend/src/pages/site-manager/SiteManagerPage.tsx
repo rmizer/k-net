@@ -526,7 +526,7 @@ export function SiteManagerPage() {
                           <td data-label="Slack">
                             {person.slack_status && (
                               <span
-                                className={`badge${person.slack_status === 'connected' ? ' badge--muted' : ''}`}
+                                className={`badge sm-slack${person.slack_status === 'connected' ? ' badge--muted' : ''}`}
                                 title={SLACK_STATUSES[person.slack_status].hint}
                               >
                                 {SLACK_STATUSES[person.slack_status].label}
