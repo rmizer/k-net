@@ -56,6 +56,20 @@ const TURNAROUND: [string, string, string][] = [
   ],
 ]
 
+// Possible directions, not commitments; the buyer chooses what gets built.
+const FUTURE: [string, string][] = [
+  ['CrewFinder: live crew tracking', 'See where crew are on a map during the shoot, with opt-in sharing that switches off when a shift ends.'],
+  ['Native phone apps', 'iPhone and Android apps with push notifications for schedule changes, new tasks and urgent messages.'],
+  ['Shift handovers', 'A handover log for round-the-clock shoots: what happened, what’s pending and who’s on next, read before every shift.'],
+  ['Timecards and overtime', 'Crew clock in and out from their phone; hours, turnaround and overtime are tracked and flagged automatically.'],
+  ['Call sheets', 'Generate the daily call sheet from the live schedule, locations and directory, and send it to everyone on it.'],
+  ['Budget tracking', 'Spending from receipts and invoices measured against each department’s budget as the shoot goes.'],
+  ['Payments and payroll exports', 'Pay reimbursements and export hours to payroll providers, instead of re-keying them.'],
+  ['Offline mode', 'Schedules, contacts and documents stay readable on remote locations with no signal, and sync when back online.'],
+  ['Calendar sync', 'Each person’s shifts appear in Google Calendar or Outlook and update when the schedule changes.'],
+  ['Multi-production dashboard', 'A studio-level view across several productions at once, with crew and resources shared between them.'],
+]
+
 const money = (value: number) =>
   value.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
 const number = (value: number) => Math.round(value).toLocaleString('en-US')
@@ -143,7 +157,7 @@ export function InvestorPage() {
             <ul>
               <li>Bug fixes every day</li>
               <li>A patch and update to the site once a week</li>
-              <li>Hosting included: the server, database and web address</li>
+              <li>Hosting included: the server, database and K-Net’s own .com web address</li>
               <li>New features as your production needs them, at no extra cost</li>
             </ul>
           </div>
@@ -201,7 +215,30 @@ export function InvestorPage() {
               feedback.
             </p>
           </div>
+          <div className="tile">
+            <h3>At launch</h3>
+            <p>
+              The trial runs on a temporary hosting address. For final deployment K-Net moves to its own .com web
+              address, with a secure (https) connection and email sent from that domain.
+            </p>
+          </div>
         </div>
+      </section>
+
+      <section className="investor__section" aria-labelledby="future-heading">
+        <h2 id="future-heading">Where K-Net could go</h2>
+        <p className="investor__intro">
+          Possible future developments. None are promised; after purchase you choose what gets built and in what order,
+          and it’s all covered by the weekly fee.
+        </p>
+        <ul className="investor__replaces">
+          {FUTURE.map(([title, detail]) => (
+            <li key={title} className="tile">
+              <h3>{title}</h3>
+              <p>{detail}</p>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section className="investor__section" aria-labelledby="invest-heading">
@@ -230,12 +267,12 @@ export function InvestorPage() {
 }
 
 const DEFAULTS = {
-  crew: 40,
+  crew: 45,
   managers: 5,
   weeks: 6,
-  days: 6,
-  crewMinutes: 15,
-  managerHours: 8,
+  days: 7,
+  crewMinutes: 20,
+  managerHours: 10,
   crewRate: 35,
   managerRate: 55,
 }
@@ -250,13 +287,13 @@ const FIELDS: { name: keyof Inputs; label: string; hint: string; max: number; st
   {
     name: 'crewMinutes',
     label: 'Minutes saved per crew member, per day',
-    hint: 'Not hunting for call times, places, contacts and changes',
+    hint: 'Not hunting for call times, places, contacts, and what changed since their last shift',
     max: 240,
   },
   {
     name: 'managerHours',
     label: 'Hours saved per manager, per week',
-    hint: 'Not rebuilding and re-sending schedules, chasing tasks, receipts and paperwork',
+    hint: 'Not rebuilding and re-sending schedules, briefing each shift, chasing tasks, receipts and paperwork',
     max: 60,
     step: 0.5,
   },
@@ -288,7 +325,8 @@ function SavingsEstimate() {
       <h2 id="estimate-heading">What it could save a production</h2>
       <p className="investor__intro">
         An estimate, not a measured result: K-Net is still in its alpha trial. Change any number to match your
-        production; the defaults are a mid-size, six-week shoot.
+        production; the defaults are a six-week shoot filming around the clock, seven days a week, with a rotating
+        staff of about 50.
       </p>
 
       <div className="investor__estimate">
