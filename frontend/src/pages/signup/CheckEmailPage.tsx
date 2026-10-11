@@ -16,7 +16,7 @@ export function CheckEmailPage() {
     setStatus(null)
     try {
       await api('/auth/resend-verification/', { method: 'POST', body: JSON.stringify({ email }) })
-      setStatus({ kind: 'success', message: 'We sent a new link. It can take a minute or two to arrive.' })
+      setStatus({ kind: 'success', message: 'We sent a new link. It can take a minute or two to arrive, so check your spam folder too.' })
     } catch (err) {
       setStatus({ kind: 'error', message: err instanceof ApiError ? err.message : 'Could not send the email.' })
     } finally {
@@ -34,7 +34,16 @@ export function CheckEmailPage() {
           We sent a verification link to {email ? <strong>{email}</strong> : 'your email address'}. Open it to verify
           your email and finish setting up your account.
         </p>
-        <p className="check-email__hint">Don’t see it? Check your spam or junk folder. The link works for 3 days.</p>
+        <div className="check-email__spam">
+          <p>
+            <strong>Not in your inbox? Check your spam or junk folder.</strong>
+          </p>
+          <p>
+            K-Net emails sometimes end up there. If you find it, mark it as “Not spam” so future K-Net emails reach your
+            inbox.
+          </p>
+        </div>
+        <p className="check-email__hint">The link works for 3 days.</p>
         {status && (
           <p className={`notice notice--${status.kind}`} role="status">
             {status.message}

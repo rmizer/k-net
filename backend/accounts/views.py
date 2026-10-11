@@ -72,7 +72,8 @@ class LoginView(APIView):
         if not user.email_verified:
             return Response(
                 {
-                    "detail": "Please verify your email first. Check your inbox for the link we sent.",
+                    "detail": "Please verify your email first. Check your inbox, and your spam folder, "
+                    "for the link we sent.",
                     "code": "email_unverified",
                 },
                 status=status.HTTP_400_BAD_REQUEST,

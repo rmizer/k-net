@@ -182,6 +182,9 @@ export function SignupPage() {
         <button type="submit" className="button" disabled={submitting}>
           {submitting ? 'Signing up…' : 'Sign up'}
         </button>
+        <p className="form__hint">
+          We’ll email you a link to verify your account. If it isn’t in your inbox, check your spam or junk folder.
+        </p>
       </form>
       <p className="login__alt">
         Already have an account? <Link to="/login">Log in</Link>

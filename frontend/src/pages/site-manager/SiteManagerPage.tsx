@@ -342,8 +342,8 @@ export function SiteManagerPage() {
             <h2 id="pending-heading">Waiting for email verification</h2>
           </div>
           <p className="muted sm-pending__hint">
-            They can’t log in until they click the link in their email. Resend it, or verify them yourself if you
-            know who they are.
+            They can’t log in until they click the link in their email, which may have gone to their spam or junk
+            folder. Resend it, or verify them yourself if you know who they are.
           </p>
           <ul className="sm-pending">
             {pending.map((person) => (

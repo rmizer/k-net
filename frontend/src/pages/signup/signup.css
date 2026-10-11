@@ -65,6 +65,23 @@
   color: var(--knet-dark-red);
 }
 
+/* The spam-folder reminder: easy to spot, but not an error. */
+.check-email__spam {
+  justify-self: stretch;
+  padding: 0.6rem 0.75rem;
+  border-left: 4px solid var(--knet-dark-red);
+  background: var(--knet-gray-100);
+  text-align: left;
+}
+
+.check-email__spam p {
+  margin: 0;
+}
+
+.check-email__spam p + p {
+  margin-top: 0.25rem;
+}
+
 .check-email__hint {
   font-size: 0.9rem;
   color: var(--knet-gray-600);
