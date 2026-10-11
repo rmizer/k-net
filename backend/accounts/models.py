@@ -1,5 +1,8 @@
+from datetime import timedelta
+
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
+from django.utils import timezone
 
 
 class Department(models.Model):
@@ -77,6 +80,12 @@ class User(AbstractUser):
     slack_notifications = models.BooleanField(
         default=True, help_text="Send this person a Slack message when they're assigned a task."
     )
+    # A new email waiting for its confirmation link to be clicked, and when the
+    # person last changed their own email (allowed once every EMAIL_CHANGE_INTERVAL).
+    pending_email = models.EmailField(blank=True)
+    email_changed_at = models.DateTimeField(null=True, blank=True)
+
+    EMAIL_CHANGE_INTERVAL = timedelta(days=14)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["first_name", "last_name"]
@@ -106,6 +115,14 @@ class User(AbstractUser):
 
     def can_assign_role(self, role):
         return role in self.ASSIGNABLE_ROLES.get(self.role, set())
+
+    @property
+    def next_email_change(self):
+        """When this person may change their own email again, or None if they can now."""
+        if self.email_changed_at is None:
+            return None
+        allowed = self.email_changed_at + self.EMAIL_CHANGE_INTERVAL
+        return allowed if allowed > timezone.now() else None
 
 
 class RemovalRequest(models.Model):

@@ -388,3 +388,95 @@ class RemovalRequestTests(APITestCase):
         other.refresh_from_db()
         self.assertTrue(other.is_active)
         self.assertEqual(self.client.get("/api/removal-requests/").data, [])
+
+
+@override_settings(SITE_URL="https://knet.example.com")
+class EmailChangeTests(APITestCase):
+    def setUp(self):
+        cache.clear()  # Reset the rate limits between tests.
+        self.user = make_user("old@test.com", User.Role.STAFF, slack_user_id="U123")
+        self.client.force_authenticate(self.user)
+
+    def request_change(self, email="New@Test.com", password=PASSWORD):
+        return self.client.post("/api/auth/me/email/", {"email": email, "password": password}, format="json")
+
+    def confirm(self):
+        match = re.search(r"https://knet\.example\.com/confirm-email\?(\S+)", mail.outbox[-1].body)
+        params = dict(item.split("=", 1) for item in match.group(1).split("&"))
+        self.client.force_authenticate(None)  # The link works from any device.
+        return self.client.post("/api/auth/confirm-email/", params, format="json")
+
+    def test_change_waits_for_the_link_then_applies(self):
+        response = self.request_change()
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["pending_email"], "new@test.com")
+        self.assertEqual(mail.outbox[-1].to, ["new@test.com"])
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.email, "old@test.com")  # Nothing changes yet.
+
+        response = self.confirm()
+        self.assertEqual(response.status_code, 200, response.data)
+        self.user.refresh_from_db()
+        self.assertEqual((self.user.email, self.user.pending_email, self.user.slack_user_id), ("new@test.com", "", ""))
+        self.assertIsNotNone(self.user.email_changed_at)
+        self.assertEqual(mail.outbox[-1].to, ["old@test.com"])  # Heads-up to the old address.
+        self.assertTrue(self.client.login(email="new@test.com", password=PASSWORD))
+
+    def test_link_works_once(self):
+        self.request_change()
+        self.assertEqual(self.confirm().status_code, 200)
+        mail.outbox.pop()  # The notice to the old address.
+        self.assertEqual(self.confirm().status_code, 400)
+
+    def test_asking_for_another_address_cancels_the_first_link(self):
+        self.request_change("first@test.com")
+        first_mail = mail.outbox[-1]
+        self.request_change("second@test.com")
+        mail.outbox[-1] = first_mail
+        self.assertEqual(self.confirm().status_code, 400)
+
+    def test_needs_the_current_password(self):
+        response = self.request_change(password="wrong")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("password", response.data)
+        self.assertEqual(mail.outbox, [])
+
+    def test_email_must_be_free(self):
+        make_user("taken@test.com", User.Role.STAFF)
+        self.assertEqual(self.request_change("Taken@test.com").status_code, 400)
+
+    def test_once_every_two_weeks(self):
+        from datetime import timedelta
+
+        from django.utils import timezone
+
+        self.request_change()
+        self.confirm()
+        self.client.force_authenticate(User.objects.get(pk=self.user.pk))
+        response = self.request_change("again@test.com")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("two weeks", str(response.data["email"]))
+
+        User.objects.filter(pk=self.user.pk).update(email_changed_at=timezone.now() - timedelta(days=15))
+        self.client.force_authenticate(User.objects.get(pk=self.user.pk))
+        self.assertEqual(self.request_change("again@test.com").status_code, 200)
+
+    def test_cancel_pending_change(self):
+        self.request_change()
+        response = self.client.delete("/api/auth/me/email/")
+        self.assertEqual(response.data["pending_email"], "")
+        self.assertEqual(self.confirm().status_code, 400)
+
+    def test_email_is_still_read_only_on_the_profile(self):
+        self.client.patch("/api/auth/me/", {"email": "sneaky@test.com"}, format="json")
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.email, "old@test.com")
+
+    def test_manager_changing_someones_email_isnt_limited(self):
+        director = make_user("dir@test.com", User.Role.DIRECTOR)
+        self.client.force_authenticate(director)
+        response = self.client.patch(f"/api/users/{self.user.pk}/", {"email": "fixed@test.com"}, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.user.refresh_from_db()
+        self.assertEqual((self.user.email, self.user.slack_user_id), ("fixed@test.com", ""))
+        self.assertIsNone(self.user.email_changed_at)

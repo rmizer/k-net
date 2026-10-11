@@ -5,7 +5,7 @@ from django.core.mail import send_mail
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
-from .tokens import email_verification_token
+from .tokens import email_change_token, email_verification_token
 
 
 def verification_link(user):
@@ -31,6 +31,43 @@ def send_verification_email(user):
         ),
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[user.email],
+    )
+
+
+def send_email_change_email(user):
+    """Sends the confirmation link to the new address; the change happens when it's clicked."""
+    query = urlencode(
+        {"uid": urlsafe_base64_encode(force_bytes(user.pk)), "token": email_change_token.make_token(user)}
+    )
+    link = f"{settings.SITE_URL.rstrip('/')}/confirm-email?{query}"
+    send_mail(
+        subject="Confirm your new email for K-Net",
+        message=(
+            f"Hi {user.first_name},\n\n"
+            f"You asked to change the email on your K-Net account to {user.pending_email}. "
+            f"Open this link to confirm it:\n\n{link}\n\n"
+            "After that, you log in to K-Net with this address. The link works for 3 days. "
+            "If you didn't ask for this, you can ignore this email and nothing will change.\n\n"
+            f"K-Net Support\n{settings.SUPPORT_EMAIL}"
+        ),
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[user.pending_email],
+    )
+
+
+def send_email_changed_notice(old_email, user):
+    """Lets the old address know, in case the change wasn't theirs."""
+    send_mail(
+        subject="Your K-Net email was changed",
+        message=(
+            f"Hi {user.first_name},\n\n"
+            f"The email on your K-Net account was changed from {old_email} to {user.email}. "
+            "From now on, log in with the new address.\n\n"
+            f"If you didn't make this change, contact us right away at {settings.SUPPORT_EMAIL}.\n\n"
+            "K-Net Support"
+        ),
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[old_email],
     )
 
 

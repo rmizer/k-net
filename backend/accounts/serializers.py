@@ -147,6 +147,11 @@ class UserSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         password = validated_data.pop("password", None)
+        if validated_data.get("email", instance.email) != instance.email:
+            # A manager changed it: drop any change the person had pending, and
+            # find them in Slack again under the new address.
+            instance.pending_email = ""
+            instance.slack_user_id = ""
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         if password:
@@ -172,8 +177,18 @@ class ProfileSerializer(UserSerializer):
             "assignable_roles",
             "slack_available",
             "slack_invite_url",
+            "pending_email",
+            "next_email_change",
         ]
-        read_only_fields = ["email", "role", "department", "is_active_crew", "profile_picture"]
+        read_only_fields = [
+            "email",
+            "role",
+            "department",
+            "is_active_crew",
+            "profile_picture",
+            "pending_email",
+            "next_email_change",
+        ]
 
     def get_assignable_roles(self, user):
         return [role for role in User.Role.values if user.can_assign_role(role)]
@@ -183,6 +198,36 @@ class ProfileSerializer(UserSerializer):
 
     def get_slack_invite_url(self, user):
         return settings.SLACK_INVITE_URL
+
+
+class EmailChangeSerializer(serializers.Serializer):
+    """Someone changing their own email: the new address and their current password."""
+
+    email = serializers.EmailField()
+    password = serializers.CharField(trim_whitespace=False)
+
+    def validate_password(self, password):
+        if not self.context["user"].check_password(password):
+            raise serializers.ValidationError("That isn't your current password.")
+        return password
+
+    def validate_email(self, email):
+        email = User.objects.normalize_email(email).lower()
+        user = self.context["user"]
+        if email == user.email.lower():
+            raise serializers.ValidationError("That's already your email.")
+        if User.objects.filter(email__iexact=email).exclude(pk=user.pk).exists():
+            raise serializers.ValidationError("Another account already uses this email.")
+        return email
+
+    def validate(self, attrs):
+        next_change = self.context["user"].next_email_change
+        if next_change is not None:
+            raise serializers.ValidationError(
+                {"email": f"You can change your email once every two weeks. "
+                          f"You can change it again on {next_change:%B} {next_change.day}."}
+            )
+        return attrs
 
 
 class ProfilePictureSerializer(serializers.ModelSerializer):

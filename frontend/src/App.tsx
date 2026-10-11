@@ -37,6 +37,7 @@ import { TimelinePage } from './pages/schedule/TimelinePage'
 import { LoginPage } from './pages/LoginPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { CheckEmailPage } from './pages/signup/CheckEmailPage'
+import { ConfirmEmailPage } from './pages/signup/ConfirmEmailPage'
 import { SignupPage } from './pages/signup/SignupPage'
 import { VerifyEmailPage } from './pages/signup/VerifyEmailPage'
 import { TrialBanner } from './trial/TrialBanner'
@@ -54,6 +55,7 @@ export default function App() {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/check-email" element={<CheckEmailPage />} />
           <Route path="/verify-email" element={<VerifyEmailPage />} />
+          <Route path="/confirm-email" element={<ConfirmEmailPage />} />
           {/* The private investor page: public to anyone with the link, no site chrome. */}
           <Route path="/for-investors" element={<InvestorPage />} />
           <Route path="/investors/:token" element={<InvestorPage />} />

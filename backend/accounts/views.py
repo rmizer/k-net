@@ -21,11 +21,17 @@ from notifications import slack
 from tasks.models import Task
 from tasks.onboarding import add_starter_tasks
 
-from .emails import send_removal_request_email, send_verification_email
+from .emails import (
+    send_email_change_email,
+    send_email_changed_notice,
+    send_removal_request_email,
+    send_verification_email,
+)
 from .models import Department, RemovalRequest, User
 from .permissions import IsManagerLevel, IsSiteManager, ReadOnlyOrManagerLevel
 from .serializers import (
     DepartmentSerializer,
+    EmailChangeSerializer,
     LoginSerializer,
     ProfilePictureSerializer,
     ProfileSerializer,
@@ -33,7 +39,7 @@ from .serializers import (
     SignupSerializer,
     UserSerializer,
 )
-from .tokens import email_verification_token
+from .tokens import email_change_token, email_verification_token
 
 logger = logging.getLogger(__name__)
 
@@ -193,6 +199,80 @@ class MeView(APIView):
                 task.status = Task.Status.DONE
                 task.save()
         return Response(serializer.data)
+
+
+class EmailChangeView(APIView):
+    """Someone changing their own email. POST sends a confirmation link to the new
+    address (nothing changes until it's clicked); DELETE cancels a pending change.
+    Allowed once every two weeks."""
+
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "verification"
+
+    def post(self, request):
+        user = request.user
+        serializer = EmailChangeSerializer(data=request.data, context={"user": user})
+        serializer.is_valid(raise_exception=True)
+        user.pending_email = serializer.validated_data["email"]
+        user.save(update_fields=["pending_email"])
+        try:
+            send_email_change_email(user)
+        except Exception:
+            logger.exception("Couldn't send the email change link to %s", user.pending_email)
+            return Response(
+                {"detail": "We couldn't send the confirmation email just now. Please try again in a few minutes."},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
+        return Response(ProfileSerializer(user, context={"request": request}).data)
+
+    def delete(self, request):
+        user = request.user
+        if user.pending_email:
+            user.pending_email = ""
+            user.save(update_fields=["pending_email"])
+        return Response(ProfileSerializer(user, context={"request": request}).data)
+
+
+class ConfirmEmailChangeView(APIView):
+    """The link from the email-change email. Works whether or not the person is
+    signed in on this device, and doesn't sign anyone in."""
+
+    permission_classes = [AllowAny]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "verification"
+
+    def post(self, request):
+        try:
+            pk = force_str(urlsafe_base64_decode(request.data.get("uid", "")))
+            user = User.objects.get(pk=pk, is_active=True)
+        except (ValueError, TypeError, User.DoesNotExist):
+            user = None
+        if (
+            user is None
+            or not user.pending_email
+            or not email_change_token.check_token(user, request.data.get("token", ""))
+        ):
+            return Response(
+                {"detail": "This link has expired or was already used. You can ask for a new one on your Account page."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if User.objects.filter(email__iexact=user.pending_email).exclude(pk=user.pk).exists():
+            return Response(
+                {"detail": "Another account started using this email in the meantime, so we couldn't change it."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        old_email = user.email
+        user.email = user.pending_email
+        user.pending_email = ""
+        user.email_changed_at = timezone.now()
+        user.email_verified = True
+        user.slack_user_id = ""  # Found again in Slack under the new address.
+        user.save(update_fields=["email", "pending_email", "email_changed_at", "email_verified", "slack_user_id"])
+        try:
+            send_email_changed_notice(old_email, user)
+        except Exception:
+            logger.exception("Couldn't send the email-changed notice to %s", old_email)
+        return Response({"email": user.email})
 
 
 class ProfilePictureView(APIView):

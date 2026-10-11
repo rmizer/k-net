@@ -32,6 +32,10 @@ export interface User {
   slack_notifications?: boolean
   /** Only on the signed-in user's own profile: whether the server has Slack set up. */
   slack_available?: boolean
+  /** Only on the signed-in user's own profile: a new email waiting for its confirmation link. */
+  pending_email?: string
+  /** Only on the signed-in user's own profile: when they may change their email again, if not yet. */
+  next_email_change?: string | null
   /** Only on the signed-in user's own profile: link to join the K-Net Slack workspace. */
   slack_invite_url?: string
   /** Only right after creating an account without choosing a password. */

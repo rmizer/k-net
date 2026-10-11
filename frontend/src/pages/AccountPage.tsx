@@ -3,6 +3,7 @@ import { api, ApiError } from '../api'
 import { useAuth } from '../auth/useAuth'
 import type { User } from '../auth/roles'
 import { initials } from '../format'
+import { EmailChange } from './EmailChange'
 
 const EDITABLE_FIELDS = [
   { name: 'first_name', label: 'First name', type: 'text', autoComplete: 'given-name' },
@@ -87,36 +88,35 @@ export function AccountPage() {
           </label>
         </div>
 
-        <form className="tile form account__details" onSubmit={handleSave}>
-          <p className="form__static">
-            <span>Email</span>
-            {user.email}
-          </p>
-          {EDITABLE_FIELDS.map((field) => (
-            <label key={field.name} className="form__field">
-              <span>{field.label}</span>
-              <input
-                type={field.type}
-                autoComplete={field.autoComplete}
-                value={form[field.name]}
-                onChange={(event) => setForm({ ...form, [field.name]: event.target.value })}
-              />
-            </label>
-          ))}
-          {user.slack_available && (
-            <label className="form__check">
-              <input
-                type="checkbox"
-                checked={slackNotifications}
-                onChange={(event) => setSlackNotifications(event.target.checked)}
-              />
-              Message me on Slack when I'm assigned a task
-            </label>
-          )}
-          <button type="submit" className="button" disabled={saving}>
-            {saving ? 'Saving…' : 'Save changes'}
-          </button>
-        </form>
+        <div className="account__main">
+          <EmailChange user={user} />
+          <form className="tile form account__details" onSubmit={handleSave}>
+            {EDITABLE_FIELDS.map((field) => (
+              <label key={field.name} className="form__field">
+                <span>{field.label}</span>
+                <input
+                  type={field.type}
+                  autoComplete={field.autoComplete}
+                  value={form[field.name]}
+                  onChange={(event) => setForm({ ...form, [field.name]: event.target.value })}
+                />
+              </label>
+            ))}
+            {user.slack_available && (
+              <label className="form__check">
+                <input
+                  type="checkbox"
+                  checked={slackNotifications}
+                  onChange={(event) => setSlackNotifications(event.target.checked)}
+                />
+                Message me on Slack when I'm assigned a task
+              </label>
+            )}
+            <button type="submit" className="button" disabled={saving}>
+              {saving ? 'Saving…' : 'Save changes'}
+            </button>
+          </form>
+        </div>
       </div>
     </section>
   )

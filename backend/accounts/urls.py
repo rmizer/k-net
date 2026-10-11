@@ -17,5 +17,7 @@ urlpatterns = [
     path("auth/resend-verification/", views.ResendVerificationView.as_view(), name="auth-resend-verification"),
     path("auth/me/", views.MeView.as_view(), name="auth-me"),
     path("auth/me/picture/", views.ProfilePictureView.as_view(), name="auth-me-picture"),
+    path("auth/me/email/", views.EmailChangeView.as_view(), name="auth-me-email"),
+    path("auth/confirm-email/", views.ConfirmEmailChangeView.as_view(), name="auth-confirm-email"),
     path("", include(router.urls)),
 ]
