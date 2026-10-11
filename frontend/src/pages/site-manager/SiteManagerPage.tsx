@@ -517,7 +517,7 @@ export function SiteManagerPage() {
                         </td>
                         <td data-label="Status">
                           {person.email_verified === false ? (
-                            <span className="badge">Not verified</span>
+                            <span className="badge sm-pill">Not verified</span>
                           ) : (
                             'Verified'
                           )}
@@ -526,7 +526,7 @@ export function SiteManagerPage() {
                           <td data-label="Slack">
                             {person.slack_status && (
                               <span
-                                className={`badge sm-slack${person.slack_status === 'connected' ? ' badge--muted' : ''}`}
+                                className={`badge sm-pill${person.slack_status === 'connected' ? ' badge--muted' : ''}`}
                                 title={SLACK_STATUSES[person.slack_status].hint}
                               >
                                 {SLACK_STATUSES[person.slack_status].label}

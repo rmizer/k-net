@@ -49,9 +49,9 @@
   border-top-color: var(--knet-red);
 }
 
-/* Slack status pills: smaller and tighter than a standard badge, on one line,
+/* Status pills (verification, Slack): smaller and tighter than a standard badge, on one line,
    with the text centered both ways. */
-.sm-slack {
+.sm-pill {
   display: inline-flex;
   align-items: center;
   justify-content: center;
