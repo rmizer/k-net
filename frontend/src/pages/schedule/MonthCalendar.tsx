@@ -15,6 +15,8 @@ interface MonthCalendarProps {
 
 const MAX_CHIPS = 3
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+// The last two columns, Saturday and Sunday, get a light weekend tint.
+const isWeekendColumn = (index: number) => index % 7 >= 5
 
 /** The six Monday-first weeks that cover a month. */
 export function monthGrid(month: string): string[] {
@@ -71,15 +73,20 @@ export function MonthCalendar(props: MonthCalendarProps) {
       </div>
 
       <div className="month__grid">
-        {WEEKDAYS.map((name) => (
-          <span key={name} className="month__weekday" aria-hidden="true">
+        {WEEKDAYS.map((name, index) => (
+          <span
+            key={name}
+            className={`month__weekday${isWeekendColumn(index) ? ' is-weekend' : ''}`}
+            aria-hidden="true"
+          >
             {name}
           </span>
         ))}
-        {days.map((day) => {
+        {days.map((day, index) => {
           const dayEvents = byDay.get(day) ?? []
           const classes = [
             'month__day',
+            isWeekendColumn(index) && 'is-weekend',
             !day.startsWith(month) && 'is-outside',
             day === today && 'is-today',
             day === selectedDay && 'is-selected',

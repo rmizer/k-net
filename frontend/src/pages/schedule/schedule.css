@@ -152,6 +152,19 @@
   outline-offset: 1px;
 }
 
+/* Weekends: a faint warm tint and red column headings, quieter than outside-month days. */
+.month__weekday.is-weekend {
+  color: var(--knet-dark-red);
+}
+
+.month__day.is-weekend {
+  background: #fbf7f7;
+}
+
+.month__day.is-weekend:hover {
+  background: var(--knet-gray-100);
+}
+
 .month__day.is-outside {
   background: var(--knet-gray-100);
   color: var(--knet-gray-600);
