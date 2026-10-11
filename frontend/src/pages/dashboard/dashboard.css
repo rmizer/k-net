@@ -515,6 +515,19 @@
   height: auto;
 }
 
+/* "Scan me" on the white card, under the code. */
+.callout__qr-caption {
+  display: block;
+  margin-top: 0.35rem;
+  color: var(--knet-dark-red);
+  font-size: 0.8rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+}
+
 .callout__link {
   color: var(--knet-white);
   font-weight: var(--weight-bold);
@@ -530,7 +543,12 @@
 /* Invite, download and copy: equal-width buttons stacked on the right. */
 .callout__actions--stack {
   justify-items: stretch;
-  gap: 0.5rem;
+  gap: 0.4rem;
+}
+
+.callout__actions--stack .callout__button {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.85rem;
 }
 
 .callout--share strong {

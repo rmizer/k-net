@@ -23,9 +23,12 @@ export function ShareSection() {
     <aside className="callout callout--share" aria-labelledby="share-heading">
       <span className="callout__qr">
         <img src={qrCode} alt="QR code that opens K-Net" width={387} height={377} />
+        <span className="callout__qr-caption" aria-hidden="true">
+          Scan me
+        </span>
       </span>
       <div className="callout__text">
-        <p className="callout__eyebrow">Share K-Net · Scan me</p>
+        <p className="callout__eyebrow">Share K-Net</p>
         <h2 id="share-heading">Bring your team onto K-Net</h2>
         <p>
           Have a teammate point their phone camera at this code. It opens K-Net, where they tap{' '}
