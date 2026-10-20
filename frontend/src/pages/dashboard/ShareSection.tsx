@@ -22,7 +22,7 @@ export function ShareSection() {
   return (
     <aside className="callout callout--share" aria-labelledby="share-heading">
       <span className="callout__qr">
-        <img src={qrCode} alt="QR code that opens K-Net" width={387} height={377} />
+        <img src={qrCode} alt="QR code that opens K-Net" width={1024} height={1024} />
         <span className="callout__qr-caption" aria-hidden="true">
           Scan me
         </span>
