@@ -83,8 +83,8 @@ export const NAV_ITEMS: NavItem[] = [
       },
     ],
   },
-  { label: 'Help', path: '/help', icon: 'help' },
   { label: 'Contact', path: '/contact', icon: 'mail' },
+  { label: 'Help', path: '/help', icon: 'help' },
 ]
 
 export const canSee = (item: NavItem, role: Role | undefined) =>
