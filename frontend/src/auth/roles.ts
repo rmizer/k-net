@@ -10,6 +10,8 @@ export interface User {
   phone: string
   role: Role
   role_display: string
+  /** Job title on the production, e.g. "Executive Producer" (separate from the site role). */
+  title: string
   department: number | null
   department_name: string | null
   /** Department heads can be put on a show. */
@@ -63,6 +65,23 @@ export const DIRECTOR_ROLES: Role[] = ['site_manager', 'director']
 export const isDirectorLevel = (user: User | null) => !!user && DIRECTOR_ROLES.includes(user.role)
 
 export const isManagerLevel = (user: User | null) => !!user && MANAGER_ROLES.includes(user.role)
+
+/** Who may open a page: `roles` (omitted means everyone signed in), plus anyone in
+ *  one of `departments` (matched by name, ignoring case) whatever their role. */
+export interface Access {
+  roles?: Role[]
+  departments?: string[]
+}
+
+export const canAccess = (user: User | null, { roles, departments }: Access) => {
+  if (!user) return false
+  if (!roles || roles.includes(user.role)) return true
+  const department = user.department_name?.trim().toLowerCase()
+  return !!department && !!departments?.some((name) => name.toLowerCase() === department)
+}
+
+/** The Marketing page: Site Managers, Directors, Assistants and the Marketing department. */
+export const MARKETING_ACCESS: Access = { roles: MANAGER_ROLES, departments: ['Marketing'] }
 
 export const isSiteManager = (user: User | null) => user?.role === 'site_manager'
 

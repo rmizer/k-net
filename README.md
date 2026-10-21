@@ -71,6 +71,12 @@ would change without saving.
 season 1 (creating the show, and any missing influencers with dummy contact details). Safe to run again;
 `--dry-run` previews.
 
+`python manage.py load_call_sheet` loads the Battle House Live call sheet: the crew into the Directory (with
+job titles, site roles and departments; made-up `@example.com` emails and 555 numbers where the sheet has none),
+the Crew Hotel, Cast House 2.0 and Segment House into Locations, and the day's shoot schedule every day from Oct 9
+to Oct 23. Safe to run again (it replaces its own schedule items); `--remove-filming` also deletes the placeholder
+"Filming" events in those dates, and `--dry-run` previews.
+
 `python manage.py import_influencers <file.csv>` adds or updates Influencer Roster entries from a CSV
 (needs a `name` column; matches existing influencers by name).
 
@@ -102,9 +108,9 @@ page for the address K-Net is running at, with download, share and print options
 - **Only Site Managers delete accounts** (deleting deactivates: no sign-in, records kept, restorable
   in the admin). Directors and Assistants use **Request removal**, which emails every Site Manager
   and lists the request on the Site Manager Dashboard to delete or dismiss.
-- **Director's Dashboard** (`/staff-manager`, Directors, Assistants and Site Managers): the master
+- **Director Dashboard** (`/staff-manager`, Directors, Assistants and Site Managers): the master
   staff list, departments, per-person schedules and tasks.
-- **Block scheduling:** "Schedule a block" (Director's Dashboard and Scheduling) adds the same hours
+- **Block scheduling:** "Schedule a block" (Director Dashboard and Scheduling) adds the same hours
   over one or more date ranges on chosen weekdays, e.g. Oct 5–30, weekdays, 9 to 5
   (`POST /api/events/block/`). Each day is its own event sharing a `block` ID, so one day can be
   edited on its own or the whole block deleted (`DELETE /api/events/block/<id>/`).

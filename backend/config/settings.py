@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "resources",
     "influencers",
     "shows",
+    "meetings",
     "documents",
     "locations",
     "finance",

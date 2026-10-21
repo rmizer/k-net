@@ -23,6 +23,7 @@ export function StaffTile({ person, onEdit, onRemove, onRequestRemoval }: StaffT
         <Avatar person={person} />
         <div className="staff-tile__name">
           <h3>{name}</h3>
+          {person.title && <p className="staff-tile__title">{person.title}</p>}
           <p className="staff-tile__role">
             {person.role_display}
             {person.department_name ? ` · ${person.department_name}` : ''}

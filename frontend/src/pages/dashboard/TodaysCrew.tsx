@@ -7,7 +7,7 @@ export function TodaysCrew({ groups }: { groups: CrewGroup[] }) {
     <DashboardSection title="Today’s Crew" action={<Link to="/crew">Full crew list</Link>}>
       {groups.length === 0 ? (
         <div className="tile">
-          <p className="muted">No active crew yet.</p>
+          <p className="muted">No one is on the schedule today.</p>
         </div>
       ) : (
         <ul className="crew-tiles">

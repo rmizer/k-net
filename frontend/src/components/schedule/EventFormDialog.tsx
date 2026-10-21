@@ -45,6 +45,7 @@ export function EventFormDialog(props: EventFormDialogProps) {
     location: event?.location ?? '',
     department: event?.department?.toString() ?? '',
     description: event?.description ?? '',
+    talent_crew: event?.talent_crew ?? '',
   })
   const [allDay, setAllDay] = useState(event?.all_day ?? false)
   const [attendees, setAttendees] = useState<number[]>(event?.attendees ?? defaultAttendees)
@@ -83,6 +84,7 @@ export function EventFormDialog(props: EventFormDialogProps) {
           location: form.location,
           department: form.department ? Number(form.department) : null,
           description: form.description,
+          talent_crew: form.talent_crew,
           attendees,
         }),
       })
@@ -157,6 +159,16 @@ export function EventFormDialog(props: EventFormDialogProps) {
             </select>
           </label>
         </div>
+
+        <label className="form__field">
+          <span>Talent / crew</span>
+          <input
+            value={form.talent_crew}
+            onChange={(e) => set('talent_crew', e.target.value)}
+            placeholder="Who it’s for, e.g. All crew or BG & creators (shown on call sheets)"
+            autoComplete="off"
+          />
+        </label>
 
         <div className="form__grid form__grid--three">
           <label className="form__field">

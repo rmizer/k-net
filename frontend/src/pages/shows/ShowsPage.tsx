@@ -15,7 +15,7 @@ export function ShowsPage() {
   const canEdit = isDirectorLevel(user)
   const shows = useFetch<Show[]>('/shows/')
   const [searchParams, setSearchParams] = useSearchParams()
-  // undefined = closed, null = creating, Show = editing. The Director's Dashboard
+  // undefined = closed, null = creating, Show = editing. The Director Dashboard
   // links here with ?new=1 to open the create form.
   const [editing, setEditing] = useState<Show | null | undefined>(() =>
     canEdit && searchParams.get('new') ? null : undefined,

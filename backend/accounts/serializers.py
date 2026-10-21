@@ -47,6 +47,7 @@ class UserSerializer(serializers.ModelSerializer):
             "phone",
             "role",
             "role_display",
+            "title",
             "department",
             "department_name",
             "is_department_head",
@@ -69,7 +70,8 @@ class UserSerializer(serializers.ModelSerializer):
             # Uniqueness is checked in validate_email, with clearer messages.
             "email": {"validators": []},
             "first_name": {"required": True, "allow_blank": False},
-            "last_name": {"required": True, "allow_blank": False},
+            # Some crew go by one name (e.g. "Chico").
+            "last_name": {"required": False, "allow_blank": True},
         }
 
     def _viewer(self):

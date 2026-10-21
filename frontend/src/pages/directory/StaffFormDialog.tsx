@@ -19,6 +19,7 @@ type FormState = {
   last_name: string
   email: string
   phone: string
+  title: string
   role: Role
   department: string
   is_department_head: boolean
@@ -37,6 +38,7 @@ function initialState(person: User | null, assignableRoles: Role[]): FormState {
     last_name: person?.last_name ?? '',
     email: person?.email ?? '',
     phone: person?.phone ?? '',
+    title: person?.title ?? '',
     role: person?.role ?? (assignableRoles.includes('staff') ? 'staff' : assignableRoles[0]),
     department: person?.department ? String(person.department) : '',
     is_department_head: person?.is_department_head ?? false,
@@ -145,9 +147,15 @@ export function StaffFormDialog({ person, departments, assignableRoles, onSaved,
 
         <div className="form__grid">
           {field('first_name', 'First name', { required: true, autoComplete: 'off' })}
-          {field('last_name', 'Last name', { required: true, autoComplete: 'off' })}
+          {field('last_name', 'Last name', { autoComplete: 'off' })}
           {field('email', 'Email', { type: 'email', required: true, autoComplete: 'off' })}
           {field('phone', 'Phone', { type: 'tel', autoComplete: 'off' })}
+          <div className="form__span">
+            {field('title', 'Title', { autoComplete: 'off', placeholder: 'e.g. Executive Producer', maxLength: 150 })}
+            <p className="form__hint form__hint--below">
+              Their job on the production. The role below decides which pages they can open.
+            </p>
+          </div>
 
           <label className="form__field">
             <span>Role</span>

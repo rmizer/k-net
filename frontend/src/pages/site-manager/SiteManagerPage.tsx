@@ -625,7 +625,7 @@ export function SiteManagerPage() {
             <span className="fin-sub">Public; linked from About the trial.</span>
           </li>
           <li className="tile">
-            <Link to="/staff-manager">Director’s Dashboard</Link>
+            <Link to="/staff-manager">Director Dashboard</Link>
             <span className="fin-sub">Schedules, tasks and the master staff list.</span>
           </li>
         </ul>

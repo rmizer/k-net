@@ -15,7 +15,7 @@ const FEATURES: [string, string, NavIconName][] = [
   ['Locations and Resources', 'Lodging and shooting locations on a map, and the vendors and services the production uses.', 'pin'],
   ['Documents', 'Permits, insurance, contracts, invoices and receipts. Staff can upload their own receipts.', 'document'],
   ['Finance', 'For Directors and Assistants: payroll, money in and out, invoices and a finance calendar.', 'dollar'],
-  ['Director’s Dashboard', 'For Directors and Assistants: departments, staff details, schedules and task assignments in one place.', 'clipboard'],
+  ['Director Dashboard', 'For Directors and Assistants: departments, staff details, schedules and task assignments in one place.', 'clipboard'],
 ]
 
 const NOT_INCLUDED: [string, string][] = [

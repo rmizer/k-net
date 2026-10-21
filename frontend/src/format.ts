@@ -13,6 +13,12 @@ export function formatTime(iso: string, timeZone: string): string {
   return new Intl.DateTimeFormat('en-US', { timeZone, hour: 'numeric', minute: '2-digit' }).format(new Date(iso))
 }
 
+/** A 24-hour "13:30" as "1:30 PM". */
+export function clockTime(time: string): string {
+  const [hour, minute] = time.split(':').map(Number)
+  return `${hour % 12 || 12}:${String(minute).padStart(2, '0')} ${hour < 12 ? 'AM' : 'PM'}`
+}
+
 export function formatTimeRange(start: string, end: string, timeZone: string): string {
   return `${formatTime(start, timeZone)} – ${formatTime(end, timeZone)}`
 }

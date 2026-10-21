@@ -1,0 +1,117 @@
+/* Meeting Notes (under Operations). Shared tokens and components live in src/index.css. */
+
+.meetings__breadcrumb {
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+}
+
+.meetings__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* List */
+.meeting-filters {
+  margin-top: 1.5rem;
+  grid-template-columns: 2fr repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 860px) {
+  .meeting-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.meetings__table {
+  margin-top: 1rem;
+}
+
+.meetings__row {
+  cursor: pointer;
+}
+
+.meetings__row:hover td {
+  background: var(--knet-gray-100);
+}
+
+.meetings__preview {
+  display: -webkit-box;
+  max-width: 32rem;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+/* One meeting */
+.meeting-note {
+  margin-top: 1.25rem;
+}
+
+.meeting-note__details {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 0.75rem 1.5rem;
+  margin: 0 0 1.25rem;
+}
+
+@media (max-width: 720px) {
+  .meeting-note__details {
+    grid-template-columns: 1fr;
+  }
+}
+
+.meeting-note__details dt,
+.meeting-note__heading {
+  margin: 0 0 0.2rem;
+  font-size: 0.75rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--knet-dark-red);
+}
+
+.meeting-note__details dd {
+  margin: 0;
+}
+
+.meeting-note__notes {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+
+.meetings__delete {
+  margin-top: 1rem;
+  text-align: right;
+}
+
+/* Form */
+.meeting-form {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.meeting-form__notes {
+  min-height: 22rem;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.meeting-form__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--knet-gray-300);
+}
+
+.meeting-form__status {
+  font-size: 0.9rem;
+  color: var(--knet-gray-600);
+}

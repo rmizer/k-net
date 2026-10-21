@@ -59,7 +59,7 @@ export function InvitePage() {
         </div>
         <p className="invite__note">
           Everyone who signs up joins as Staff after verifying their email. Directors and Assistants can then set their
-          department and role in the Director’s Dashboard.
+          department and role in the Director Dashboard.
         </p>
       </div>
     </section>

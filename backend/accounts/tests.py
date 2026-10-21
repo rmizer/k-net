@@ -5,7 +5,7 @@ from django.core.cache import cache
 from django.test import override_settings
 from rest_framework.test import APITestCase
 
-from .models import User
+from .models import User, format_phone
 
 PASSWORD = "A-strong-test-password-1"
 
@@ -121,6 +121,30 @@ class AccountCreationTests(APITestCase):
         self.assertEqual(self.client.delete(f"/api/users/{self.staff.pk}/").status_code, 204)
         self.staff.refresh_from_db()
         self.assertFalse(self.staff.is_active)
+
+
+class PhoneFormatTests(APITestCase):
+    def test_us_numbers_are_formatted_however_they_were_typed(self):
+        for typed in ["1234567890", "123-456-7890", "123.456.7890", "+1 123 456 7890", "(123)4567890"]:
+            self.assertEqual(format_phone(typed), "(123) 456-7890", typed)
+
+    def test_other_numbers_are_kept_as_typed(self):
+        for typed in ["", "+44 20 7946 0958", "555-0100", "123-456-7890 ext 4"]:
+            self.assertEqual(format_phone(typed), typed)
+
+    def test_saved_numbers_are_formatted(self):
+        director = make_user("dir@test.com", User.Role.DIRECTOR)
+        self.client.force_authenticate(director)
+        response = self.client.post(
+            "/api/users/",
+            {"email": "new@test.com", "first_name": "Chico", "role": "staff", "phone": "7869854974",
+             "emergency_contact_phone": "813.555.0100", "title": "Security Guard"},
+        )
+        self.assertEqual(response.status_code, 201, response.data)
+        self.assertEqual(response.data["phone"], "(786) 985-4974")
+        self.assertEqual(response.data["emergency_contact_phone"], "(813) 555-0100")
+        self.assertEqual(response.data["title"], "Security Guard")
+        self.assertEqual(response.data["last_name"], "")
 
 
 class DirectoryManagementTests(APITestCase):
@@ -261,7 +285,7 @@ class SignupTests(APITestCase):
         self.assertEqual(user.role, User.Role.STAFF)
         self.assertFalse(user.email_verified)
         self.assertIsNotNone(user.privacy_accepted_at)
-        self.assertEqual(user.phone, "813-555-0100")
+        self.assertEqual(user.phone, "(813) 555-0100")
         self.assertEqual(mail.outbox[0].to, ["sam.rivera@example.com"])
         self.assertIn("support.knet@gmail.com", mail.outbox[0].from_email)
 

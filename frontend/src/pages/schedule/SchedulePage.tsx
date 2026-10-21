@@ -194,6 +194,12 @@ function EventDetails({ event, timeZone, closeHref }: { event: CalendarEvent; ti
           <dt>Type</dt>
           <dd>{event.event_type.charAt(0).toUpperCase() + event.event_type.slice(1)}</dd>
         </div>
+        {event.talent_crew && (
+          <div>
+            <dt>Talent / crew</dt>
+            <dd>{event.talent_crew}</dd>
+          </div>
+        )}
         {event.location && (
           <div>
             <dt>Where</dt>

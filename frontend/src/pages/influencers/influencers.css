@@ -303,3 +303,29 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+/* Every column, headers included, is centered. */
+.influencer-table .fin-table th,
+.influencer-table .fin-table td {
+  text-align: center;
+}
+
+.influencer-table .sort-header {
+  justify-content: center;
+}
+
+.influencer-table .influencer-row {
+  justify-content: center;
+  text-align: left;
+}
+
+/* Stacked rows on phones read better left-aligned. */
+@media (max-width: 640px) {
+  .influencer-table .fin-table td {
+    text-align: left;
+  }
+
+  .influencer-table .influencer-row {
+    justify-content: flex-start;
+  }
+}

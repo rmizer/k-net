@@ -1,3 +1,5 @@
+from datetime import datetime, time, timedelta
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -28,6 +30,9 @@ class Event(models.Model):
 
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
+    # Who it's for, as the call sheet's "Talent / Crew" column puts it
+    # (e.g. "All crew", "BG & Creators").
+    talent_crew = models.CharField("talent / crew", max_length=150, blank=True)
     event_type = models.CharField(max_length=15, choices=EventType.choices, default=EventType.PRODUCTION)
     start = models.DateTimeField()
     end = models.DateTimeField()
@@ -83,3 +88,34 @@ class TimelineItem(models.Model):
     def clean(self):
         if self.start_date and self.end_date and self.end_date < self.start_date:
             raise ValidationError({"end_date": "The end date can't be before the start date."})
+
+
+def crew_calls(day):
+    """Who's working on a production day, by the schedule: everyone attending an
+    event that starts that day, or in the department it's for (help desk support
+    shifts aside). Returns
+    {person: their first event that day} (timed events before all-day ones)."""
+    from accounts.models import User
+    from core.models import ProductionSettings
+
+    zone = ProductionSettings.load().zone
+    start = datetime.combine(day, time.min, tzinfo=zone)
+    events = (
+        Event.objects.filter(start__gte=start, start__lt=start + timedelta(days=1))
+        .exclude(event_type=Event.EventType.SUPPORT)
+        .prefetch_related("attendees")
+        .order_by("all_day", "start", "title")
+    )
+    department_members = {}
+    calls = {}
+    for event in events:
+        people = [person for person in event.attendees.all() if person.is_active]
+        if event.department_id:
+            if event.department_id not in department_members:
+                department_members[event.department_id] = list(
+                    User.objects.filter(is_active=True, department_id=event.department_id)
+                )
+            people += department_members[event.department_id]
+        for person in people:
+            calls.setdefault(person, event)
+    return calls

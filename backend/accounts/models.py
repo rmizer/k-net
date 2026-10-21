@@ -1,8 +1,22 @@
+import re
 from datetime import timedelta
 
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.utils import timezone
+
+
+def format_phone(number):
+    """US numbers as (123) 456-7890, however they were typed: 1234567890,
+    123.456.7890, +1 123 456 7890... Anything else (international, extensions)
+    is kept as entered."""
+    number = (number or "").strip()
+    digits = re.sub(r"\D", "", number)
+    if len(digits) == 11 and digits.startswith("1"):
+        digits = digits[1:]
+    if len(digits) != 10 or re.search(r"[^\d\s().+\-]", number):
+        return number
+    return f"({digits[:3]}) {digits[3:6]}-{digits[6:]}"
 
 
 class Department(models.Model):
@@ -57,6 +71,9 @@ class User(AbstractUser):
     username = None
     email = models.EmailField("email address", unique=True)
     role = models.CharField(max_length=20, choices=Role.choices, default=Role.STAFF)
+    # Their job title on the production (e.g. "Executive Producer"), which can
+    # differ from the site role that decides what they can open.
+    title = models.CharField(max_length=150, blank=True)
     phone = models.CharField(max_length=30, blank=True)
     department = models.ForeignKey(
         Department, null=True, blank=True, on_delete=models.SET_NULL, related_name="members"
@@ -109,6 +126,8 @@ class User(AbstractUser):
         # Only Site Managers get into the Django admin (the footer's Dev Login).
         self.is_staff = self.role == self.Role.SITE_MANAGER
         self.is_superuser = self.role == self.Role.SITE_MANAGER
+        self.phone = format_phone(self.phone)
+        self.emergency_contact_phone = format_phone(self.emergency_contact_phone)
         super().save(*args, **kwargs)
 
     @property

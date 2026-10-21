@@ -1,8 +1,12 @@
-from datetime import date
+from datetime import date, datetime, time, timedelta
+from io import StringIO
+
+from django.core.management import call_command
+from django.utils import timezone
 
 from rest_framework.test import APITestCase
 
-from accounts.models import User
+from accounts.models import Department, User
 
 from .models import Event, TimelineItem
 
@@ -145,3 +149,62 @@ class BlockScheduleTests(APITestCase):
         self.assertEqual(Event.objects.count(), 5)
         self.assertTrue(all(str(e.block) == other for e in Event.objects.all()))
         self.assertEqual(self.client.delete(f"{self.URL}{block}/").status_code, 404)
+
+
+class CrewTests(APITestCase):
+    """The Staff / Crew page lists who's working by the schedule."""
+
+    def setUp(self):
+        self.audio = Department.objects.create(name="Audio")
+        self.viewer = make_user("viewer@test.com", User.Role.STAFF)
+        self.early = User.objects.create_user(email="early@test.com", first_name="Early", last_name="E")
+        self.member = User.objects.create_user(email="member@test.com", first_name="Mia", department=self.audio)
+        self.off = User.objects.create_user(email="off@test.com", first_name="Off", last_name="O")
+        self.day = date(2026, 10, 21)
+        zone = timezone.get_current_timezone()
+        at = lambda hour: datetime.combine(self.day, time(hour), tzinfo=zone)  # noqa: E731
+        call = Event.objects.create(title="Crew call", location="Hotel", start=at(8), end=at(9))
+        call.attendees.add(self.early)
+        Event.objects.create(title="Sound check", start=at(10), end=at(11), department=self.audio)
+        later = Event.objects.create(title="Later", start=at(12), end=at(13))
+        later.attendees.add(self.early)
+        support = Event.objects.create(title="Help desk", start=at(9), end=at(17), event_type=Event.EventType.SUPPORT)
+        support.attendees.add(self.off)
+        tomorrow = Event.objects.create(title="Tomorrow", start=at(8) + timedelta(days=1), end=at(9) + timedelta(days=1))
+        tomorrow.attendees.add(self.off)
+        self.client.force_authenticate(self.viewer)
+
+    def test_crew_is_everyone_called_that_day_with_their_first_call(self):
+        response = self.client.get("/api/users/crew/?date=2026-10-21")
+        self.assertEqual(response.status_code, 200)
+        crew = response.data["crew"]
+        self.assertEqual([person["first_name"] for person in crew], ["Early", "Mia"])
+        self.assertEqual(crew[0]["call"]["title"], "Crew call")
+        self.assertEqual(crew[0]["call"]["time"], "08:00")
+        self.assertEqual(crew[0]["call"]["location"], "Hotel")
+        self.assertEqual(crew[1]["call"]["title"], "Sound check")
+
+
+class LoadCallSheetTests(APITestCase):
+    def test_loads_staff_and_schedule_and_can_run_again(self):
+        Department.objects.create(name="Catering")
+        gloria = User.objects.create_user(email="gloria.palms@example.com", first_name="Gloria", last_name="Palms")
+        call_command("load_call_sheet", stdout=StringIO())
+        call_command("load_call_sheet", stdout=StringIO())
+
+        self.assertTrue(Department.objects.filter(name="Culinary").exists())
+        self.assertFalse(Department.objects.filter(name="Catering").exists())
+        gloria.refresh_from_db()
+        self.assertEqual((gloria.last_name, gloria.title, gloria.role), ("Palma", "Operations Coordinator", "director"))
+        self.assertEqual(gloria.department.name, "Operations")
+        self.assertEqual(gloria.phone, "(941) 374-4584")
+        babe = User.objects.get(first_name="Babe")
+        self.assertEqual((babe.role, babe.department.name), ("assistant", "Production"))
+        self.assertFalse(babe.has_usable_password())
+        chico = User.objects.get(first_name="Chico")
+        self.assertEqual((chico.role, chico.department.name), ("staff", "Security"))
+
+        # Every day from Oct 9 to 23, once each even after running twice.
+        lunches = Event.objects.filter(title="Cast lunch")
+        self.assertEqual(lunches.count(), 15)
+        self.assertEqual(lunches.first().talent_crew, "BG & creators")

@@ -13,7 +13,9 @@ interface DualListBoxProps {
   /** The saved list. */
   value: number[]
   /** Saves the list; may be async (e.g. straight to the server). */
-  onSave: (ids: number[]) => void | Promise<void>
+  onSave?: (ids: number[]) => void | Promise<void>
+  /** Inside a larger form: told about every move, and there's no Save button of its own. */
+  onChange?: (ids: number[]) => void
   /** Told whenever the list has moves that haven't been saved. */
   onDirtyChange?: (dirty: boolean) => void
   saveLabel?: string
@@ -31,6 +33,7 @@ export function DualListBox({
   options,
   value,
   onSave,
+  onChange,
   onDirtyChange,
   saveLabel = 'Save list',
   error,
@@ -53,6 +56,7 @@ export function DualListBox({
   const update = (next: number[]) => {
     setChosen(next)
     setSaved(false)
+    onChange?.(next)
     onDirtyChange?.(!sameIds(next, value))
   }
 
@@ -69,7 +73,7 @@ export function DualListBox({
   const save = async () => {
     setSaving(true)
     try {
-      await onSave(chosenIds)
+      await onSave?.(chosenIds)
       setSaved(true)
       onDirtyChange?.(false)
     } finally {
@@ -147,14 +151,16 @@ export function DualListBox({
         </label>
       </div>
 
-      <div className="dual-list__footer">
-        <button type="button" className="button" onClick={save} disabled={!dirty || saving}>
-          {saving ? 'Saving…' : saveLabel}
-        </button>
-        <span className="dual-list__status" role="status">
-          {dirty ? 'Unsaved changes' : saved ? 'Saved' : ''}
-        </span>
-      </div>
+      {!onChange && (
+        <div className="dual-list__footer">
+          <button type="button" className="button" onClick={save} disabled={!dirty || saving}>
+            {saving ? 'Saving…' : saveLabel}
+          </button>
+          <span className="dual-list__status" role="status">
+            {dirty ? 'Unsaved changes' : saved ? 'Saved' : ''}
+          </span>
+        </div>
+      )}
       {error && <small className="form__field-error">{error}</small>}
     </fieldset>
   )

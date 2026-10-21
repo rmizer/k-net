@@ -20,6 +20,7 @@ class EventSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "description",
+            "talent_crew",
             "event_type",
             "start",
             "end",

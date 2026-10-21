@@ -1,6 +1,6 @@
 // Shapes returned by the Django API.
 
-import type { Role } from './auth/roles'
+import type { Role, User } from './auth/roles'
 
 export interface Department {
   id: number
@@ -55,6 +55,8 @@ export interface CalendarEvent {
   id: number
   title: string
   description: string
+  /** Who it's for, as the call sheet's "Talent / Crew" column puts it. */
+  talent_crew: string
   event_type: EventType
   start: string
   end: string
@@ -66,6 +68,22 @@ export interface CalendarEvent {
   /** Shared by the events scheduled together as one block; null for one-offs. */
   block: string | null
   is_mine: boolean
+}
+
+/** Someone working on a day, by the schedule, with their first call. */
+export interface CrewMember extends User {
+  call: {
+    event: number
+    title: string
+    /** "HH:MM" production time; null for an all-day item. */
+    time: string | null
+    location: string
+  }
+}
+
+export interface CrewDay {
+  date: string
+  crew: CrewMember[]
 }
 
 /** A phase or milestone on the Master Timeline. Dates are "YYYY-MM-DD"; a
@@ -654,4 +672,18 @@ export interface RemovalRequest {
   reason: string
   status: 'pending' | 'approved' | 'dismissed'
   created_at: string
+}
+
+/** Minutes from one meeting (Site Managers, Directors and Assistants only). */
+export interface MeetingNote {
+  id: number
+  title: string
+  meeting_at: string
+  attendees: number[]
+  attendee_names: string[]
+  notes: string
+  created_by_name: string | null
+  updated_by_name: string | null
+  created_at: string
+  updated_at: string
 }

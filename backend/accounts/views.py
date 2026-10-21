@@ -6,6 +6,7 @@ from django.db.models import Count, Q
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_str
+from django.utils.dateparse import parse_date
 from django.utils.http import urlsafe_base64_decode
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import status, viewsets
@@ -18,6 +19,7 @@ from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
 
 from notifications import slack
+from schedule.models import crew_calls
 from tasks.models import Task
 from tasks.onboarding import add_starter_tasks
 
@@ -347,9 +349,23 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, permission_classes=[IsAuthenticated])
     def crew(self, request):
-        """Active crew only, for the Staff / Crew page."""
-        users = self.get_queryset().filter(is_active_crew=True)
-        return Response(self.get_serializer(users, many=True).data)
+        """Who's working, by the schedule, for the Staff / Crew page: today, or
+        ?date=YYYY-MM-DD. Each person comes with their call: the time, place and
+        title of their first event that day."""
+        day = parse_date(request.query_params.get("date") or "") or timezone.localdate()
+        calls = crew_calls(day)
+        people = sorted(calls, key=lambda person: (calls[person].all_day, calls[person].start, person.first_name))
+        data = []
+        for person, row in zip(people, self.get_serializer(people, many=True).data):
+            event = calls[person]
+            row["call"] = {
+                "event": event.pk,
+                "title": event.title,
+                "time": None if event.all_day else timezone.localtime(event.start).strftime("%H:%M"),
+                "location": event.location,
+            }
+            data.append(row)
+        return Response({"date": day, "crew": data})
 
 
 def deactivate(person, by):

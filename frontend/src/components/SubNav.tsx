@@ -13,14 +13,14 @@ export function SubNav() {
   const { user } = useAuth()
   const { pathname } = useLocation()
 
-  const section = NAV_ITEMS.find((item) => item.children && canSee(item, user?.role) && isInItem(pathname, item))
+  const section = NAV_ITEMS.find((item) => item.children && canSee(item, user) && isInItem(pathname, item))
   if (!section?.children) return null
 
   const rows: { label: string; items: NavItem[] }[] = []
   let items: NavItem[] | undefined = section.children
   let label = section.label
   while (items) {
-    const visible = items.filter((item) => canSee(item, user?.role))
+    const visible = items.filter((item) => canSee(item, user))
     rows.push({ label, items: visible })
     const current = currentOf(visible, pathname)
     items = current?.children

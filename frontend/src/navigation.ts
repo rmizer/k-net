@@ -1,6 +1,5 @@
-import type { Role } from './auth/roles'
+import { canAccess, MANAGER_ROLES, MARKETING_ACCESS, type Role, type User } from './auth/roles'
 import type { NavIconName } from './components/NavIcon'
-import { MANAGER_ROLES } from './auth/roles'
 
 export interface NavItem {
   label: string
@@ -9,6 +8,8 @@ export interface NavItem {
   icon?: NavIconName
   /** Roles allowed to see this item. Omitted means every signed-in user. */
   roles?: Role[]
+  /** Also shown to anyone in these departments (by name, any case), whatever their role. */
+  departments?: string[]
   /** Submenu shown under the main nav while inside this section. */
   children?: NavItem[]
 }
@@ -27,7 +28,7 @@ export const NAV_ITEMS: NavItem[] = [
     ],
   },
   {
-    label: 'Director’s Dashboard',
+    label: 'Director Dashboard',
     path: '/staff-manager',
     icon: 'clipboard',
     roles: MANAGER_ROLES,
@@ -37,6 +38,7 @@ export const NAV_ITEMS: NavItem[] = [
       { label: 'Scheduling', path: '/staff-manager/scheduling' },
       { label: 'Task Management', path: '/staff-manager/tasks' },
       { label: 'Shows', path: '/staff-manager/shows' },
+      { label: 'Call Sheets', path: '/staff-manager/call-sheet' },
     ],
   },
   {
@@ -50,6 +52,7 @@ export const NAV_ITEMS: NavItem[] = [
     ],
   },
   { label: 'Influencers', path: '/influencers', icon: 'star' },
+  { label: 'Marketing', path: '/marketing', icon: 'megaphone', ...MARKETING_ACCESS },
   // Groups: the main link opens one page, and the submenu lists the rest.
   {
     label: 'Resources',
@@ -59,7 +62,6 @@ export const NAV_ITEMS: NavItem[] = [
       { label: 'Locations', path: '/locations' },
       { label: 'Directory', path: '/directory' },
       { label: 'Resources', path: '/resources' },
-      { label: 'Social Media', path: '/social' },
     ],
   },
   {
@@ -68,6 +70,7 @@ export const NAV_ITEMS: NavItem[] = [
     icon: 'briefcase',
     children: [
       { label: 'Documents', path: '/documents' },
+      { label: 'Meeting Notes', path: '/meeting-notes', roles: MANAGER_ROLES },
       {
         label: 'Finance',
         path: '/finance',
@@ -87,8 +90,7 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'Help', path: '/help', icon: 'help' },
 ]
 
-export const canSee = (item: NavItem, role: Role | undefined) =>
-  !item.roles || (!!role && item.roles.includes(role))
+export const canSee = (item: NavItem, user: User | null) => canAccess(user, item)
 
 /** True when `pathname` is `path` or inside it ('/' only matches exactly). */
 export const isInSection = (pathname: string, path: string) =>

@@ -10,7 +10,7 @@ import { InfluencerFormDialog } from './InfluencerFormDialog'
 import '../finance/finance.css'
 import './influencers.css'
 
-type SortKey = 'name' | 'show' | 'season' | 'week' | 'platform' | 'status' | 'agent' | 'travel' | 'next'
+type SortKey = 'name' | 'show' | 'season' | 'week' | 'platform' | 'agent' | 'travel' | 'next'
 
 export function InfluencersPage() {
   const { user } = useAuth()
@@ -56,7 +56,6 @@ export function InfluencersPage() {
         season: i.season,
         week: i.week,
         platform: i.platform_display,
-        status: i.is_active ? 'Active' : 'Inactive',
         agent: i.agent_name.toLowerCase(),
         travel: i.next_travel_at,
         next: i.next_event_at,
@@ -189,9 +188,6 @@ export function InfluencersPage() {
                       <SortHeader sort={sort} column="platform">
                         Platform
                       </SortHeader>
-                      <SortHeader sort={sort} column="status">
-                        Status
-                      </SortHeader>
                       <th>Contact</th>
                       <SortHeader sort={sort} column="agent">
                         Agent / contact
@@ -234,13 +230,6 @@ export function InfluencersPage() {
                           <td data-label="Week">{influencer.week ?? <span className="muted">—</span>}</td>
                           <td data-label="Platform">
                             {influencer.platform_display || <span className="muted">—</span>}
-                          </td>
-                          <td data-label="Status">
-                            {influencer.is_active ? (
-                              'Active'
-                            ) : (
-                              <span className="badge badge--muted">Inactive</span>
-                            )}
                           </td>
                           <td data-label="Contact">
                             {influencer.phone && (

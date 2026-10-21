@@ -155,7 +155,7 @@ export function StaffOverviewPage() {
     <section className="finance staff-manager">
       <div className="page-header">
         <div>
-          <h1>Director’s Dashboard</h1>
+          <h1>Director Dashboard</h1>
           <p className="subtitle">Staff, departments, schedules and tasks in one place</p>
         </div>
         <div className="inline-form__actions">

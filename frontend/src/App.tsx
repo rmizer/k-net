@@ -1,9 +1,10 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './auth/AuthContext'
-import { MANAGER_ROLES } from './auth/roles'
+import { MANAGER_ROLES, MARKETING_ACCESS } from './auth/roles'
 import { Layout } from './components/Layout'
 import { RequireAuth, RequireRole } from './components/RouteGuards'
 import { AccountPage } from './pages/AccountPage'
+import { CallSheetPage } from './pages/call-sheet/CallSheetPage'
 import { ContactPage } from './pages/contact/ContactPage'
 import { DashboardPage } from './pages/dashboard/DashboardPage'
 import { CrewFinderPage } from './pages/crew/CrewFinderPage'
@@ -25,8 +26,11 @@ import { InfluencersPage } from './pages/influencers/InfluencersPage'
 import { InvestorLinkPage } from './pages/investors/InvestorLinkPage'
 import { InvestorPage } from './pages/investors/InvestorPage'
 import { LocationsPage } from './pages/locations/LocationsPage'
+import { MarketingPage } from './pages/marketing/MarketingPage'
+import { MeetingNoteFormPage } from './pages/meetings/MeetingNoteFormPage'
+import { MeetingNotePage } from './pages/meetings/MeetingNotePage'
+import { MeetingNotesPage } from './pages/meetings/MeetingNotesPage'
 import { ResourcesPage } from './pages/resources/ResourcesPage'
-import { SocialMediaPage } from './pages/social/SocialMediaPage'
 import { ShowPage } from './pages/shows/ShowPage'
 import { ShowsPage } from './pages/shows/ShowsPage'
 import { SiteManagerPage } from './pages/site-manager/SiteManagerPage'
@@ -70,7 +74,11 @@ export default function App() {
               <Route path="/directory" element={<DirectoryPage />} />
               <Route path="/crew" element={<CrewPage />} />
               <Route path="/resources" element={<ResourcesPage />} />
-              <Route path="/social" element={<SocialMediaPage />} />
+              {/* Social Media moved to Marketing. */}
+              <Route path="/social" element={<Navigate to="/marketing" replace />} />
+              <Route element={<RequireRole roles={MARKETING_ACCESS.roles ?? []} departments={MARKETING_ACCESS.departments} />}>
+                <Route path="/marketing" element={<MarketingPage />} />
+              </Route>
               <Route path="/schedule" element={<SchedulePage />} />
               <Route path="/schedule/tasks" element={<MyTasksPage />} />
               <Route path="/schedule/timeline" element={<TimelinePage />} />
@@ -90,6 +98,11 @@ export default function App() {
                 <Route path="/staff-manager/tasks" element={<TaskManagementPage />} />
                 <Route path="/staff-manager/shows" element={<ShowsPage />} />
                 <Route path="/staff-manager/shows/:id" element={<ShowPage />} />
+                <Route path="/staff-manager/call-sheet" element={<CallSheetPage />} />
+                <Route path="/meeting-notes" element={<MeetingNotesPage />} />
+                <Route path="/meeting-notes/new" element={<MeetingNoteFormPage />} />
+                <Route path="/meeting-notes/:id" element={<MeetingNotePage />} />
+                <Route path="/meeting-notes/:id/edit" element={<MeetingNoteFormPage />} />
               </Route>
               <Route path="/influencers" element={<InfluencersPage />} />
               <Route path="/influencers/:id" element={<InfluencerProfilePage />} />

@@ -12,7 +12,7 @@ from accounts.models import User
 from accounts.permissions import IsManagerLevel, IsSiteManager, ReadOnlyOrManagerLevel
 from announcements.models import Alert, Announcement
 from announcements.serializers import AlertSerializer, AnnouncementSerializer
-from schedule.models import Event
+from schedule.models import Event, crew_calls
 from schedule.serializers import EventSerializer
 from tasks.models import Task
 from tasks.serializers import TaskSerializer
@@ -124,7 +124,7 @@ class DashboardView(APIView):
                 "my_tasks": TaskSerializer(my_tasks, many=True).data,
                 "staff_tasks": self._staff_tasks(today) if user.is_manager_level else None,
                 "week_events": EventSerializer(week_events, many=True, context=context).data,
-                "todays_crew": self._todays_crew(),
+                "todays_crew": self._todays_crew(today),
             }
         )
 
@@ -143,12 +143,12 @@ class DashboardView(APIView):
             "open_total": open_tasks.count(),
         }
 
-    def _todays_crew(self):
-        """Active crew grouped by department."""
-        crew = (
-            User.objects.filter(is_active=True, is_active_crew=True)
-            .select_related("department")
-            .order_by("department__name", "first_name", "last_name")
+    def _todays_crew(self, today):
+        """Who's working today by the schedule, grouped by department."""
+        # By department, with people who have none last.
+        crew = sorted(
+            crew_calls(today),
+            key=lambda person: (person.department is None, getattr(person.department, "name", ""), person.first_name),
         )
         groups = OrderedDict()
         for person in crew:

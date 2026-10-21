@@ -34,7 +34,7 @@ export function DirectoryPage() {
       if (departmentFilter && String(person.department ?? '') !== departmentFilter) return false
       if (roleFilter && person.role !== roleFilter) return false
       if (!query) return true
-      return [person.first_name, person.last_name, person.email, person.phone, person.lodging, person.room_number]
+      return [person.first_name, person.last_name, person.title, person.email, person.phone, person.lodging, person.room_number]
         .join(' ')
         .toLowerCase()
         .includes(query)
@@ -101,7 +101,7 @@ export function DirectoryPage() {
             type="search"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Name, email, phone or lodging"
+            placeholder="Name, title, email, phone or lodging"
           />
         </label>
         <label className="form__field">

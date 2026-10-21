@@ -14,7 +14,7 @@ export function Nav() {
   const [openOn, setOpenOn] = useState<string | null>(null)
   const open = openOn === pathname
 
-  const items = user ? NAV_ITEMS.filter((item) => canSee(item, user.role)) : []
+  const items = user ? NAV_ITEMS.filter((item) => canSee(item, user)) : []
 
   const handleLogout = async () => {
     await logout()

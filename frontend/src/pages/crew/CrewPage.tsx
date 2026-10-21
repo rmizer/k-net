@@ -1,63 +1,88 @@
-import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { api } from '../../api'
-import { canManageUser, isManagerLevel, type User } from '../../auth/roles'
+import { useMemo } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
+import { isManagerLevel } from '../../auth/roles'
 import { useAuth } from '../../auth/useAuth'
 import { Avatar } from '../../components/Avatar'
+import { addDays, clockTime, formatDay } from '../../format'
 import { useFetch } from '../../hooks/useFetch'
-import { AddToCrewDialog } from './AddToCrewDialog'
+import type { CrewDay, CrewMember, ProductionSettings } from '../../types'
 import './crew.css'
 
 const UNASSIGNED = 'Unassigned'
+const DAY_PATTERN = /^\d{4}-\d{2}-\d{2}$/
 
 export function CrewPage() {
+  const production = useFetch<ProductionSettings>('/production/')
+  if (!production.data) {
+    if (production.loading) return <p className="loading">Loading crew…</p>
+    return <p className="form__error">Couldn’t load the crew list.</p>
+  }
+  return <Crew today={production.data.today} />
+}
+
+/** Who's working, by the schedule: everyone with a call that day. */
+function Crew({ today }: { today: string }) {
   const { user } = useAuth()
-  const crew = useFetch<User[]>('/users/crew/')
-  const [adding, setAdding] = useState(false)
-  const manager = isManagerLevel(user)
+  const [params] = useSearchParams()
+  const dateParam = params.get('date') ?? ''
+  const day = DAY_PATTERN.test(dateParam) ? dateParam : today
+  const crew = useFetch<CrewDay>(`/users/crew/?date=${day}`)
+  const people = crew.data?.date === day ? crew.data.crew : undefined
 
   const groups = useMemo(() => {
-    const byDepartment = new Map<string, User[]>()
-    for (const person of crew.data ?? []) {
+    const byDepartment = new Map<string, CrewMember[]>()
+    for (const person of people ?? []) {
       const name = person.department_name ?? UNASSIGNED
       byDepartment.set(name, [...(byDepartment.get(name) ?? []), person])
     }
     return [...byDepartment.entries()].sort(([a], [b]) =>
       a === UNASSIGNED ? 1 : b === UNASSIGNED ? -1 : a.localeCompare(b),
     )
-  }, [crew.data])
+  }, [people])
 
-  const removeFromCrew = async (person: User) => {
-    if (!window.confirm(`Take ${person.first_name} ${person.last_name} off the active crew? They stay in the Directory.`))
-      return
-    await api(`/users/${person.id}/`, { method: 'PATCH', body: JSON.stringify({ is_active_crew: false }) })
-    crew.reload()
-  }
+  const dayHref = (target: string) => (target === today ? '/crew' : `/crew?date=${target}`)
 
   return (
     <section className="crew">
       <div className="page-header">
         <div>
           <h1>Staff / Crew</h1>
-          <p className="subtitle">Active crew{crew.data ? ` · ${crew.data.length} working` : ''}</p>
+          <p className="subtitle">
+            Who’s working, from the schedule{people ? ` · ${people.length} called` : ''}
+          </p>
         </div>
         <div className="page-header__actions">
           <Link to="/crew/finder" className="button button--secondary">
             Open CrewFinder
           </Link>
-          {manager && (
-            <button type="button" className="button" onClick={() => setAdding(true)}>
-              + Add to crew
-            </button>
+          {isManagerLevel(user) && (
+            <Link to="/staff-manager/scheduling" className="button">
+              Edit the schedule
+            </Link>
           )}
         </div>
       </div>
 
-      {crew.loading && !crew.data && <p className="loading">Loading crew…</p>}
-      {crew.error && !crew.data && <p className="form__error">Couldn’t load the crew list.</p>}
-      {crew.data && crew.data.length === 0 && (
-        <div className="tile">
-          <p className="muted">No one is on the active crew right now.</p>
+      <div className="crew__day">
+        <Link to={dayHref(addDays(day, -1))} className="icon-button" aria-label="Previous day">
+          ‹
+        </Link>
+        <h2>{formatDay(day, { weekday: 'long', month: 'long', day: 'numeric' })}</h2>
+        <Link to={dayHref(addDays(day, 1))} className="icon-button" aria-label="Next day">
+          ›
+        </Link>
+        {day !== today && (
+          <Link to={dayHref(today)} className="text-button">
+            Today
+          </Link>
+        )}
+      </div>
+
+      {!people && crew.loading && <p className="loading">Loading crew…</p>}
+      {!people && crew.error && <p className="form__error">Couldn’t load the crew list.</p>}
+      {people && people.length === 0 && (
+        <div className="tile crew__group">
+          <p className="muted">No one is on the schedule {day === today ? 'today' : 'this day'}.</p>
         </div>
       )}
 
@@ -74,38 +99,22 @@ export function CrewPage() {
                   <p className="crew-member__name">
                     {person.first_name} {person.last_name}
                   </p>
-                  <p className="crew-member__role">{person.role_display}</p>
+                  <p className="crew-member__role">{person.title || person.role_display}</p>
+                  <p className="crew-member__call">
+                    Call <strong>{person.call.time ? clockTime(person.call.time) : 'all day'}</strong>
+                    {person.call.location && ` · ${person.call.location}`}
+                  </p>
                   {person.phone && (
                     <a className="contact-link crew-member__phone" href={`tel:${person.phone}`}>
                       {person.phone}
                     </a>
                   )}
                 </div>
-                {canManageUser(user, person) && (
-                  <button
-                    type="button"
-                    className="icon-button"
-                    onClick={() => removeFromCrew(person)}
-                    aria-label={`Take ${person.first_name} ${person.last_name} off the crew`}
-                  >
-                    ×
-                  </button>
-                )}
               </li>
             ))}
           </ul>
         </section>
       ))}
-
-      {adding && (
-        <AddToCrewDialog
-          onClose={() => setAdding(false)}
-          onAdded={() => {
-            setAdding(false)
-            crew.reload()
-          }}
-        />
-      )}
     </section>
   )
 }

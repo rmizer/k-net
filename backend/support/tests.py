@@ -35,7 +35,7 @@ class SupportRequestTests(APITestCase):
         self.assertEqual(email.reply_to, ["staff@test.com"])
         self.assertEqual(email.subject, "[K-Net Bug report] Map won't load")
         for text in ["Blank map on Locations.", "Where it happened: Locations", "A map of our locations",
-                     "813-555-0100", "TestBrowser/1.0", f"#{saved.pk}"]:
+                     "(813) 555-0100", "TestBrowser/1.0", f"#{saved.pk}"]:
             self.assertIn(text, email.body)
 
     def test_every_kind_is_accepted(self):
