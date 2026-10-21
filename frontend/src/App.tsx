@@ -26,6 +26,7 @@ import { InvestorLinkPage } from './pages/investors/InvestorLinkPage'
 import { InvestorPage } from './pages/investors/InvestorPage'
 import { LocationsPage } from './pages/locations/LocationsPage'
 import { ResourcesPage } from './pages/resources/ResourcesPage'
+import { SocialMediaPage } from './pages/social/SocialMediaPage'
 import { SiteManagerPage } from './pages/site-manager/SiteManagerPage'
 import { MyTasksPage } from './pages/schedule/MyTasksPage'
 import { SchedulePage } from './pages/schedule/SchedulePage'
@@ -67,6 +68,7 @@ export default function App() {
               <Route path="/directory" element={<DirectoryPage />} />
               <Route path="/crew" element={<CrewPage />} />
               <Route path="/resources" element={<ResourcesPage />} />
+              <Route path="/social" element={<SocialMediaPage />} />
               <Route path="/schedule" element={<SchedulePage />} />
               <Route path="/schedule/tasks" element={<MyTasksPage />} />
               <Route path="/schedule/timeline" element={<TimelinePage />} />

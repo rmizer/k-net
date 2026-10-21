@@ -58,6 +58,7 @@ export const NAV_ITEMS: NavItem[] = [
       { label: 'Locations', path: '/locations' },
       { label: 'Directory', path: '/directory' },
       { label: 'Resources', path: '/resources' },
+      { label: 'Social Media', path: '/social' },
     ],
   },
   {
