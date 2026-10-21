@@ -50,9 +50,24 @@ class ResourceTests(APITestCase):
         response = self.client.post("/api/resources/", {"company_name": "A", "phone": "1", "website": "not a url"})
         self.assertEqual(response.status_code, 400)
 
-    def test_load_tampa_resources_is_repeatable(self):
-        call_command("load_tampa_resources", stdout=StringIO())
+    def test_load_miami_is_repeatable(self):
+        call_command("load_miami", stdout=StringIO())
         count = Resource.objects.count()
         self.assertGreater(count, 10)
-        call_command("load_tampa_resources", stdout=StringIO())
+        call_command("load_miami", stdout=StringIO())
         self.assertEqual(Resource.objects.count(), count)
+
+    def test_load_miami_removes_tampa_entries_only_when_asked(self):
+        Resource.objects.create(company_name="Film Tampa Bay", phone="1")
+        Resource.objects.create(company_name="Fiesta Solutions Event Rentals", phone="1")
+        Resource.objects.create(company_name="Help Desk", phone="1", address="Raleigh, NC")
+        call_command("load_miami", stdout=StringIO())
+        self.assertTrue(Resource.objects.filter(company_name="Film Tampa Bay").exists())
+        call_command("load_miami", "--remove-tampa", "--dry-run", stdout=StringIO())
+        self.assertTrue(Resource.objects.filter(company_name="Film Tampa Bay").exists())
+        call_command("load_miami", "--remove-tampa", stdout=StringIO())
+        names = set(Resource.objects.values_list("company_name", flat=True))
+        self.assertNotIn("Film Tampa Bay", names)
+        self.assertNotIn("Fiesta Solutions Event Rentals", names)
+        self.assertIn("Help Desk", names)
+        self.assertIn("Moving Picture Miami", names)

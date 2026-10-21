@@ -62,8 +62,10 @@ After `seed_demo`, every account uses the password `knet-demo-2026`:
 - `jared@knet.test` (Assistant, Logistics)
 - `jimmy@knet.test` (Staff, Tech), plus other staff in Tech, Logistics and Film Crew
 
-`python manage.py load_tampa_resources` adds verified Tampa-area vendors to the Resources Directory
-(safe to run again; it updates existing entries by name).
+`python manage.py load_miami` adds Miami-area locations and vendors to Locations and the Resources
+Directory, and renames the example documents for Miami (safe to run again; it updates existing entries
+by name). `--remove-tampa` also deletes Tampa-area locations and resources; add `--dry-run` to see what
+would change without saving.
 
 `python manage.py import_influencers <file.csv>` adds or updates Influencer Roster entries from a CSV
 (needs a `name` column; matches existing influencers by name).
