@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { isManagerLevel } from '../../auth/roles'
 import { useAuth } from '../../auth/useAuth'
 import { SortHeader, useSort } from '../../components/sorting'
@@ -10,13 +10,17 @@ import { InfluencerFormDialog } from './InfluencerFormDialog'
 import '../finance/finance.css'
 import './influencers.css'
 
-type SortKey = 'name' | 'platform' | 'status' | 'agent' | 'travel' | 'next'
+type SortKey = 'name' | 'show' | 'season' | 'week' | 'platform' | 'status' | 'agent' | 'travel' | 'next'
 
 export function InfluencersPage() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const roster = useFetch<InfluencerRow[]>('/influencers/')
+  const [searchParams] = useSearchParams()
   const [search, setSearch] = useState('')
+  // The Shows page links here with ?show=<id>.
+  const [show, setShow] = useState(() => searchParams.get('show') ?? '')
+  const [week, setWeek] = useState('')
   const [platform, setPlatform] = useState('')
   const [status, setStatus] = useState('active')
   const [travelOnly, setTravelOnly] = useState(false)
@@ -25,11 +29,22 @@ export function InfluencersPage() {
   const manager = isManagerLevel(user)
 
   const all = useMemo(() => roster.data ?? [], [roster.data])
+  const shows = useMemo(() => {
+    const byId = new Map<number, string>()
+    for (const i of all) if (i.show != null && i.show_name) byId.set(i.show, i.show_name)
+    return [...byId].sort((a, b) => a[1].localeCompare(b[1]))
+  }, [all])
+  const weeks = useMemo(
+    () => [...new Set(all.map((i) => i.week).filter((w): w is number => w != null))].sort((a, b) => a - b),
+    [all],
+  )
   const query = search.trim().toLowerCase()
   const visible = sort.apply(
     all.filter(
       (i) =>
         (!query || `${i.name} ${i.handle} ${i.email} ${i.phone} ${i.agent_name}`.toLowerCase().includes(query)) &&
+        (!show || (show === 'none' ? i.show == null : String(i.show) === show)) &&
+        (!week || String(i.week) === week) &&
         (!platform || (platform === 'none' ? !i.platform : i.platform === platform)) &&
         (status === 'all' || i.is_active === (status === 'active')) &&
         (!travelOnly || !!i.next_travel_at),
@@ -37,6 +52,9 @@ export function InfluencersPage() {
     (i, key) =>
       ({
         name: i.name.toLowerCase(),
+        show: i.show_name?.toLowerCase() ?? null,
+        season: i.season,
+        week: i.week,
         platform: i.platform_display,
         status: i.is_active ? 'Active' : 'Inactive',
         agent: i.agent_name.toLowerCase(),
@@ -44,9 +62,11 @@ export function InfluencersPage() {
         next: i.next_event_at,
       })[key],
   )
-  const filtered = !!(query || platform || status !== 'all' || travelOnly)
+  const filtered = !!(query || show || week || platform || status !== 'all' || travelOnly)
   const clear = () => {
     setSearch('')
+    setShow('')
+    setWeek('')
     setPlatform('')
     setStatus('all')
     setTravelOnly(false)
@@ -78,6 +98,29 @@ export function InfluencersPage() {
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Name, handle, email, phone, agent"
           />
+        </label>
+        <label className="form__field">
+          <span>Show</span>
+          <select value={show} onChange={(e) => setShow(e.target.value)}>
+            <option value="">All</option>
+            {shows.map(([id, name]) => (
+              <option key={id} value={id}>
+                {name}
+              </option>
+            ))}
+            <option value="none">No show</option>
+          </select>
+        </label>
+        <label className="form__field">
+          <span>Week</span>
+          <select value={week} onChange={(e) => setWeek(e.target.value)}>
+            <option value="">All</option>
+            {weeks.map((w) => (
+              <option key={w} value={w}>
+                Week {w}
+              </option>
+            ))}
+          </select>
         </label>
         <label className="form__field">
           <span>Platform</span>
@@ -134,6 +177,15 @@ export function InfluencersPage() {
                       <SortHeader sort={sort} column="name">
                         Name
                       </SortHeader>
+                      <SortHeader sort={sort} column="show">
+                        Show
+                      </SortHeader>
+                      <SortHeader sort={sort} column="season">
+                        Season
+                      </SortHeader>
+                      <SortHeader sort={sort} column="week">
+                        Week
+                      </SortHeader>
                       <SortHeader sort={sort} column="platform">
                         Platform
                       </SortHeader>
@@ -177,6 +229,9 @@ export function InfluencersPage() {
                               </span>
                             </span>
                           </td>
+                          <td data-label="Show">{influencer.show_name ?? <span className="muted">—</span>}</td>
+                          <td data-label="Season">{influencer.season ?? <span className="muted">—</span>}</td>
+                          <td data-label="Week">{influencer.week ?? <span className="muted">—</span>}</td>
                           <td data-label="Platform">
                             {influencer.platform_display || <span className="muted">—</span>}
                           </td>

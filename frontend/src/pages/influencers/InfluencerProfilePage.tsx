@@ -112,6 +112,13 @@ export function InfluencerProfilePage() {
               ))}
             {influencer.platform_display && <span className="muted"> · {influencer.platform_display}</span>}
           </p>
+          {influencer.show_name && (
+            <p className="profile-header__show">
+              {influencer.show_name}
+              {influencer.season != null && ` · Season ${influencer.season}`}
+              {influencer.week != null && ` · Week ${influencer.week}`}
+            </p>
+          )}
           {photoError && <p className="form__error">{photoError}</p>}
         </div>
         {manager && (

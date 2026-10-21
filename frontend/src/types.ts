@@ -538,6 +538,11 @@ export interface InfluencerSummary {
   platform: InfluencerPlatform
   platform_display: string
   photo: string | null
+  /** The show they're on and their current (latest) week on it. */
+  show: number | null
+  show_name: string | null
+  season: number | null
+  week: number | null
   is_active: boolean
 }
 
@@ -601,6 +606,41 @@ export interface Influencer extends InfluencerSummary {
   notes: InfluencerNote[]
   travel: TravelArrangement[]
   upcoming_events: { id: number; title: string; start: string; end: string; all_day: boolean; location: string }[]
+}
+
+export type ShowStatus = 'planning' | 'pre_production' | 'production' | ''
+
+export const SHOW_STATUSES: { value: Exclude<ShowStatus, ''>; label: string }[] = [
+  { value: 'planning', label: 'Planning' },
+  { value: 'pre_production', label: 'Pre-production' },
+  { value: 'production', label: 'Production' },
+]
+
+export interface ShowPerson {
+  id: number
+  name: string
+  head_of_department_name: string | null
+}
+
+/** A show the production runs or Directors are brainstorming. */
+export interface Show {
+  id: number
+  name: string
+  description: string
+  start_date: string | null
+  shooting_location: string
+  status: ShowStatus
+  status_display: string
+  seasons: number | null
+  weeks_per_season: number | null
+  director: number | null
+  director_name: string | null
+  other_directors: number[]
+  other_director_details: ShowPerson[]
+  department_heads: number[]
+  department_head_details: ShowPerson[]
+  influencer_count: number
+  updated_at: string
 }
 
 /** A Director's or Assistant's request for a Site Manager to remove someone. */

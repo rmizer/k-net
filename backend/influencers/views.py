@@ -25,7 +25,7 @@ class InfluencerViewSet(viewsets.ModelViewSet):
     permission_classes = [ReadOnlyOrManagerLevel]
 
     def get_queryset(self):
-        influencers = Influencer.objects.all()
+        influencers = Influencer.objects.select_related("show")
         if self.action == "retrieve":
             influencers = influencers.prefetch_related("notes__author", "travel")
         elif self.action == "list":

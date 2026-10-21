@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent, type InputHTMLAttributes } from 'react'
 import { api, ApiError, fieldErrors } from '../../api'
-import { INFLUENCER_PLATFORMS, type Influencer, type InfluencerPlatform } from '../../types'
+import { useFetch } from '../../hooks/useFetch'
+import { INFLUENCER_PLATFORMS, type Influencer, type InfluencerPlatform, type Show } from '../../types'
 
 interface InfluencerFormDialogProps {
   /** The influencer being edited, or null to add someone new. */
@@ -24,14 +25,18 @@ const TEXT_FIELDS = [
 ] as const
 type TextField = (typeof TEXT_FIELDS)[number]
 type NeedsField = 'travel_needs' | 'lodging_needs' | 'needs'
-type FormState = Record<TextField, string> & { platform: InfluencerPlatform }
+type FormState = Record<TextField, string> & { platform: InfluencerPlatform; show: string; season: string; week: string }
 
 export function InfluencerFormDialog({ influencer, onSaved, onClose }: InfluencerFormDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [form, setForm] = useState<FormState>(() => ({
     ...(Object.fromEntries(TEXT_FIELDS.map((f) => [f, influencer?.[f] ?? ''])) as Record<TextField, string>),
     platform: influencer?.platform ?? '',
+    show: influencer?.show != null ? String(influencer.show) : '',
+    season: influencer?.season != null ? String(influencer.season) : '',
+    week: influencer?.week != null ? String(influencer.week) : '',
   }))
+  const shows = useFetch<Show[]>('/shows/')
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [saving, setSaving] = useState(false)
 
@@ -41,12 +46,26 @@ export function InfluencerFormDialog({ influencer, onSaved, onClose }: Influence
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
+    const numberErrors: Record<string, string> = {}
+    for (const name of ['season', 'week'] as const) {
+      if (form[name] && !/^\d+$/.test(form[name])) numberErrors[name] = 'Enter a whole number.'
+    }
+    if (Object.keys(numberErrors).length) {
+      setErrors(numberErrors)
+      return
+    }
     setSaving(true)
     setErrors({})
     try {
+      const body = {
+        ...form,
+        show: form.show ? Number(form.show) : null,
+        season: form.season ? Number(form.season) : null,
+        week: form.week ? Number(form.week) : null,
+      }
       const saved = await api<Influencer>(influencer ? `/influencers/${influencer.id}/` : '/influencers/', {
         method: influencer ? 'PATCH' : 'POST',
-        body: JSON.stringify(form),
+        body: JSON.stringify(body),
       })
       onSaved(saved)
     } catch (err) {
@@ -121,6 +140,40 @@ export function InfluencerFormDialog({ influencer, onSaved, onClose }: Influence
               </select>
             </label>
             {field('handle', 'Handle', { placeholder: '@handle' })}
+          </div>
+        </fieldset>
+
+        <fieldset className="form__fieldset">
+          <legend>Show</legend>
+          <div className="form__grid">
+            <label className="form__field">
+              <span>Show</span>
+              <select value={form.show} onChange={(event) => setForm({ ...form, show: event.target.value })}>
+                <option value="">No show</option>
+                {shows.data?.map((show) => (
+                  <option key={show.id} value={show.id}>
+                    {show.name}
+                  </option>
+                ))}
+              </select>
+              {errors.show && <small className="form__field-error">{errors.show}</small>}
+            </label>
+            <div className="influencer-form__numbers">
+              {(['season', 'week'] as const).map((name) => (
+                <label key={name} className="form__field">
+                  <span>{name === 'season' ? 'Season' : 'Week'}</span>
+                  <input
+                    className="influencer-form__number"
+                    inputMode="numeric"
+                    value={form[name]}
+                    onChange={(event) => setForm({ ...form, [name]: event.target.value.trim() })}
+                    aria-invalid={!!errors[name]}
+                    maxLength={3}
+                  />
+                  {errors[name] && <small className="form__field-error">{errors[name]}</small>}
+                </label>
+              ))}
+            </div>
           </div>
         </fieldset>
 

@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.validators import MinValueValidator
 from django.db import models
 
 
@@ -29,6 +30,13 @@ class Influencer(models.Model):
     travel_needs = models.TextField(blank=True, help_text="Home airport, seating, ground transport, companions, etc.")
     lodging_needs = models.TextField(blank=True, help_text="Room type, nights, accessibility, roommates, etc.")
     needs = models.TextField("other needs", blank=True, help_text="Dietary, equipment, wardrobe, etc.")
+
+    # The show and the week they're currently in (their latest week on the show).
+    show = models.ForeignKey(
+        "shows.Show", null=True, blank=True, on_delete=models.SET_NULL, related_name="influencers"
+    )
+    season = models.PositiveSmallIntegerField(null=True, blank=True, validators=[MinValueValidator(1)])
+    week = models.PositiveSmallIntegerField(null=True, blank=True, validators=[MinValueValidator(1)])
 
     is_active = models.BooleanField(default=True, help_text="Currently on the project.")
     created_at = models.DateTimeField(auto_now_add=True)

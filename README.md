@@ -67,6 +67,10 @@ Directory, and renames the example documents for Miami (safe to run again; it up
 by name). `--remove-tampa` also deletes Tampa-area locations and resources; add `--dry-run` to see what
 would change without saving.
 
+`python manage.py load_battle_house_weeks` puts every Battle House Live influencer in their latest week of
+season 1 (creating the show, and any missing influencers with dummy contact details). Safe to run again;
+`--dry-run` previews.
+
 `python manage.py import_influencers <file.csv>` adds or updates Influencer Roster entries from a CSV
 (needs a `name` column; matches existing influencers by name).
 

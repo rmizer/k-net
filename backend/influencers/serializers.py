@@ -54,6 +54,7 @@ class InfluencerEventSerializer(serializers.ModelSerializer):
 
 class InfluencerListSerializer(serializers.ModelSerializer):
     platform_display = serializers.CharField(source="get_platform_display", read_only=True)
+    show_name = serializers.CharField(source="show.name", read_only=True, default=None)
 
     class Meta:
         model = Influencer
@@ -64,9 +65,17 @@ class InfluencerListSerializer(serializers.ModelSerializer):
             "platform",
             "platform_display",
             "photo",
+            "show",
+            "show_name",
+            "season",
+            "week",
             "is_active",
         ]
         read_only_fields = ["photo"]
+        extra_kwargs = {
+            "season": {"error_messages": {"invalid": "Enter a whole number."}},
+            "week": {"error_messages": {"invalid": "Enter a whole number."}},
+        }
 
 
 class InfluencerRowSerializer(InfluencerListSerializer):
