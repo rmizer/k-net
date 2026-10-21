@@ -61,6 +61,13 @@ class User(AbstractUser):
     department = models.ForeignKey(
         Department, null=True, blank=True, on_delete=models.SET_NULL, related_name="members"
     )
+    # Department heads can be put on a show. The department they head is kept
+    # separately from the one they work in; if it's deleted they stay a head,
+    # with no department listed.
+    is_department_head = models.BooleanField(default=False)
+    head_of_department = models.ForeignKey(
+        Department, null=True, blank=True, on_delete=models.SET_NULL, related_name="heads"
+    )
     profile_picture = models.ImageField(upload_to="profile_pictures/", blank=True)
     lodging = models.CharField(max_length=255, blank=True)
     room_number = models.CharField(max_length=20, blank=True)
@@ -112,6 +119,11 @@ class User(AbstractUser):
     def is_manager_level(self):
         """Directors, Assistants and Site Managers (who hold all permissions)."""
         return self.role in (self.Role.SITE_MANAGER, self.Role.DIRECTOR, self.Role.ASSISTANT)
+
+    @property
+    def is_director_level(self):
+        """Directors and Site Managers (not Assistants): they run shows."""
+        return self.role in (self.Role.SITE_MANAGER, self.Role.DIRECTOR)
 
     def can_assign_role(self, role):
         return role in self.ASSIGNABLE_ROLES.get(self.role, set())

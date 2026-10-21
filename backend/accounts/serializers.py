@@ -29,6 +29,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     department_name = serializers.CharField(source="department.name", read_only=True, default=None)
+    head_of_department_name = serializers.CharField(source="head_of_department.name", read_only=True, default=None)
     role_display = serializers.CharField(source="get_role_display", read_only=True)
     password = serializers.CharField(write_only=True, required=False, validators=[validate_password])
     slack_status = serializers.SerializerMethodField()
@@ -48,6 +49,9 @@ class UserSerializer(serializers.ModelSerializer):
             "role_display",
             "department",
             "department_name",
+            "is_department_head",
+            "head_of_department",
+            "head_of_department_name",
             "profile_picture",
             "lodging",
             "room_number",
@@ -124,6 +128,9 @@ class UserSerializer(serializers.ModelSerializer):
         return role
 
     def validate(self, attrs):
+        # Only department heads head a department.
+        if not attrs.get("is_department_head", getattr(self.instance, "is_department_head", False)):
+            attrs["head_of_department"] = None
         viewer = self._viewer()
         # Managers can't edit accounts above their own level (e.g. a Director
         # editing another Director or a Site Manager).
@@ -184,6 +191,8 @@ class ProfileSerializer(UserSerializer):
             "email",
             "role",
             "department",
+            "is_department_head",
+            "head_of_department",
             "is_active_crew",
             "profile_picture",
             "pending_email",

@@ -15,6 +15,15 @@ class IsManagerLevel(BasePermission):
         )
 
 
+class ReadOnlyOrDirectorLevel(BasePermission):
+    """Any signed-in user can read; only Directors and Site Managers can write."""
+
+    def has_permission(self, request, view):
+        if not (request.user and request.user.is_authenticated):
+            return False
+        return request.method in SAFE_METHODS or request.user.is_director_level
+
+
 class ReadOnlyOrManagerLevel(BasePermission):
     """Any signed-in user can read; only manager-level users can write."""
 

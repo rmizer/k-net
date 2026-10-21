@@ -21,6 +21,8 @@ type FormState = {
   phone: string
   role: Role
   department: string
+  is_department_head: boolean
+  head_of_department: string
   lodging: string
   room_number: string
   emergency_contact_name: string
@@ -37,6 +39,8 @@ function initialState(person: User | null, assignableRoles: Role[]): FormState {
     phone: person?.phone ?? '',
     role: person?.role ?? (assignableRoles.includes('staff') ? 'staff' : assignableRoles[0]),
     department: person?.department ? String(person.department) : '',
+    is_department_head: person?.is_department_head ?? false,
+    head_of_department: person?.head_of_department ? String(person.head_of_department) : '',
     lodging: person?.lodging ?? '',
     room_number: person?.room_number ?? '',
     emergency_contact_name: person?.emergency_contact_name ?? '',
@@ -80,7 +84,9 @@ export function StaffFormDialog({ person, departments, assignableRoles, onSaved,
       }
 
       const { password, ...fields } = form
-      const body = { ...fields, department, ...(password ? { password } : {}) }
+      const head_of_department =
+        form.is_department_head && form.head_of_department ? Number(form.head_of_department) : null
+      const body = { ...fields, department, head_of_department, ...(password ? { password } : {}) }
       const saved = await api<User>(person ? `/users/${person.id}/` : '/users/', {
         method: person ? 'PATCH' : 'POST',
         body: JSON.stringify(body),
@@ -179,7 +185,39 @@ export function StaffFormDialog({ person, departments, assignableRoles, onSaved,
             {errors.department && <small className="form__field-error">{errors.department}</small>}
           </label>
 
-          {field('lodging', 'Lodging', { autoComplete: 'off', placeholder: 'e.g. Hilton Tampa Westshore' })}
+          <div className="form__field form__field--checkbox">
+            <label className="form__check">
+              <input
+                type="checkbox"
+                checked={form.is_department_head}
+                onChange={(event) => set('is_department_head', event.target.checked)}
+              />
+              Department head
+            </label>
+          </div>
+          {form.is_department_head ? (
+            <label className="form__field">
+              <span>Head of</span>
+              <select
+                value={form.head_of_department}
+                onChange={(event) => set('head_of_department', event.target.value)}
+              >
+                <option value="">No department listed</option>
+                {departments.map((dept) => (
+                  <option key={dept.id} value={dept.id}>
+                    {dept.name}
+                  </option>
+                ))}
+              </select>
+              {errors.head_of_department && (
+                <small className="form__field-error">{errors.head_of_department}</small>
+              )}
+            </label>
+          ) : (
+            <div aria-hidden="true" />
+          )}
+
+          {field('lodging', 'Lodging', { autoComplete: 'off', placeholder: 'e.g. the crew hotel' })}
           {field('room_number', 'Room number (optional)', { autoComplete: 'off', maxLength: 20 })}
           <div className="form__field form__field--checkbox">
             <label className="form__check">

@@ -12,6 +12,11 @@ export interface User {
   role_display: string
   department: number | null
   department_name: string | null
+  /** Department heads can be put on a show. */
+  is_department_head: boolean
+  /** The department they head; null if none was chosen or it was deleted. */
+  head_of_department: number | null
+  head_of_department_name: string | null
   profile_picture: string | null
   lodging: string
   room_number: string
@@ -51,6 +56,11 @@ export const ROLE_LABELS: Record<Role, string> = {
 
 /** Directors, Assistants, and Site Managers (who hold all permissions). */
 export const MANAGER_ROLES: Role[] = ['site_manager', 'director', 'assistant']
+
+/** Directors and Site Managers (not Assistants): they create and edit shows. */
+export const DIRECTOR_ROLES: Role[] = ['site_manager', 'director']
+
+export const isDirectorLevel = (user: User | null) => !!user && DIRECTOR_ROLES.includes(user.role)
 
 export const isManagerLevel = (user: User | null) => !!user && MANAGER_ROLES.includes(user.role)
 

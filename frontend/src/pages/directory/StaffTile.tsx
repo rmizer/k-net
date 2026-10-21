@@ -27,6 +27,11 @@ export function StaffTile({ person, onEdit, onRemove, onRequestRemoval }: StaffT
             {person.role_display}
             {person.department_name ? ` · ${person.department_name}` : ''}
           </p>
+          {person.is_department_head && (
+            <p className="staff-tile__head-of">
+              Department head · {person.head_of_department_name ?? 'No department listed'}
+            </p>
+          )}
         </div>
         {(onEdit || onRemove || onRequestRemoval) && (
           <div className="staff-tile__actions">
