@@ -45,7 +45,7 @@ const REPLACES: [string, string, string][] = [
 
 // Everything here is covered by the weekly maintenance fee.
 const TURNAROUND: [string, string, string][] = [
-  ['Bug fixes', 'Same day', 'Fixed daily.'],
+  ['Bug fixes', '1 week', 'Shipped in the weekly update. Site-breaking issues are fixed the same day.'],
   ['Wording, labels and small layout changes', '1 day', 'Shipped in the weekly update.'],
   ['A new field, filter or column on an existing page', '1–3 days', 'Shipped in the weekly update.'],
   ['A new page or report built on existing data', '1–2 weeks', 'Planned with you, then shipped in weekly updates.'],
@@ -59,9 +59,8 @@ const TURNAROUND: [string, string, string][] = [
 // Possible directions, not commitments; the buyer chooses what gets built.
 const FUTURE: [string, string][] = [
   ['CrewFinder: live crew tracking', 'See where crew are on a map during the shoot, with opt-in sharing that switches off when a shift ends.'],
-  ['Native phone apps', 'iPhone and Android apps with push notifications for schedule changes, new tasks and urgent messages.'],
   ['Shift handovers', 'A handover log for round-the-clock shoots: what happened, what’s pending and who’s on next, read before every shift.'],
-  ['Timecards and overtime', 'Crew clock in and out from their phone; hours, turnaround and overtime are tracked and flagged automatically.'],
+  ['Clock-in / clock-out system for staff', 'Staff clock in and out from their phone, giving payroll accurate hours to work from; turnaround and overtime are tracked and flagged automatically.'],
   ['Call sheets', 'Generate the daily call sheet from the live schedule, locations and directory, and send it to everyone on it.'],
   ['Budget tracking', 'Spending from receipts and invoices measured against each department’s budget as the shoot goes.'],
   ['Payments and payroll exports', 'Pay reimbursements and export hours to payroll providers, instead of re-keying them.'],
@@ -158,7 +157,7 @@ export function InvestorPage() {
             <p className="investor__price-value">{money(WEEKLY_FEE)}</p>
             <p className="investor__price-term">per week</p>
             <ul>
-              <li>Bug fixes every day</li>
+              <li>Bug fixes once a week, and the same day for anything that breaks the site</li>
               <li>A patch and update to the site once a week</li>
               <li>Hosting included: the server, database and K-Net’s own .com web address</li>
               <li>New features as your production needs them, at no extra cost</li>
