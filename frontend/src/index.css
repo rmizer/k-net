@@ -438,6 +438,7 @@ a:hover {
 .button:hover {
   background: var(--knet-red);
   border-color: var(--knet-red);
+  text-decoration: none; /* Link buttons change color instead. */
 }
 
 .button:disabled {
