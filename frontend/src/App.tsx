@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './auth/AuthContext'
-import { DIRECTOR_ROLES, MANAGER_ROLES } from './auth/roles'
+import { MANAGER_ROLES } from './auth/roles'
 import { Layout } from './components/Layout'
 import { RequireAuth, RequireRole } from './components/RouteGuards'
 import { AccountPage } from './pages/AccountPage'
@@ -27,6 +27,7 @@ import { InvestorPage } from './pages/investors/InvestorPage'
 import { LocationsPage } from './pages/locations/LocationsPage'
 import { ResourcesPage } from './pages/resources/ResourcesPage'
 import { SocialMediaPage } from './pages/social/SocialMediaPage'
+import { ShowPage } from './pages/shows/ShowPage'
 import { ShowsPage } from './pages/shows/ShowsPage'
 import { SiteManagerPage } from './pages/site-manager/SiteManagerPage'
 import { MyTasksPage } from './pages/schedule/MyTasksPage'
@@ -87,9 +88,8 @@ export default function App() {
                 <Route path="/staff-manager/departments" element={<DepartmentsPage />} />
                 <Route path="/staff-manager/scheduling" element={<SchedulingPage />} />
                 <Route path="/staff-manager/tasks" element={<TaskManagementPage />} />
-              </Route>
-              <Route element={<RequireRole roles={DIRECTOR_ROLES} />}>
                 <Route path="/staff-manager/shows" element={<ShowsPage />} />
+                <Route path="/staff-manager/shows/:id" element={<ShowPage />} />
               </Route>
               <Route path="/influencers" element={<InfluencersPage />} />
               <Route path="/influencers/:id" element={<InfluencerProfilePage />} />

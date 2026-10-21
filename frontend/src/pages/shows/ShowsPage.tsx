@@ -2,20 +2,19 @@ import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { isDirectorLevel, type User } from '../../auth/roles'
 import { useAuth } from '../../auth/useAuth'
-import { formatDay } from '../../format'
 import { useFetch } from '../../hooks/useFetch'
 import type { Show } from '../../types'
+import { ShowDetails } from './ShowDetails'
 import { ShowFormDialog } from './ShowFormDialog'
 import './shows.css'
 
-/** Shows the production runs or is brainstorming. Directors and Site Managers
- *  create and edit them. */
+/** Shows the production runs or is brainstorming. Directors, Assistants and
+ *  Site Managers see them; only Directors and Site Managers create and edit. */
 export function ShowsPage() {
   const { user } = useAuth()
-  const shows = useFetch<Show[]>('/shows/')
-  const people = useFetch<User[]>('/users/')
-  const [searchParams, setSearchParams] = useSearchParams()
   const canEdit = isDirectorLevel(user)
+  const shows = useFetch<Show[]>('/shows/')
+  const [searchParams, setSearchParams] = useSearchParams()
   // undefined = closed, null = creating, Show = editing. The Director's Dashboard
   // links here with ?new=1 to open the create form.
   const [editing, setEditing] = useState<Show | null | undefined>(() =>
@@ -34,7 +33,7 @@ export function ShowsPage() {
           <p className="subtitle">Current shows and new ideas</p>
         </div>
         {canEdit && (
-          <button type="button" className="button" onClick={() => setEditing(null)} disabled={!people.data}>
+          <button type="button" className="button" onClick={() => setEditing(null)}>
             + Create new show
           </button>
         )}
@@ -42,14 +41,20 @@ export function ShowsPage() {
 
       {shows.loading && !shows.data && <p className="loading">Loading shows…</p>}
       {shows.error && !shows.data && <p className="form__error">Couldn’t load the shows.</p>}
-      {shows.data?.length === 0 && <p className="muted">No shows yet. Create one to start planning.</p>}
+      {shows.data?.length === 0 && (
+        <p className="muted">{canEdit ? 'No shows yet. Create one to start planning.' : 'No shows yet.'}</p>
+      )}
 
       <ul className="show-tiles">
         {shows.data?.map((show) => (
           <li key={show.id} className="tile show-tile">
             <div className="show-tile__head">
               <div>
-                <h2>{show.name}</h2>
+                <h2>
+                  <Link to={`/staff-manager/shows/${show.id}`} className="show-tile__link">
+                    {show.name}
+                  </Link>
+                </h2>
                 {show.status_display && <span className="badge">{show.status_display}</span>}
               </div>
               {canEdit && (
@@ -57,7 +62,6 @@ export function ShowsPage() {
                   type="button"
                   className="text-button"
                   onClick={() => setEditing(show)}
-                  disabled={!people.data}
                   aria-label={`Edit ${show.name}`}
                 >
                   Edit
@@ -65,62 +69,31 @@ export function ShowsPage() {
               )}
             </div>
             <p className="show-tile__description">{show.description}</p>
-            <dl className="show-tile__details">
-              <div>
-                <dt>Starts</dt>
-                <dd>{show.start_date ? formatDay(show.start_date, { month: 'short', day: 'numeric', year: 'numeric' }) : 'Not set'}</dd>
-              </div>
-              <div>
-                <dt>Location</dt>
-                <dd>{show.shooting_location || 'Not set'}</dd>
-              </div>
-              <div>
-                <dt>Seasons</dt>
-                <dd>
-                  {show.seasons ?? '—'}
-                  {show.weeks_per_season ? ` × ${show.weeks_per_season} weeks` : ''}
-                </dd>
-              </div>
-              <div>
-                <dt>Director</dt>
-                <dd>{show.director_name ?? 'Not set'}</dd>
-              </div>
-              <div>
-                <dt>Other directors</dt>
-                <dd>{show.other_director_details.map((person) => person.name).join(', ') || 'None'}</dd>
-              </div>
-              <div>
-                <dt>Department heads</dt>
-                <dd>
-                  {show.department_head_details
-                    .map((person) => `${person.name} (${person.head_of_department_name ?? 'No department listed'})`)
-                    .join(', ') || 'None'}
-                </dd>
-              </div>
-              <div>
-                <dt>Influencers</dt>
-                <dd>
-                  {show.influencer_count ? (
-                    <Link to={`/influencers?show=${show.id}`}>{show.influencer_count} on the roster</Link>
-                  ) : (
-                    'None'
-                  )}
-                </dd>
-              </div>
-            </dl>
+            <ShowDetails show={show} />
           </li>
         ))}
       </ul>
 
-      {editing !== undefined && user && people.data && (
-        <ShowFormDialog
-          show={editing}
-          people={people.data}
-          viewer={user}
-          onSaved={() => shows.reload()}
-          onClose={close}
-        />
+      {canEdit && editing !== undefined && user && (
+        <ShowEditor show={editing} viewer={user} onSaved={() => shows.reload()} onClose={close} />
       )}
     </section>
   )
+}
+
+/** The create / edit form, once the people to pick from have loaded. */
+export function ShowEditor({
+  show,
+  viewer,
+  onSaved,
+  onClose,
+}: {
+  show: Show | null
+  viewer: User
+  onSaved: (saved: Show) => void
+  onClose: () => void
+}) {
+  const people = useFetch<User[]>('/users/')
+  if (!people.data) return people.error ? <p className="form__error">Couldn’t load the staff list.</p> : null
+  return <ShowFormDialog show={show} people={people.data} viewer={viewer} onSaved={onSaved} onClose={onClose} />
 }

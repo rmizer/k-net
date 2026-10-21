@@ -152,3 +152,28 @@
     transform: rotate(90deg);
   }
 }
+
+.show-tile__link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.show-tile__link:hover {
+  color: var(--knet-dark-red);
+}
+
+/* One show's page */
+
+.show-page {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.show-page .page-header .badge {
+  margin-top: 0.3rem;
+}
+
+.show-page__influencers h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.15rem;
+}
