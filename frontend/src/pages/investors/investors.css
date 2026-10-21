@@ -41,6 +41,28 @@
   margin-bottom: 0.75rem;
 }
 
+/* Section headings: larger, with a rule and red accent, so they stand apart
+   from the card titles inside each section. */
+.investor__section > h2 {
+  position: relative;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--knet-gray-300);
+  font-size: clamp(1.6rem, 4vw, 2rem);
+  letter-spacing: -0.01em;
+}
+
+.investor__section > h2::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 3.5rem;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--knet-dark-red);
+}
+
 .investor h3 {
   margin: 0 0 0.4rem;
   font-size: 1.1rem;
