@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../../api'
-import type { User } from '../../auth/roles'
+import { isDirectorLevel, type User } from '../../auth/roles'
 import { useAuth } from '../../auth/useAuth'
 import { NewAccountNotice } from '../../components/NewAccountNotice'
 import { RequestRemovalDialog } from '../../components/RequestRemovalDialog'
@@ -171,6 +171,11 @@ export function StaffOverviewPage() {
           <Link to="/crew/invite" className="button button--secondary">
             Invite crew
           </Link>
+          {isDirectorLevel(user) && (
+            <Link to="/staff-manager/shows?new=1" className="button button--secondary">
+              + Create new show
+            </Link>
+          )}
         </div>
       </div>
 

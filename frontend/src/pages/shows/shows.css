@@ -1,0 +1,154 @@
+/* Shows (Director's Dashboard) */
+
+.show-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.show-tile {
+  display: grid;
+  align-content: start;
+  gap: 0.5rem;
+}
+
+.show-tile__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.show-tile__head h2 {
+  margin: 0 0 0.3rem;
+  font-size: 1.25rem;
+}
+
+.show-tile__description {
+  margin: 0;
+  white-space: pre-line;
+}
+
+.show-tile__details {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.5rem 1rem;
+  margin: 0;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--knet-gray-100);
+}
+
+.show-tile__details dt {
+  font-size: 0.72rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--knet-dark-red);
+}
+
+.show-tile__details dd {
+  margin: 0;
+  font-size: 0.92rem;
+}
+
+/* Create / edit dialog */
+
+.show-dialog {
+  width: min(760px, calc(100vw - 2 * var(--gutter)));
+}
+
+.show-dialog__numbers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+}
+
+.show-dialog__number {
+  width: 6rem;
+}
+
+/* Two lists with arrows between them */
+
+.dual-list {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.dual-list legend {
+  margin-bottom: 0.4rem;
+  font-weight: var(--weight-bold);
+}
+
+.dual-list__columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+.dual-list__box {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  color: var(--knet-gray-600);
+}
+
+.dual-list__box select {
+  width: 100%;
+  height: 10rem;
+  padding: 0.25rem;
+  overflow-y: auto;
+  border: 1px solid var(--knet-gray-300);
+  border-radius: var(--radius);
+  font: inherit;
+  font-size: 0.92rem;
+  color: var(--knet-black);
+}
+
+.dual-list__box option {
+  padding: 0.3rem 0.4rem;
+  border-radius: 4px;
+}
+
+.dual-list__arrows {
+  display: grid;
+  align-self: center;
+  gap: 0.5rem;
+}
+
+.dual-list__arrows .button {
+  min-width: 2.75rem;
+  padding: 0.4rem 0.6rem;
+  font-size: 1.1rem;
+}
+
+.dual-list__footer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.dual-list__status {
+  font-size: 0.85rem;
+  color: var(--knet-gray-600);
+}
+
+@media (max-width: 560px) {
+  .dual-list__columns {
+    grid-template-columns: 1fr;
+  }
+
+  .dual-list__arrows {
+    grid-auto-flow: column;
+    justify-content: center;
+  }
+
+  .dual-list__arrows .button {
+    transform: rotate(90deg);
+  }
+}

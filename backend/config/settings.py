@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     "crewfinder",
     "resources",
     "influencers",
+    "shows",
     "documents",
     "locations",
     "finance",

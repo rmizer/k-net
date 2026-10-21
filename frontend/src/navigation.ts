@@ -1,6 +1,6 @@
 import type { Role } from './auth/roles'
 import type { NavIconName } from './components/NavIcon'
-import { MANAGER_ROLES } from './auth/roles'
+import { DIRECTOR_ROLES, MANAGER_ROLES } from './auth/roles'
 
 export interface NavItem {
   label: string
@@ -36,6 +36,7 @@ export const NAV_ITEMS: NavItem[] = [
       { label: 'Departments', path: '/staff-manager/departments' },
       { label: 'Scheduling', path: '/staff-manager/scheduling' },
       { label: 'Task Management', path: '/staff-manager/tasks' },
+      { label: 'Shows', path: '/staff-manager/shows', roles: DIRECTOR_ROLES },
     ],
   },
   {
