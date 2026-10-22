@@ -6,6 +6,7 @@ import { useFetch } from '../../hooks/useFetch'
 import type { InfluencerRow, Show } from '../../types'
 import { ShowDetails } from './ShowDetails'
 import { ShowEditor } from './ShowsPage'
+import { NavIcon } from '../../components/NavIcon'
 import './shows.css'
 
 /** One show: its details, people and the influencers on it. */
@@ -39,7 +40,10 @@ export function ShowPage() {
       </p>
       <div className="page-header">
         <div>
-          <h1>{data.name}</h1>
+          <h1>
+            <NavIcon name="tv" />
+            {data.name}
+          </h1>
           {data.status_display && <span className="badge">{data.status_display}</span>}
         </div>
         {canEdit && (

@@ -6,6 +6,7 @@ import { useFetch } from '../../hooks/useFetch'
 import type { Show } from '../../types'
 import { ShowDetails } from './ShowDetails'
 import { ShowFormDialog } from './ShowFormDialog'
+import { NavIcon } from '../../components/NavIcon'
 import './shows.css'
 
 /** Shows the production runs or is brainstorming. Directors, Assistants and
@@ -29,7 +30,10 @@ export function ShowsPage() {
     <section className="shows">
       <div className="page-header">
         <div>
-          <h1>Shows</h1>
+          <h1>
+            <NavIcon name="tv" />
+            Shows
+          </h1>
           <p className="subtitle">Current shows and new ideas</p>
         </div>
         {canEdit && (

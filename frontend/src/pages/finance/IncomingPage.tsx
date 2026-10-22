@@ -6,6 +6,7 @@ import { formatDay } from '../../format'
 import type { Deposit, PaymentMethod, ProductionSettings, TimelineItem } from '../../types'
 import { RevenueChart } from './RevenueChart'
 import { formErrors, MethodSelect, money, shortDate, Stat, todayIso, useDialog } from './shared'
+import { NavIcon } from '../../components/NavIcon'
 import './finance.css'
 
 export function IncomingPage() {
@@ -53,7 +54,10 @@ export function IncomingPage() {
     <section className="finance">
       <div className="page-header">
         <div>
-          <h1>Incoming</h1>
+          <h1>
+            <NavIcon name="incoming" />
+            Incoming
+          </h1>
           <p className="subtitle">Running statement of money received</p>
         </div>
         <button type="button" className="button" onClick={() => setEditing(null)}>

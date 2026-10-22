@@ -6,6 +6,7 @@ import { Avatar } from '../../components/Avatar'
 import { addDays, clockTime, formatDay } from '../../format'
 import { useFetch } from '../../hooks/useFetch'
 import type { CrewDay, CrewMember, ProductionSettings } from '../../types'
+import { NavIcon } from '../../components/NavIcon'
 import './crew.css'
 
 const UNASSIGNED = 'Unassigned'
@@ -46,7 +47,10 @@ function Crew({ today }: { today: string }) {
     <section className="crew">
       <div className="page-header">
         <div>
-          <h1>Staff / Crew</h1>
+          <h1>
+            <NavIcon name="crew" />
+            Staff / Crew
+          </h1>
           <p className="subtitle">
             Who’s working, from the schedule{people ? ` · ${people.length} called` : ''}
           </p>

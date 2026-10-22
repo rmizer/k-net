@@ -7,6 +7,7 @@ import { useFetch } from '../../hooks/useFetch'
 import type { CrewFinderEntry } from '../../types'
 import { CrewMap, type MapPoint } from './CrewMap'
 import { TrackerManager } from './TrackerManager'
+import { NavIcon } from '../../components/NavIcon'
 import './crew.css'
 
 const REFRESH_MS = 60_000
@@ -26,7 +27,10 @@ function CrewFinderPreview() {
     <section className="crewfinder">
       <div className="page-header">
         <div>
-          <h1>CrewFinder</h1>
+          <h1>
+            <NavIcon name="locate" />
+            CrewFinder
+          </h1>
           <p className="subtitle">Where the crew is right now</p>
         </div>
         <span className="badge crewfinder__soon">Coming soon</span>
@@ -98,7 +102,10 @@ function LiveCrewFinder() {
     <section className="crewfinder">
       <div className="page-header">
         <div>
-          <h1>CrewFinder</h1>
+          <h1>
+            <NavIcon name="locate" />
+            CrewFinder
+          </h1>
           <p className="subtitle">Where the crew is right now</p>
         </div>
         <button type="button" className="button button--secondary" onClick={refreshNow}>

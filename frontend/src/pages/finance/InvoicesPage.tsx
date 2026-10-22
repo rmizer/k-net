@@ -5,6 +5,7 @@ import { useFetch } from '../../hooks/useFetch'
 import type { Invoice, InvoiceStatus, PaymentMethod } from '../../types'
 import { formErrors, MethodSelect, money, PayDialog, shortDate, useDialog } from './shared'
 import { SortHeader, useSort } from '../../components/sorting'
+import { NavIcon } from '../../components/NavIcon'
 import './finance.css'
 
 type Show = 'open' | 'paid' | 'archived' | 'all'
@@ -69,7 +70,10 @@ export function InvoicesPage() {
     <section className="finance">
       <div className="page-header">
         <div>
-          <h1>Invoices</h1>
+          <h1>
+            <NavIcon name="receipt" />
+            Invoices
+          </h1>
           <p className="subtitle">{money(openTotal)} open</p>
         </div>
         <button type="button" className="button" onClick={() => setEditing(null)}>

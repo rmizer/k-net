@@ -14,6 +14,7 @@ import {
   type ReceiptStatus,
 } from '../../types'
 import { DocumentFormDialog } from './DocumentFormDialog'
+import { NavIcon } from '../../components/NavIcon'
 import './documents.css'
 
 /** Documents expiring within this many days are flagged. */
@@ -98,7 +99,10 @@ export function DocumentsPage() {
     <section className="documents">
       <div className="page-header">
         <div>
-          <h1>Documents</h1>
+          <h1>
+            <NavIcon name="document" />
+            Documents
+          </h1>
           <p className="subtitle">{manager ? 'Project paperwork and crew receipts' : 'Your receipts'}</p>
         </div>
         <div className="documents__buttons">

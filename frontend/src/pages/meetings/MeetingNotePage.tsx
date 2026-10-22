@@ -4,6 +4,7 @@ import { formatDateTime } from '../../format'
 import { useFetch } from '../../hooks/useFetch'
 import type { MeetingNote } from '../../types'
 import { downloadMeetingPdf, meetingTitle, meetingWhen } from './meetingPdf'
+import { NavIcon } from '../../components/NavIcon'
 import './meetings.css'
 
 /** One meeting's notes, read-only, with Edit and Download PDF. */
@@ -36,7 +37,10 @@ export function MeetingNotePage() {
       </p>
       <div className="page-header">
         <div>
-          <h1>{meetingTitle(data)}</h1>
+          <h1>
+            <NavIcon name="notes" />
+            {meetingTitle(data)}
+          </h1>
           <p className="subtitle">{meetingWhen(data.meeting_at)}</p>
         </div>
         <div className="meetings__actions">

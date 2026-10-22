@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import QRCode from 'qrcode'
+import { NavIcon } from '../../components/NavIcon'
 import './invite.css'
 
 // The QR code always points at this site's own sign-up page, so it's right on
@@ -29,7 +30,10 @@ export function InvitePage() {
 
   return (
     <section className="invite">
-      <h1>Invite crew</h1>
+      <h1>
+        <NavIcon name="userPlus" />
+        Invite crew
+      </h1>
       <p className="subtitle">New staff scan this code with their phone camera to sign up</p>
 
       <div className="tile invite__card">

@@ -8,6 +8,7 @@ import { useFetch } from '../../hooks/useFetch'
 import type { Department } from '../../types'
 import { StaffFormDialog } from './StaffFormDialog'
 import { StaffTile } from './StaffTile'
+import { NavIcon } from '../../components/NavIcon'
 import './directory.css'
 
 const UNASSIGNED = 'Unassigned'
@@ -77,7 +78,10 @@ export function DirectoryPage() {
     <section className="directory">
       <div className="page-header">
         <div>
-          <h1>Directory</h1>
+          <h1>
+            <NavIcon name="contacts" />
+            Directory
+          </h1>
           <p className="subtitle">All staff and crew</p>
         </div>
         {manager && assignableRoles.length > 0 && (

@@ -223,6 +223,11 @@
   box-shadow: 0 0 0 1px var(--cs-orange);
 }
 
+/* A published sheet is read-only. */
+.cs-published .cs-edit:hover {
+  background: none;
+}
+
 /* Printing: just the two sheets, one per page. */
 @media print {
   @page {

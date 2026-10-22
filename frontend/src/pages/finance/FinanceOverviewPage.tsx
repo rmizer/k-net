@@ -5,6 +5,7 @@ import { ReceiptProgress } from '../documents/DocumentsPage'
 import { FinanceCalendar } from './FinanceCalendar'
 import { InvoiceStatusBadge } from './InvoicesPage'
 import { money, shortDate, Stat } from './shared'
+import { NavIcon } from '../../components/NavIcon'
 import './finance.css'
 
 /** Scheduled paychecks grouped by pay date. */
@@ -29,7 +30,10 @@ export function FinanceOverviewPage() {
     <section className="finance">
       <div className="page-header">
         <div>
-          <h1>Finance</h1>
+          <h1>
+            <NavIcon name="dollar" />
+            Finance
+          </h1>
           <p className="subtitle">Money due, scheduled and received</p>
         </div>
       </div>

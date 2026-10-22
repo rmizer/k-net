@@ -11,6 +11,7 @@ import { StaffTasks, YourTasks } from './TaskSections'
 import { TodaysCrew } from './TodaysCrew'
 import { WeatherSection } from './WeatherSection'
 import { WeekPreview } from './WeekPreview'
+import { NavIcon } from '../../components/NavIcon'
 import './dashboard.css'
 
 export function DashboardPage() {
@@ -27,7 +28,10 @@ export function DashboardPage() {
   return (
     <div className="dashboard">
       <header className="dashboard__header">
-        <h1>Staff Hub</h1>
+        <h1>
+          <NavIcon name="home" />
+          Staff Hub
+        </h1>
         <p className="subtitle">
           {formatDay(production.today, { weekday: 'long', month: 'long', day: 'numeric' })}
         </p>
@@ -46,6 +50,7 @@ export function DashboardPage() {
       <WeatherSection canEdit={manager} onLocationChange={reload} />
       <AnnouncementsSection
         announcements={data.announcements}
+        latestCallSheet={data.latest_call_sheet}
         alerts={data.alerts}
         timeZone={timeZone}
         canEdit={manager}

@@ -7,6 +7,7 @@ import { addDays, dayKey, eventDays, formatDay, formatTime } from '../../format'
 import { useFetch } from '../../hooks/useFetch'
 import type { CalendarEvent, ProductionSettings } from '../../types'
 import { MonthCalendar, monthGrid } from './MonthCalendar'
+import { NavIcon } from '../../components/NavIcon'
 import './schedule.css'
 
 const DAY_PATTERN = /^\d{4}-\d{2}-\d{2}$/
@@ -89,7 +90,10 @@ function Schedule({ today, timeZone }: { today: string; timeZone: string }) {
     <section className="schedule">
       <div className="page-header">
         <div>
-          <h1>Schedule</h1>
+          <h1>
+            <NavIcon name="calendar" />
+            Schedule
+          </h1>
           <p className="subtitle">Production time · {timeZone.replace(/_/g, ' ')}</p>
         </div>
       </div>

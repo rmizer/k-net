@@ -5,6 +5,7 @@ import { useFetch } from '../../../hooks/useFetch'
 import type { ProductionSettings } from '../../../types'
 import { ForbiddenPage } from '../../ForbiddenPage'
 import { CulinaryNav } from './CulinaryNav'
+import { NavIcon } from '../../../components/NavIcon'
 import '../departments.css'
 import './culinary.css'
 
@@ -38,7 +39,10 @@ export function CulinaryShell({
     <section className="department culinary">
       <div className="page-header no-print">
         <div>
-          <h1>{title}</h1>
+          <h1>
+            <NavIcon name="utensils" />
+            {title}
+          </h1>
           <p className="subtitle">{subtitle ?? 'Culinary'}</p>
         </div>
         {actions?.(context)}

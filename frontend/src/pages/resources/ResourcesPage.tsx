@@ -6,6 +6,7 @@ import { useFetch } from '../../hooks/useFetch'
 import { RESOURCE_CATEGORIES, type Resource, type ResourceCategory } from '../../types'
 import { ResourceFormDialog } from './ResourceFormDialog'
 import { ResourceTile } from './ResourceTile'
+import { NavIcon } from '../../components/NavIcon'
 import './resources.css'
 
 export function ResourcesPage() {
@@ -48,7 +49,10 @@ export function ResourcesPage() {
     <section className="resources">
       <div className="page-header">
         <div>
-          <h1>Resources</h1>
+          <h1>
+            <NavIcon name="resources" />
+            Resources
+          </h1>
           <p className="subtitle">Vendors and services</p>
         </div>
         {manager && (

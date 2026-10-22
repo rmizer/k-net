@@ -1,12 +1,16 @@
 import { Link } from 'react-router-dom'
 import { ARTICLES } from './articles'
+import { NavIcon } from '../../components/NavIcon'
 import './help.css'
 
 /** The list of help articles. */
 export function HelpPage() {
   return (
     <section className="help">
-      <h1>Help</h1>
+      <h1>
+        <NavIcon name="help" />
+        Help
+      </h1>
       <p className="subtitle">How-tos for getting set up and using K-Net</p>
 
       <ul className="help__list">

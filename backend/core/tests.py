@@ -57,6 +57,46 @@ class AnnouncementPermissionTests(BaseTestCase):
         self.assertEqual([a["message"] for a in self.client.get("/api/alerts/").data], ["Current"])
 
 
+class CallSheetTests(BaseTestCase):
+    SHEET = (
+        '<div class="cs-sheets"><article class="cs-sheet" aria-label="Page 1" onclick="steal()">'
+        '<span class="cs-edit" contenteditable="true">Call Sheet - Season 1</span>'
+        '<script>alert(1)</script><img src="/assets/logo.png" alt="Logo" onerror="x()">'
+        '<img src="https://evil.example/pixel.gif"><a href="javascript:x()">link</a>'
+        '<table><tr><td colspan="2">Max &amp; Dylan &lt;b&gt;</td></tr></table></article></div>'
+    )
+
+    def publish(self, user, **extra):
+        self.client.force_authenticate(user)
+        body = {"title": "Call sheet · Fri, Oct 23", "day": "2026-10-23", "html": self.SHEET, **extra}
+        return self.client.post("/api/call-sheets/", body)
+
+    def test_directors_publish_and_everyone_reads_the_cleaned_sheet(self):
+        self.assertEqual(self.publish(self.staff).status_code, 403)
+        response = self.publish(self.director)
+        self.assertEqual(response.status_code, 201, response.data)
+        self.assertEqual(
+            response.data["html"],
+            '<div class="cs-sheets"><article class="cs-sheet" aria-label="Page 1">'
+            '<span class="cs-edit">Call Sheet - Season 1</span>'
+            '<img alt="Logo" src="/assets/logo.png">link'
+            '<table><tr><td colspan="2">Max &amp; Dylan &lt;b&gt;</td></tr></table></article></div>',
+        )
+
+        self.client.force_authenticate(self.staff)
+        latest = self.client.get("/api/call-sheets/latest/").data
+        self.assertEqual(latest["id"], response.data["id"])
+        self.assertEqual(self.client.get("/api/dashboard/").data["latest_call_sheet"]["title"], "Call sheet · Fri, Oct 23")
+
+    def test_newest_sheet_is_the_one_linked(self):
+        self.client.force_authenticate(self.staff)
+        self.assertIsNone(self.client.get("/api/call-sheets/latest/").data)
+        self.publish(self.director, title="First")
+        self.publish(self.director, title="Second")
+        self.client.force_authenticate(self.staff)
+        self.assertEqual(self.client.get("/api/dashboard/").data["latest_call_sheet"]["title"], "Second")
+
+
 class TaskPermissionTests(BaseTestCase):
     def setUp(self):
         super().setUp()

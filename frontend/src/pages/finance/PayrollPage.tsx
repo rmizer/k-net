@@ -4,6 +4,7 @@ import { useFetch } from '../../hooks/useFetch'
 import type { PayrollPerson } from '../../types'
 import { money, shortDate, Stat } from './shared'
 import { SortHeader, useSort } from '../../components/sorting'
+import { NavIcon } from '../../components/NavIcon'
 import './finance.css'
 
 type SortKey = 'name' | 'department' | 'rate' | 'next' | 'receipts' | 'paid' | 'last'
@@ -66,7 +67,10 @@ export function PayrollPage() {
     <section className="finance payroll">
       <div className="page-header">
         <div>
-          <h1>Payroll</h1>
+          <h1>
+            <NavIcon name="wallet" />
+            Payroll
+          </h1>
           <p className="subtitle">Staff pay, paychecks and receipt reimbursements</p>
         </div>
         <button type="button" className="button button--secondary no-print" onClick={() => window.print()}>

@@ -7,6 +7,7 @@ import { formatDateTime, initials, profileUrl } from '../../format'
 import { useFetch } from '../../hooks/useFetch'
 import { INFLUENCER_PLATFORMS, type Influencer, type InfluencerRow } from '../../types'
 import { InfluencerFormDialog } from './InfluencerFormDialog'
+import { NavIcon } from '../../components/NavIcon'
 import '../finance/finance.css'
 import './influencers.css'
 
@@ -75,7 +76,10 @@ export function InfluencersPage() {
     <section className="influencers finance">
       <div className="page-header">
         <div>
-          <h1>Influencer Roster</h1>
+          <h1>
+            <NavIcon name="star" />
+            Influencer Roster
+          </h1>
           <p className="subtitle">
             Creators on the project
             {roster.data ? ` · ${all.filter((i) => i.is_active).length} active of ${all.length}` : ''}

@@ -49,3 +49,23 @@ class Alert(models.Model):
 
     def __str__(self):
         return self.message
+
+
+class CallSheet(models.Model):
+    """A call sheet as published from the Call Sheet Generator: the sheet's
+    HTML, edits included (cleaned by sanitize.clean_call_sheet), so everyone
+    sees exactly what the Director sent out. The newest is linked on the Staff Hub."""
+
+    title = models.CharField(max_length=200)
+    day = models.DateField()
+    html = models.TextField()
+    published_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="+"
+    )
+    published_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-published_at"]
+
+    def __str__(self):
+        return self.title

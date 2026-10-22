@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/useAuth'
 import { canSee, isInItem, linkPath, NAV_ITEMS, type NavItem } from '../navigation'
+import { Avatar } from './Avatar'
 import { GearIcon } from './GearIcon'
 import { NavIcon } from './NavIcon'
 
@@ -28,6 +29,7 @@ export function Nav() {
     <nav className="site-nav" aria-label="Main">
       <div className="container site-nav__inner">
         <p className="site-nav__greeting">
+          {user && <Avatar person={user} size={30} className="site-nav__avatar" />}
           {user ? `Welcome, ${user.first_name || user.email}!` : 'Welcome!'}
         </p>
 
@@ -153,6 +155,7 @@ function NavDropdown({
                   aria-current={current ? 'page' : undefined}
                   onClick={onClose}
                 >
+                  {link.icon && <NavIcon name={link.icon} />}
                   {link.label}
                 </Link>
               </li>

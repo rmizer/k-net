@@ -7,6 +7,7 @@ import { addDays, formatDay } from '../../format'
 import { useFetch } from '../../hooks/useFetch'
 import type { ProductionSettings, TimelineItem } from '../../types'
 import { TimelineFormDialog } from './TimelineFormDialog'
+import { NavIcon } from '../../components/NavIcon'
 import '../../components/schedule/schedule.css'
 import './timeline.css'
 
@@ -87,7 +88,10 @@ export function TimelinePage() {
     <section className="timeline-page">
       <div className="page-header">
         <div>
-          <h1>Master Timeline</h1>
+          <h1>
+            <NavIcon name="timeline" />
+            Master Timeline
+          </h1>
           <p className="subtitle">
             {items.length
               ? `${formatDay(firstDay, { month: 'short', day: 'numeric' })} – ${formatDay(lastDay, {

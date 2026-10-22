@@ -7,6 +7,7 @@ import { formatDay } from '../../format'
 import { useFetch } from '../../hooks/useFetch'
 import type { Department, StaffOverviewRow, Task, TaskStatus } from '../../types'
 import { Stat } from '../finance/shared'
+import { NavIcon } from '../../components/NavIcon'
 import '../finance/finance.css'
 import './staff-manager.css'
 
@@ -89,7 +90,10 @@ export function TaskManagementPage() {
     <section className="finance staff-manager">
       <div className="page-header">
         <div>
-          <h1>Task Management</h1>
+          <h1>
+            <NavIcon name="tasks" />
+            Task Management
+          </h1>
           <p className="subtitle">Assign tasks to staff; they show up on that person’s Staff Hub</p>
         </div>
         <button

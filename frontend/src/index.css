@@ -80,6 +80,15 @@ h1 {
   font-size: clamp(1.75rem, 4vw, 2.5rem);
 }
 
+/* A page heading's icon: sized to the heading, in the heading's color. */
+h1 > .nav-icon {
+  width: 0.85em;
+  height: 0.85em;
+  margin-right: 0.35em;
+  vertical-align: -0.08em;
+  stroke-width: 2.25;
+}
+
 h2 {
   font-size: clamp(1.35rem, 3vw, 1.75rem);
 }
@@ -186,11 +195,11 @@ a:hover {
   color: var(--knet-white);
 }
 
-/* Desktop: one row. Greeting | page links | account settings and log out. */
+/* Desktop: one row. Page links | avatar and greeting | account settings and log out. */
 .site-nav__inner {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  grid-template-areas: 'greeting links account';
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-areas: 'links greeting account';
   align-items: center;
   gap: 0.35rem 1.1rem;
   max-width: none; /* The nav bar spans the window (with the usual side margins), wider than page content. */
@@ -200,9 +209,22 @@ a:hover {
 
 .site-nav__greeting {
   grid-area: greeting;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   margin: 0;
   font-weight: var(--weight-regular);
   white-space: nowrap;
+}
+
+/* The signed-in person's picture, or their initials in white so they show on the red bar. */
+.site-nav__avatar {
+  box-shadow: 0 0 0 2px var(--knet-white);
+}
+
+.site-nav__avatar.avatar--initials {
+  background: var(--knet-white);
+  color: var(--knet-dark-red);
 }
 
 .site-nav__menu {
@@ -229,13 +251,8 @@ a:hover {
   padding: 0;
 }
 
-/* The pipes that set the menu off from the greeting and the account controls. */
+/* The pipe between the greeting and the account controls. */
 @media (min-width: 861px) {
-  .site-nav__greeting {
-    padding-right: 1.1rem;
-    border-right: 1px solid rgb(255 255 255 / 0.6);
-  }
-
   .site-nav__account {
     flex-wrap: nowrap;
     padding-left: 1.1rem;
@@ -331,7 +348,9 @@ a:hover {
 }
 
 .nav-dropdown__link {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
   color: var(--knet-white);
   font-size: 0.85rem;
   font-weight: var(--weight-bold);

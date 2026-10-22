@@ -8,6 +8,7 @@ import { useFetch } from '../../hooks/useFetch'
 import type { Influencer, InfluencerNote, TravelArrangement } from '../../types'
 import { InfluencerFormDialog } from './InfluencerFormDialog'
 import { TravelFormDialog } from './TravelFormDialog'
+import { NavIcon } from '../../components/NavIcon'
 import './influencers.css'
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
@@ -100,7 +101,10 @@ export function InfluencerProfilePage() {
           )}
         </div>
         <div className="profile-header__text">
-          <h1>{influencer.name}</h1>
+          <h1>
+            <NavIcon name="star" />
+            {influencer.name}
+          </h1>
           <p className="profile-header__handle">
             {influencer.handle &&
               (link ? (

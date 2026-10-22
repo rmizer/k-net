@@ -4,6 +4,7 @@ import { useAuth } from '../auth/useAuth'
 import type { User } from '../auth/roles'
 import { initials } from '../format'
 import { EmailChange } from './EmailChange'
+import { NavIcon } from '../components/NavIcon'
 
 const EDITABLE_FIELDS = [
   { name: 'first_name', label: 'First name', type: 'text', autoComplete: 'given-name' },
@@ -67,7 +68,10 @@ export function AccountPage() {
 
   return (
     <section>
-      <h1>Account</h1>
+      <h1>
+        <NavIcon name="user" />
+        Account
+      </h1>
       <p className="subtitle">
         {user.role_display}
         {user.department_name ? ` · ${user.department_name}` : ''}

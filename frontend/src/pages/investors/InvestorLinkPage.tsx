@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { api } from '../../api'
 import { useFetch } from '../../hooks/useFetch'
+import { NavIcon } from '../../components/NavIcon'
 import './investors.css'
 
 const pageUrl = (token: string) => `${window.location.origin}/investors/${token}`
@@ -32,7 +33,10 @@ export function InvestorLinkPage() {
 
   return (
     <section className="investor-link">
-      <h1>Investor page</h1>
+      <h1>
+        <NavIcon name="trend" />
+        Investor page
+      </h1>
       <p className="subtitle">Only Site Managers see this. Share the link with investors.</p>
 
       <div className="tile investor-link__card">

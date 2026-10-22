@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useAuth } from '../../auth/useAuth'
 import { NotFoundPage } from '../NotFoundPage'
 import { ARTICLES } from './articles'
+import { NavIcon } from '../../components/NavIcon'
 import './help.css'
 
 /** One help article, at /help/<slug>. */
@@ -16,7 +17,10 @@ export function HelpArticlePage() {
       <p className="help-article__back">
         <Link to="/help">← Help</Link>
       </p>
-      <h1>{article.title}</h1>
+      <h1>
+        <NavIcon name="help" />
+        {article.title}
+      </h1>
       <p className="subtitle">{article.summary}</p>
       <div className="tile help-article__body">{article.body(user)}</div>
     </article>

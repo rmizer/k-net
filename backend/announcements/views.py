@@ -1,10 +1,12 @@
 from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from accounts.permissions import ReadOnlyOrManagerLevel
 from notifications import slack
 
-from .models import Alert, Announcement
-from .serializers import AlertSerializer, AnnouncementSerializer
+from .models import Alert, Announcement, CallSheet
+from .serializers import AlertSerializer, AnnouncementSerializer, CallSheetSerializer, CallSheetSummarySerializer
 
 
 class AnnouncementViewSet(viewsets.ModelViewSet):
@@ -28,3 +30,23 @@ class AlertViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         slack.notify_alert(serializer.save(created_by=self.request.user))
+
+
+class CallSheetViewSet(viewsets.ModelViewSet):
+    """Published call sheets. Everyone can read them; Directors, Assistants and
+    Site Managers publish (Add to announcements) and remove them."""
+
+    queryset = CallSheet.objects.select_related("published_by")
+    permission_classes = [ReadOnlyOrManagerLevel]
+    http_method_names = ["get", "post", "delete", "head", "options"]
+
+    def get_serializer_class(self):
+        return CallSheetSummarySerializer if self.action == "list" else CallSheetSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(published_by=self.request.user)
+
+    @action(detail=False)
+    def latest(self, request):
+        sheet = self.get_queryset().first()
+        return Response(CallSheetSerializer(sheet).data if sheet else None)

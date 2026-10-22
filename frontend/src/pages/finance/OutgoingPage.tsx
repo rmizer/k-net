@@ -12,6 +12,7 @@ import type {
 } from '../../types'
 import { ReceiptProgress } from '../documents/DocumentsPage'
 import { formErrors, MethodSelect, money, PayDialog, shortDate, Stat, todayIso, useDialog } from './shared'
+import { NavIcon } from '../../components/NavIcon'
 import './finance.css'
 
 const KIND_FILTERS: { value: OutgoingKind | 'all'; label: string }[] = [
@@ -68,7 +69,10 @@ export function OutgoingPage() {
     <section className="finance">
       <div className="page-header">
         <div>
-          <h1>Outgoing</h1>
+          <h1>
+            <NavIcon name="outgoing" />
+            Outgoing
+          </h1>
           <p className="subtitle">Payments made, scheduled auto drafts and receipts to reimburse</p>
         </div>
         <button type="button" className="button" onClick={() => setAddingPayment(true)}>

@@ -7,6 +7,7 @@ import { fromLocalInput, toLocalInput } from '../../format'
 import { useFetch } from '../../hooks/useFetch'
 import type { MeetingNote } from '../../types'
 import { downloadMeetingPdf } from './meetingPdf'
+import { NavIcon } from '../../components/NavIcon'
 import '../shows/shows.css'
 import './meetings.css'
 
@@ -152,7 +153,10 @@ function MeetingForm({ initial }: { initial: MeetingNote | null }) {
       </p>
       <div className="page-header">
         <div>
-          <h1>{initial ? 'Edit meeting notes' : 'New meeting notes'}</h1>
+          <h1>
+            <NavIcon name="notes" />
+            {initial ? 'Edit meeting notes' : 'New meeting notes'}
+          </h1>
           <p className="subtitle">Saves automatically every 30 seconds while you type.</p>
         </div>
       </div>

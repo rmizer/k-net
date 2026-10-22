@@ -1,7 +1,7 @@
 import { useMemo, useState, type ReactNode } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { api, ApiError } from '../../api'
-import { canSeeDepartmentPage, DEPARTMENT_PAGES, isManagerLevel } from '../../auth/roles'
+import { canSeeDepartmentPage, DEPARTMENT_PAGES, isManagerLevel, type DepartmentPageSlug } from '../../auth/roles'
 import { useAuth } from '../../auth/useAuth'
 import { Avatar } from '../../components/Avatar'
 import { eventWhen } from '../../components/schedule/GanttChart'
@@ -13,6 +13,8 @@ import { ForbiddenPage } from '../ForbiddenPage'
 import { MarketingLinks } from '../marketing/MarketingLinks'
 import { MonthCalendar, monthGrid } from '../schedule/MonthCalendar'
 import { CulinaryNav } from './culinary/CulinaryNav'
+import { NavIcon } from '../../components/NavIcon'
+import { DEPARTMENT_ICONS } from '../../navigation'
 import './departments.css'
 
 /** Events API path for whole days on one department page (padded a day each side,
@@ -109,7 +111,10 @@ function DepartmentView({ slug, today, timeZone }: ViewProps) {
     <section className="department">
       <div className="page-header">
         <div>
-          <h1>{page.label}</h1>
+          <h1>
+            <NavIcon name={DEPARTMENT_ICONS[page.slug as DepartmentPageSlug] ?? 'departments'} />
+            {page.label}
+          </h1>
           <p className="subtitle">
             {page.departments.length > 1 ? page.departments.map((d) => d.name).join(' & ') : 'Department page'}
             {page.can_edit ? '' : ' · View only'}

@@ -1,10 +1,21 @@
-import { useMemo, useState, type ReactNode } from 'react'
+import { useMemo, useRef, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import { api, ApiError } from '../../api'
 import { ROLE_LABELS, type Role, type User } from '../../auth/roles'
 import battleHouseLogo from '../../assets/brand/battlehouse-logo.png'
 import { addDays, clockTime, dayKey, formatDay, timeInZone } from '../../format'
 import { useFetch } from '../../hooks/useFetch'
-import type { CalendarEvent, CrewDay, CrewMember, ProductionLocation, ProductionSettings, Show, Weather } from '../../types'
+import type {
+  CalendarEvent,
+  CrewDay,
+  CrewMember,
+  ProductionLocation,
+  ProductionSettings,
+  PublishedCallSheet,
+  Show,
+  Weather,
+} from '../../types'
+import { NavIcon } from '../../components/NavIcon'
 import './call-sheet.css'
 
 /** Call sheet sections, in order, and the departments listed under each. Anyone
@@ -95,20 +106,73 @@ function CallSheetGenerator({ today, timeZone }: { today: string; timeZone: stri
   const loading = !crewDay || !people.data || !events.data
   const sheetKey = `${day}-${show?.id}-${season}-${shootDayValue}-${loading}`
 
+  // Add to announcements: publish the sheet as it looks now, edits included,
+  // and link it from the Staff Hub.
+  const sheetRef = useRef<HTMLDivElement>(null)
+  const [publishing, setPublishing] = useState(false)
+  const [published, setPublished] = useState<{ sheet: PublishedCallSheet; key: string } | null>(null)
+  const [publishError, setPublishError] = useState('')
+
+  const publish = async () => {
+    const html = sheetRef.current?.innerHTML
+    if (!html) return
+    const title = [
+      `Call sheet · ${formatDay(day, { weekday: 'short', month: 'short' })} ${Number(day.slice(8))}`,
+      show?.name,
+      shootDayValue ? `Shoot day ${shootDayValue}` : null,
+    ]
+      .filter(Boolean)
+      .join(' · ')
+    if (!window.confirm(`Add “${title}” to the Staff Hub announcements? It replaces the call sheet linked there now.`)) return
+    setPublishing(true)
+    setPublishError('')
+    try {
+      const sheet = await api<PublishedCallSheet>('/call-sheets/', {
+        method: 'POST',
+        body: JSON.stringify({ title, day, html }),
+      })
+      setPublished({ sheet, key: sheetKey })
+    } catch (err) {
+      setPublishError(err instanceof ApiError ? err.message : 'Couldn’t add the call sheet to announcements.')
+    } finally {
+      setPublishing(false)
+    }
+  }
+
   return (
     <section className="call-sheet-page">
       <div className="page-header no-print">
         <div>
-          <h1>Call Sheet Generator</h1>
+          <h1>
+            <NavIcon name="sheet" />
+            Call Sheet Generator
+          </h1>
           <p className="subtitle">
             Built from the <Link to="/schedule">schedule</Link> and the <Link to="/directory">directory</Link>. Click
             any text on the sheet to change it before printing.
           </p>
         </div>
-        <button type="button" className="button" onClick={() => window.print()} disabled={loading}>
-          Print / save as PDF
-        </button>
+        <div className="row-actions">
+          <button type="button" className="button button--secondary" onClick={publish} disabled={loading || publishing}>
+            {publishing ? 'Adding…' : 'Add to announcements'}
+          </button>
+          <button type="button" className="button" onClick={() => window.print()} disabled={loading}>
+            Print / save as PDF
+          </button>
+        </div>
       </div>
+
+      {published?.key === sheetKey && (
+        <p className="notice notice--success no-print" role="status">
+          Added to the Staff Hub announcements.{' '}
+          <Link to={`/call-sheets/${published.sheet.id}`}>View the published call sheet</Link>
+        </p>
+      )}
+      {publishError && (
+        <p className="form__error no-print" role="alert">
+          {publishError}
+        </p>
+      )}
 
       <div className="filters cs-controls no-print">
         <label className="form__field">
@@ -144,19 +208,21 @@ function CallSheetGenerator({ today, timeZone }: { today: string; timeZone: stri
       {loading ? (
         <p className="loading">Building the call sheet…</p>
       ) : (
-        <CallSheet
-          key={sheetKey}
-          day={day}
-          today={today}
-          timeZone={timeZone}
-          season={season}
-          shootDay={shootDayValue}
-          crew={crewDay}
-          people={people.data ?? []}
-          events={dayEvents}
-          locations={locations.data ?? []}
-          weather={weather.data}
-        />
+        <div ref={sheetRef}>
+          <CallSheet
+            key={sheetKey}
+            day={day}
+            today={today}
+            timeZone={timeZone}
+            season={season}
+            shootDay={shootDayValue}
+            crew={crewDay}
+            people={people.data ?? []}
+            events={dayEvents}
+            locations={locations.data ?? []}
+            weather={weather.data}
+          />
+        </div>
       )}
     </section>
   )

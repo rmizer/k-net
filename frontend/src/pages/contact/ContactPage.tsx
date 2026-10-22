@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { api, ApiError, fieldErrors } from '../../api'
 import { useAuth } from '../../auth/useAuth'
+import { NavIcon } from '../../components/NavIcon'
 import './contact.css'
 
 type Kind = 'bug' | 'feature' | 'question' | 'feedback'
@@ -88,7 +89,10 @@ export function ContactPage() {
     const { noun } = KINDS.find((k) => k.value === sent.kind)!
     return (
       <section className="contact">
-        <h1>Contact</h1>
+        <h1>
+          <NavIcon name="mail" />
+          Contact
+        </h1>
         <div className="tile contact__sent" role="status">
           <p className="contact__sent-icon" aria-hidden="true">
             ✓
@@ -108,7 +112,10 @@ export function ContactPage() {
 
   return (
     <section className="contact">
-      <h1>Contact</h1>
+      <h1>
+        <NavIcon name="mail" />
+        Contact
+      </h1>
       <p className="subtitle">Report a bug, request a feature, ask for help or send feedback</p>
 
       <form className="tile form contact__form" onSubmit={handleSubmit} noValidate>

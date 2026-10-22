@@ -1,5 +1,17 @@
-import { canAccess, DEPARTMENT_PAGES, MANAGER_ROLES, type Role, type User } from './auth/roles'
+import { canAccess, DEPARTMENT_PAGES, MANAGER_ROLES, type DepartmentPageSlug, type Role, type User } from './auth/roles'
 import type { NavIconName } from './components/NavIcon'
+
+/** Each department page's icon: in the Departments menu and on its page heading. */
+export const DEPARTMENT_ICONS: Record<DepartmentPageSlug, NavIconName> = {
+  production: 'clapper',
+  operations: 'briefcase',
+  marketing: 'megaphone',
+  transportation: 'bus',
+  culinary: 'utensils',
+  tech: 'monitor',
+  'film-audio': 'video',
+  security: 'guard',
+}
 
 export interface NavItem {
   label: string
@@ -44,7 +56,6 @@ export const NAV_ITEMS: NavItem[] = [
       { label: 'Scheduling', path: '/staff-manager/scheduling' },
       { label: 'Task Management', path: '/staff-manager/tasks' },
       { label: 'Shows', path: '/staff-manager/shows' },
-      { label: 'Call Sheets', path: '/staff-manager/call-sheet' },
     ],
   },
   {
@@ -71,6 +82,7 @@ export const NAV_ITEMS: NavItem[] = [
             // even when the department page itself is closed to them.
             label,
             path: `/departments/${slug}`,
+            icon: DEPARTMENT_ICONS[slug],
             ifAnyChild: true,
             children: [
               { label: 'Overview', path: `/departments/${slug}`, departmentPage: slug },
@@ -91,7 +103,7 @@ export const NAV_ITEMS: NavItem[] = [
               },
             ],
           }
-        : { label, path: `/departments/${slug}`, departmentPage: slug },
+        : { label, path: `/departments/${slug}`, icon: DEPARTMENT_ICONS[slug], departmentPage: slug },
     ),
   },
   // Groups: the main link opens one page, and the submenu lists the rest.

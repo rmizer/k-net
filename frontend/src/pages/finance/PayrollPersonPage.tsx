@@ -6,6 +6,7 @@ import type { Paycheck, PaymentMethod, PayrollPersonDetail, PayUnit, ReceiptSumm
 import { ReceiptProgress } from '../documents/DocumentsPage'
 import { formErrors, MethodSelect, money, PayDialog, shortDate, Stat, todayIso, useDialog } from './shared'
 import { rateText } from './PayrollPage'
+import { NavIcon } from '../../components/NavIcon'
 import './finance.css'
 
 const UNIT_WORDS: Record<PayUnit, [string, string]> = {
@@ -57,7 +58,10 @@ export function PayrollPersonPage() {
       </p>
       <div className="page-header">
         <div>
-          <h1>{data.name}</h1>
+          <h1>
+            <NavIcon name="wallet" />
+            {data.name}
+          </h1>
           <p className="subtitle">
             {[data.role_display, data.department_name, data.is_active_crew ? 'Active crew' : null]
               .filter(Boolean)

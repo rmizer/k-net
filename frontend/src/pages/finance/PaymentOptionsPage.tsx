@@ -4,6 +4,7 @@ import { api, ApiError } from '../../api'
 import { useFetch } from '../../hooks/useFetch'
 import type { PaymentMethod, PaymentMethodKind } from '../../types'
 import { formErrors, useDialog } from './shared'
+import { NavIcon } from '../../components/NavIcon'
 import './finance.css'
 
 const KINDS: { value: PaymentMethodKind; label: string; plural: string }[] = [
@@ -55,7 +56,10 @@ export function PaymentOptionsPage() {
     <section className="finance">
       <div className="page-header">
         <div>
-          <h1>Payment Options</h1>
+          <h1>
+            <NavIcon name="card" />
+            Payment Options
+          </h1>
           <p className="subtitle">Company cards, bank accounts and digital payment methods</p>
         </div>
         <button type="button" className="button" onClick={() => setEditing({ method: null, kind: 'card' })}>

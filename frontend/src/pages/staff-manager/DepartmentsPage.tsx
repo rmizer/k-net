@@ -4,6 +4,7 @@ import { canManageUser, type User } from '../../auth/roles'
 import { useAuth } from '../../auth/useAuth'
 import { useFetch } from '../../hooks/useFetch'
 import type { Department } from '../../types'
+import { NavIcon } from '../../components/NavIcon'
 import './staff-manager.css'
 
 const errorText = (err: unknown, fallback: string) =>
@@ -75,7 +76,10 @@ export function DepartmentsPage() {
     <section className="staff-manager departments">
       <div className="page-header">
         <div>
-          <h1>Departments</h1>
+          <h1>
+            <NavIcon name="departments" />
+            Departments
+          </h1>
           <p className="subtitle">Add, rename and remove departments, and choose who’s in each</p>
         </div>
       </div>

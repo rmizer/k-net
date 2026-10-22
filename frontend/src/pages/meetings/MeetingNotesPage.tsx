@@ -5,6 +5,7 @@ import { formatDateTime, toLocalInput } from '../../format'
 import { useFetch } from '../../hooks/useFetch'
 import type { MeetingNote } from '../../types'
 import { meetingTitle } from './meetingPdf'
+import { NavIcon } from '../../components/NavIcon'
 import '../finance/finance.css'
 import './meetings.css'
 
@@ -58,7 +59,10 @@ export function MeetingNotesPage() {
     <section className="meetings finance">
       <div className="page-header">
         <div>
-          <h1>Meeting Notes</h1>
+          <h1>
+            <NavIcon name="notes" />
+            Meeting Notes
+          </h1>
           <p className="subtitle">Minutes from production meetings{notes.data ? ` · ${all.length} meeting${all.length === 1 ? '' : 's'}` : ''}</p>
         </div>
         <Link to="/meeting-notes/new" className="button">

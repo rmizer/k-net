@@ -6,6 +6,7 @@ import { TaskFormDialog } from '../../components/TaskFormDialog'
 import { addDays, dayKey, formatDay } from '../../format'
 import { useFetch } from '../../hooks/useFetch'
 import type { ProductionSettings, Task, TaskPriority, TaskStatus } from '../../types'
+import { NavIcon } from '../../components/NavIcon'
 import './tasks.css'
 
 type Show = 'open' | 'done'
@@ -97,7 +98,10 @@ export function MyTasksPage() {
     <section className="my-tasks">
       <div className="page-header">
         <div>
-          <h1>My Tasks</h1>
+          <h1>
+            <NavIcon name="tasks" />
+            My Tasks
+          </h1>
           <p className="subtitle">
             {open.length} open{overdue > 0 ? ` · ${overdue} overdue` : ''} · {done.length} done
           </p>

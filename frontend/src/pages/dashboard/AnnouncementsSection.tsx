@@ -1,9 +1,12 @@
 import { useState, type FormEvent } from 'react'
+import { Link } from 'react-router-dom'
 import { api, ApiError } from '../../api'
-import type { Alert, AlertLevel, Announcement } from '../../types'
+import type { Alert, AlertLevel, Announcement, CallSheetSummary } from '../../types'
 
 interface AnnouncementsSectionProps {
   announcements: Announcement[]
+  /** Linked at the top of Announcements. */
+  latestCallSheet: CallSheetSummary | null
   alerts: Alert[]
   timeZone: string
   canEdit: boolean
@@ -14,7 +17,14 @@ const LEVEL_LABELS: Record<AlertLevel, string> = { urgent: 'Urgent', warning: 'W
 const LEVEL_RANK: Record<AlertLevel, number> = { urgent: 0, warning: 1, info: 2 }
 
 /** Announcements (about 75% width) beside Alerts (about 25%). */
-export function AnnouncementsSection({ announcements, alerts, timeZone, canEdit, onChange }: AnnouncementsSectionProps) {
+export function AnnouncementsSection({
+  announcements,
+  latestCallSheet,
+  alerts,
+  timeZone,
+  canEdit,
+  onChange,
+}: AnnouncementsSectionProps) {
   const [adding, setAdding] = useState<'announcement' | 'alert' | null>(null)
   const sortedAlerts = [...alerts].sort((a, b) => LEVEL_RANK[a.level] - LEVEL_RANK[b.level])
 
@@ -45,8 +55,24 @@ export function AnnouncementsSection({ announcements, alerts, timeZone, canEdit,
         </div>
         <div className="tile tile--fill">
           {adding === 'announcement' && <AnnouncementForm onSaved={saved} onCancel={() => setAdding(null)} />}
-          {announcements.length === 0 && adding !== 'announcement' && <p className="muted">No announcements.</p>}
+          {announcements.length === 0 && !latestCallSheet && adding !== 'announcement' && (
+            <p className="muted">No announcements.</p>
+          )}
           <ul className="announcements">
+            {latestCallSheet && (
+              <li className="announcement announcement--call-sheet">
+                <div className="announcement__head">
+                  <h3>
+                    <span className="badge">Call sheet</span>
+                    <Link to={`/call-sheets/${latestCallSheet.id}`}>{latestCallSheet.title}</Link>
+                  </h3>
+                </div>
+                <p className="announcement__meta">
+                  {latestCallSheet.published_by_name ? `${latestCallSheet.published_by_name} · ` : ''}
+                  {postedOn(latestCallSheet.published_at)}
+                </p>
+              </li>
+            )}
             {announcements.map((item) => (
               <li key={item.id} className="announcement">
                 <div className="announcement__head">

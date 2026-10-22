@@ -8,6 +8,7 @@ import { LOCATION_KINDS, type LocationKind, type ProductionLocation } from '../.
 import { LocationFormDialog } from './LocationFormDialog'
 import { LocationIcon } from './LocationIcon'
 import { directionsUrl, LocationsMap } from './LocationsMap'
+import { NavIcon } from '../../components/NavIcon'
 import './locations.css'
 
 type DialogState = { location: ProductionLocation | null; kind: LocationKind }
@@ -58,7 +59,10 @@ export function LocationsPage() {
     <section className="locations">
       <div className="page-header">
         <div>
-          <h1>Locations</h1>
+          <h1>
+            <NavIcon name="pin" />
+            Locations
+          </h1>
           <p className="subtitle">Hotels, airports, sets and everywhere else the production goes</p>
         </div>
         {manager && (

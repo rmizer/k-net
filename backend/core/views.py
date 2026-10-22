@@ -10,8 +10,8 @@ from rest_framework.views import APIView
 
 from accounts.models import User
 from accounts.permissions import IsManagerLevel, IsSiteManager, ReadOnlyOrManagerLevel
-from announcements.models import Alert, Announcement
-from announcements.serializers import AlertSerializer, AnnouncementSerializer
+from announcements.models import Alert, Announcement, CallSheet
+from announcements.serializers import AlertSerializer, AnnouncementSerializer, CallSheetSummarySerializer
 from schedule.models import Event, crew_calls
 from schedule.serializers import EventSerializer
 from tasks.models import Task
@@ -84,6 +84,11 @@ def _start_of(day):
     return timezone.make_aware(datetime.combine(day, time.min))
 
 
+def _latest_call_sheet():
+    sheet = CallSheet.objects.select_related("published_by").first()
+    return CallSheetSummarySerializer(sheet).data if sheet else None
+
+
 class DashboardView(APIView):
     """Everything the dashboard shows, in one request, filtered for the viewer's role."""
 
@@ -120,6 +125,8 @@ class DashboardView(APIView):
                 "announcements": AnnouncementSerializer(
                     Announcement.objects.select_related("created_by")[:ANNOUNCEMENT_LIMIT], many=True
                 ).data,
+                # The newest published call sheet, linked under Announcements.
+                "latest_call_sheet": _latest_call_sheet(),
                 "daily_rundown": EventSerializer(todays_events, many=True, context=context).data,
                 "my_tasks": TaskSerializer(my_tasks, many=True).data,
                 "staff_tasks": self._staff_tasks(today) if user.is_manager_level else None,

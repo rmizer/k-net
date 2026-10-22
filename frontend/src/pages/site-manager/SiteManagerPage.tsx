@@ -10,6 +10,7 @@ import { useFetch } from '../../hooks/useFetch'
 import type { Department, RemovalRequest } from '../../types'
 import { StaffFormDialog } from '../directory/StaffFormDialog'
 import { Stat } from '../finance/shared'
+import { NavIcon } from '../../components/NavIcon'
 import '../finance/finance.css'
 import '../staff-manager/staff-manager.css'
 import './site-manager.css'
@@ -247,7 +248,10 @@ export function SiteManagerPage() {
     <section className="finance staff-manager site-manager">
       <div className="page-header">
         <div>
-          <h1>Site Manager Dashboard</h1>
+          <h1>
+            <NavIcon name="shield" />
+            Site Manager Dashboard
+          </h1>
           <p className="subtitle">Accounts, roles and departments for the whole site</p>
         </div>
         <div className="inline-form__actions">

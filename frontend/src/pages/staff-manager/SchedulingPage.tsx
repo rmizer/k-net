@@ -6,6 +6,7 @@ import { EventFormDialog } from '../../components/schedule/EventFormDialog'
 import { addDays, eventDays, formatDay, formatTimeRange, lodgingLabel } from '../../format'
 import { useFetch } from '../../hooks/useFetch'
 import type { CalendarEvent, Department, ProductionSettings, StaffOverviewRow } from '../../types'
+import { NavIcon } from '../../components/NavIcon'
 import '../finance/finance.css'
 import './staff-manager.css'
 
@@ -110,9 +111,15 @@ function Scheduling({ today, timeZone }: { today: string; timeZone: string }) {
     <section className="finance staff-manager">
       <div className="page-header">
         <div>
-          <h1>Scheduling</h1>
+          <h1>
+            <NavIcon name="clock" />
+            Scheduling
+          </h1>
           <p className="subtitle">Edit individual staff schedules · production time ({timeZone.replace(/_/g, ' ')})</p>
         </div>
+        <Link to="/staff-manager/scheduling/call-sheet" className="button button--secondary">
+          Call sheets
+        </Link>
       </div>
 
       <div className="sm-scheduling">

@@ -5,6 +5,7 @@ import { Layout } from './components/Layout'
 import { RequireAuth, RequireRole } from './components/RouteGuards'
 import { AccountPage } from './pages/AccountPage'
 import { CallSheetPage } from './pages/call-sheet/CallSheetPage'
+import { PublishedCallSheetPage } from './pages/call-sheet/PublishedCallSheetPage'
 import { ContactPage } from './pages/contact/ContactPage'
 import { DashboardPage } from './pages/dashboard/DashboardPage'
 import { CrewFinderPage } from './pages/crew/CrewFinderPage'
@@ -76,6 +77,7 @@ export default function App() {
             <Route path="/trial" element={<TrialPage />} />
             <Route element={<RequireAuth />}>
               <Route path="/" element={<DashboardPage />} />
+              <Route path="/call-sheets/:id" element={<PublishedCallSheetPage />} />
               <Route path="/directory" element={<DirectoryPage />} />
               <Route path="/crew" element={<CrewPage />} />
               <Route path="/resources" element={<ResourcesPage />} />
@@ -111,7 +113,9 @@ export default function App() {
                 <Route path="/staff-manager/tasks" element={<TaskManagementPage />} />
                 <Route path="/staff-manager/shows" element={<ShowsPage />} />
                 <Route path="/staff-manager/shows/:id" element={<ShowPage />} />
-                <Route path="/staff-manager/call-sheet" element={<CallSheetPage />} />
+                {/* Call sheets live under Scheduling. */}
+                <Route path="/staff-manager/scheduling/call-sheet" element={<CallSheetPage />} />
+                <Route path="/staff-manager/call-sheet" element={<Navigate to="/staff-manager/scheduling/call-sheet" replace />} />
                 <Route path="/meeting-notes" element={<MeetingNotesPage />} />
                 <Route path="/meeting-notes/new" element={<MeetingNoteFormPage />} />
                 <Route path="/meeting-notes/:id" element={<MeetingNotePage />} />

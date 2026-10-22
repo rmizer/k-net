@@ -417,6 +417,8 @@ export interface Dashboard {
   }
   alerts: Alert[]
   announcements: Announcement[]
+  /** The newest call sheet published from the Call Sheet Generator. */
+  latest_call_sheet: CallSheetSummary | null
   daily_rundown: CalendarEvent[]
   my_tasks: Task[]
   staff_tasks: StaffTaskSummary | null
@@ -831,4 +833,18 @@ export interface FoodAllergies {
   people: FoodAllergyPerson[]
   /** Everyone on the project (active staff, crew and influencers). */
   total: number
+}
+
+/** A call sheet published to the Staff Hub (Add to announcements). */
+export interface CallSheetSummary {
+  id: number
+  title: string
+  day: string
+  published_by_name: string | null
+  published_at: string
+}
+
+export interface PublishedCallSheet extends CallSheetSummary {
+  /** The sheet as published, edits included; cleaned by the server. */
+  html: string
 }

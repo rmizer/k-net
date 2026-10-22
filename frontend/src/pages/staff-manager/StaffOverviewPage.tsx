@@ -14,6 +14,7 @@ import { StaffFormDialog } from '../directory/StaffFormDialog'
 import type { Department, ProductionSettings, StaffOverviewRow, Task } from '../../types'
 import { Stat } from '../finance/shared'
 import { NewDepartmentDialog } from './NewDepartmentDialog'
+import { NavIcon } from '../../components/NavIcon'
 import '../finance/finance.css'
 import './staff-manager.css'
 
@@ -157,7 +158,10 @@ export function StaffOverviewPage() {
     <section className="finance staff-manager">
       <div className="page-header">
         <div>
-          <h1>Director Dashboard</h1>
+          <h1>
+            <NavIcon name="clipboard" />
+            Director Dashboard
+          </h1>
           <p className="subtitle">Staff, departments, schedules and tasks in one place</p>
         </div>
         {/* Three groups: scheduling and tasks, people, shows. */}
