@@ -322,3 +322,11 @@
 .investor__invest p:last-child {
   margin-bottom: 0;
 }
+
+/* Cost summary: plain notes under the tables. */
+.investor__notes {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding-left: 1.25rem;
+}

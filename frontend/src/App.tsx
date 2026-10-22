@@ -25,6 +25,7 @@ import { PayrollPersonPage } from './pages/finance/PayrollPersonPage'
 import { InfluencerProfilePage } from './pages/influencers/InfluencerProfilePage'
 import { InfluencersPage } from './pages/influencers/InfluencersPage'
 import { InvestorLinkPage } from './pages/investors/InvestorLinkPage'
+import { CostSummaryPage } from './pages/investors/CostSummaryPage'
 import { InvestorPage } from './pages/investors/InvestorPage'
 import { LocationsPage } from './pages/locations/LocationsPage'
 import { DepartmentPage, DepartmentsIndex } from './pages/departments/DepartmentPage'
@@ -72,6 +73,8 @@ export default function App() {
           {/* The private investor page: public to anyone with the link, no site chrome. */}
           <Route path="/for-investors" element={<InvestorPage />} />
           <Route path="/investors/:token" element={<InvestorPage />} />
+          <Route path="/for-investors/costs" element={<CostSummaryPage />} />
+          <Route path="/investors/:token/costs" element={<CostSummaryPage />} />
           <Route element={<Layout />}>
             {/* Public, so people can read about the trial before signing up. */}
             <Route path="/trial" element={<TrialPage />} />

@@ -7,8 +7,8 @@ import { NotFoundPage } from '../NotFoundPage'
 import './investors.css'
 
 const CONTACT_EMAIL = 'support.knet@gmail.com'
-const PURCHASE_PRICE = 10_000
-const WEEKLY_FEE = 1_000
+export const PURCHASE_PRICE = 10_000
+export const WEEKLY_FEE = 1_000
 
 const REPLACES: [string, string, string][] = [
   [
@@ -69,7 +69,7 @@ const FUTURE: [string, string][] = [
   ['Multi-production dashboard', 'A studio-level view across several productions at once, with crew and resources shared between them.'],
 ]
 
-const money = (value: number) =>
+export const money = (value: number) =>
   value.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
 const number = (value: number) => Math.round(value).toLocaleString('en-US')
 
@@ -159,11 +159,16 @@ export function InvestorPage() {
             <ul>
               <li>Bug fixes once a week, and the same day for anything that breaks the site</li>
               <li>A patch and update to the site once a week</li>
-              <li>Hosting included: the server, database and K-Net’s own .com web address</li>
+              <li>Hosting billed separately at cost: the server, database and the knetwork.online web address</li>
               <li>New features as your production needs them, at no extra cost</li>
             </ul>
           </div>
         </div>
+        <p className="investor__intro">
+          <Link to={token ? `/investors/${token}/costs` : '/for-investors/costs'}>
+            See what K-Net costs to run each year →
+          </Link>
+        </p>
       </section>
 
       <section className="investor__section" aria-labelledby="turnaround-heading">
@@ -220,8 +225,8 @@ export function InvestorPage() {
           <div className="tile">
             <h3>At launch</h3>
             <p>
-              The trial runs on a temporary hosting address. For final deployment K-Net moves to its own .com web
-              address, with a secure (https) connection and email sent from that domain.
+              The trial runs on a temporary hosting address. For final deployment K-Net moves to its own web
+              address, knetwork.online, with a secure (https) connection and email sent from that domain.
             </p>
           </div>
         </div>
