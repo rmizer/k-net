@@ -1,5 +1,8 @@
 import { useMemo, useState } from 'react'
 import { api, ApiError } from '../../api'
+import { isManagerLevel } from '../../auth/roles'
+import { useAuth } from '../../auth/useAuth'
+import { TaskFormDialog } from '../../components/TaskFormDialog'
 import { addDays, dayKey, formatDay } from '../../format'
 import { useFetch } from '../../hooks/useFetch'
 import type { ProductionSettings, Task, TaskPriority, TaskStatus } from '../../types'
@@ -44,6 +47,7 @@ function dueGroups(tasks: Task[], today: string) {
 }
 
 export function MyTasksPage() {
+  const { user } = useAuth()
   const production = useFetch<ProductionSettings>('/production/')
   const tasks = useFetch<Task[]>('/tasks/?mine=1')
   const [show, setShow] = useState<Show>('open')
@@ -52,6 +56,7 @@ export function MyTasksPage() {
   const [error, setError] = useState('')
   // Status changes show at once; the server's copy replaces them when it answers.
   const [local, setLocal] = useState<Record<number, Task>>({})
+  const [adding, setAdding] = useState(false)
 
   const all = useMemo(() => (tasks.data ?? []).map((task) => local[task.id] ?? task), [tasks.data, local])
   const open = all.filter((task) => task.status !== 'done')
@@ -97,6 +102,11 @@ export function MyTasksPage() {
             {open.length} open{overdue > 0 ? ` · ${overdue} overdue` : ''} · {done.length} done
           </p>
         </div>
+        {isManagerLevel(user) && (
+          <button type="button" className="button" onClick={() => setAdding(true)}>
+            + Add task
+          </button>
+        )}
       </div>
 
       <div className="my-tasks__controls">
@@ -148,12 +158,28 @@ export function MyTasksPage() {
                   task={task}
                   timeZone={production.data?.time_zone ?? 'UTC'}
                   busy={saving === task.id}
+                  mine={task.created_by === user?.id}
                   onStatus={setStatus}
                 />
               ))}
             </ul>
           </section>
         ))
+      )}
+
+      {adding && user && (
+        <TaskFormDialog
+          task={null}
+          people={[]}
+          departments={[]}
+          forSelf={user.id}
+          onClose={() => setAdding(false)}
+          onSaved={() => {
+            setAdding(false)
+            setShow('open')
+            tasks.reload()
+          }}
+        />
       )}
     </section>
   )
@@ -163,14 +189,16 @@ interface TaskItemProps {
   task: Task
   timeZone: string
   busy: boolean
+  /** Added by the person themselves, so no "Assigned by". */
+  mine: boolean
   onStatus: (task: Task, status: TaskStatus) => void
 }
 
-function TaskItem({ task, timeZone, busy, onStatus }: TaskItemProps) {
+function TaskItem({ task, timeZone, busy, mine, onStatus }: TaskItemProps) {
   const isDone = task.status === 'done'
   const details = [
     task.department_name,
-    task.created_by_name && `Assigned by ${task.created_by_name}`,
+    !mine && task.created_by_name && `Assigned by ${task.created_by_name}`,
   ].filter(Boolean)
 
   return (

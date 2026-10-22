@@ -1,4 +1,4 @@
-import { canAccess, MANAGER_ROLES, MARKETING_ACCESS, type Role, type User } from './auth/roles'
+import { canAccess, DEPARTMENT_PAGES, MANAGER_ROLES, type Role, type User } from './auth/roles'
 import type { NavIconName } from './components/NavIcon'
 
 export interface NavItem {
@@ -10,8 +10,14 @@ export interface NavItem {
   roles?: Role[]
   /** Also shown to anyone in these departments (by name, any case), whatever their role. */
   departments?: string[]
+  /** A department page: shown by the department page rules instead. */
+  departmentPage?: string
+  /** Shown only when at least one of its children is. */
+  ifAnyChild?: boolean
   /** Submenu shown under the main nav while inside this section. */
   children?: NavItem[]
+  /** The main nav entry opens its children as a dropdown (hover on desktop, tap on mobile) instead of linking to `path`. */
+  dropdown?: boolean
 }
 
 export const NAV_ITEMS: NavItem[] = [
@@ -22,7 +28,7 @@ export const NAV_ITEMS: NavItem[] = [
     path: '/schedule',
     icon: 'calendar',
     children: [
-      { label: 'Schedule', path: '/schedule' },
+      { label: 'Master Schedule', path: '/schedule' },
       { label: 'My Tasks', path: '/schedule/tasks' },
       { label: 'Master Timeline', path: '/schedule/timeline' },
     ],
@@ -52,7 +58,42 @@ export const NAV_ITEMS: NavItem[] = [
     ],
   },
   { label: 'Influencers', path: '/influencers', icon: 'star' },
-  { label: 'Marketing', path: '/marketing', icon: 'megaphone', ...MARKETING_ACCESS },
+  {
+    label: 'Departments',
+    path: '/departments',
+    icon: 'departments',
+    ifAnyChild: true,
+    dropdown: true,
+    children: DEPARTMENT_PAGES.map(({ slug, label }): NavItem =>
+      slug === 'operations'
+        ? {
+            // Operations also holds the office pages, which everyone can open
+            // even when the department page itself is closed to them.
+            label,
+            path: `/departments/${slug}`,
+            ifAnyChild: true,
+            children: [
+              { label: 'Overview', path: `/departments/${slug}`, departmentPage: slug },
+              { label: 'Documents', path: '/documents' },
+              { label: 'Meeting Notes', path: '/meeting-notes', roles: MANAGER_ROLES },
+              {
+                label: 'Finance',
+                path: '/finance',
+                roles: MANAGER_ROLES,
+                children: [
+                  { label: 'Overview', path: '/finance' },
+                  { label: 'Payroll', path: '/finance/payroll' },
+                  { label: 'Incoming', path: '/finance/incoming' },
+                  { label: 'Outgoing', path: '/finance/outgoing' },
+                  { label: 'Invoices', path: '/finance/invoices' },
+                  { label: 'Payment Options', path: '/finance/payment-options' },
+                ],
+              },
+            ],
+          }
+        : { label, path: `/departments/${slug}`, departmentPage: slug },
+    ),
+  },
   // Groups: the main link opens one page, and the submenu lists the rest.
   {
     label: 'Resources',
@@ -64,33 +105,17 @@ export const NAV_ITEMS: NavItem[] = [
       { label: 'Resources', path: '/resources' },
     ],
   },
-  {
-    label: 'Operations',
-    path: '/documents',
-    icon: 'briefcase',
-    children: [
-      { label: 'Documents', path: '/documents' },
-      { label: 'Meeting Notes', path: '/meeting-notes', roles: MANAGER_ROLES },
-      {
-        label: 'Finance',
-        path: '/finance',
-        roles: MANAGER_ROLES,
-        children: [
-          { label: 'Overview', path: '/finance' },
-          { label: 'Payroll', path: '/finance/payroll' },
-          { label: 'Incoming', path: '/finance/incoming' },
-          { label: 'Outgoing', path: '/finance/outgoing' },
-          { label: 'Invoices', path: '/finance/invoices' },
-          { label: 'Payment Options', path: '/finance/payment-options' },
-        ],
-      },
-    ],
-  },
   { label: 'Contact', path: '/contact', icon: 'mail' },
   { label: 'Help', path: '/help', icon: 'help' },
 ]
 
-export const canSee = (item: NavItem, user: User | null) => canAccess(user, item)
+export const canSee = (item: NavItem, user: User | null): boolean =>
+  canAccess(user, item) && (!item.ifAnyChild || !!item.children?.some((child) => canSee(child, user)))
+
+/** Where a menu entry links: its first page this user can open (Operations opens
+ *  Documents for staff who can't see the department page), else its own path. */
+export const linkPath = (item: NavItem, user: User | null) =>
+  item.children?.find((child) => canSee(child, user))?.path ?? item.path
 
 /** True when `pathname` is `path` or inside it ('/' only matches exactly). */
 export const isInSection = (pathname: string, path: string) =>

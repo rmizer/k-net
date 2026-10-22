@@ -20,7 +20,23 @@ def format_phone(number):
 
 
 class Department(models.Model):
+    class Page(models.TextChoices):
+        """The department page (Departments menu) a department belongs to. Film
+        Crew and Audio share one; departments with no page (e.g. Web Support)
+        don't get one."""
+
+        NONE = "", "No department page"
+        PRODUCTION = "production", "Production"
+        OPERATIONS = "operations", "Operations"
+        MARKETING = "marketing", "Marketing"
+        TRANSPORTATION = "transportation", "Transportation"
+        CULINARY = "culinary", "Culinary"
+        TECH = "tech", "Tech"
+        FILM_AUDIO = "film-audio", "Film & Audio Crew"
+        SECURITY = "security", "Security"
+
     name = models.CharField(max_length=100, unique=True)
+    page = models.CharField("department page", max_length=20, choices=Page.choices, blank=True, default="")
 
     class Meta:
         ordering = ["name"]
@@ -90,6 +106,10 @@ class User(AbstractUser):
     room_number = models.CharField(max_length=20, blank=True)
     emergency_contact_name = models.CharField(max_length=150, blank=True)
     emergency_contact_phone = models.CharField(max_length=30, blank=True)
+    # Shown like emergency contacts (to managers and the person themselves);
+    # food allergies also go to the Culinary team's Food allergies page.
+    allergies = models.TextField("general allergies", blank=True, help_text="Medications, insects, latex, pollen, etc.")
+    food_allergies = models.TextField(blank=True, help_text="Every food allergy or intolerance, for the Culinary team.")
     # Whether this person is on the active crew (shown on the Staff / Crew page).
     is_active_crew = models.BooleanField(default=False)
     # False only for people who signed up themselves and haven't clicked the

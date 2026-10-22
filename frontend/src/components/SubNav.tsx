@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/useAuth'
-import { canSee, isInItem, NAV_ITEMS, type NavItem } from '../navigation'
+import { canSee, isInItem, linkPath, NAV_ITEMS, type NavItem } from '../navigation'
 
 /** The deepest of `items` the page is in, so /finance/payroll/5 highlights Payroll (not Overview). */
 const currentOf = (items: NavItem[], pathname: string) =>
@@ -40,12 +40,12 @@ export function SubNav() {
             <ul className="container sub-nav__links">
               {row.items.map((child) => (
                 <li key={child.path}>
-                  {pathname === child.path ? (
+                  {pathname === linkPath(child, user) ? (
                     <span className="sub-nav__link is-active" aria-current="page">
                       {child.label}
                     </span>
                   ) : (
-                    <Link to={child.path} className={`sub-nav__link${child === current ? ' is-active' : ''}`}>
+                    <Link to={linkPath(child, user)} className={`sub-nav__link${child === current ? ' is-active' : ''}`}>
                       {child.label}
                     </Link>
                   )}

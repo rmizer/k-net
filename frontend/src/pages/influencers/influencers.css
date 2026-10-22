@@ -197,6 +197,15 @@
   gap: 0.4rem;
 }
 
+/* Two-word kinds stack ("Ground" over "transport") to leave room for the name. */
+.travel-item__head .badge {
+  flex-shrink: 0;
+  width: min-content;
+  border-radius: 0.75rem;
+  line-height: 1.15;
+  text-align: center;
+}
+
 .travel-item__head strong {
   flex: 1;
   min-width: 0;

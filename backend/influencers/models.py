@@ -30,6 +30,9 @@ class Influencer(models.Model):
     travel_needs = models.TextField(blank=True, help_text="Home airport, seating, ground transport, companions, etc.")
     lodging_needs = models.TextField(blank=True, help_text="Room type, nights, accessibility, roommates, etc.")
     needs = models.TextField("other needs", blank=True, help_text="Dietary, equipment, wardrobe, etc.")
+    allergies = models.TextField("general allergies", blank=True, help_text="Medications, insects, latex, pollen, etc.")
+    # Also listed on the Culinary team's Food allergies page.
+    food_allergies = models.TextField(blank=True, help_text="Every food allergy or intolerance.")
 
     # The show and the week they're currently in (their latest week on the show).
     show = models.ForeignKey(

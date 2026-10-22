@@ -465,3 +465,77 @@
 .block-hint {
   margin-top: 0.5rem;
 }
+
+/* Director Dashboard staff table: every column, headers included, is centered.
+   Phones stack the rows, so they keep the left-aligned finance layout. */
+@media (min-width: 641px) {
+  .staff-overview-table th,
+  .staff-overview-table td,
+  .staff-overview-table .fin-num {
+    text-align: center;
+  }
+
+  .staff-overview-table .sort-header,
+  .staff-overview-table .row-actions {
+    justify-content: center;
+  }
+
+  .staff-overview-table .staff-overview-table__next {
+    min-width: 15rem;
+  }
+
+  .staff-overview-table .staff-overview-table__when {
+    white-space: nowrap;
+  }
+
+  /* Actions wrap onto two lines so Next up has room. */
+  .staff-overview-table .row-actions {
+    flex-wrap: wrap;
+    gap: 0.2rem 0.75rem;
+    width: 13.5rem;
+    margin: 0 auto;
+  }
+
+  /* "Hrs this week" heading sits on two lines, arrow after it like the others. */
+  .staff-overview-table .fin-num .sort-header {
+    flex-direction: row;
+  }
+}
+
+/* Phones: the actions wrap instead of running off the screen. */
+@media (max-width: 640px) {
+  .staff-overview-table .row-actions {
+    flex-wrap: wrap;
+    gap: 0.2rem 0.75rem;
+  }
+}
+
+.staff-overview-table__hours {
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .staff-overview-table__hours br {
+    display: none;
+  }
+}
+
+/* Director Dashboard buttons, in groups with extra space between them. */
+.sm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+}
+
+/* Smaller and tighter than standard buttons: the row is a toolbar. */
+.sm-actions .button {
+  padding: 0.35rem 0.8rem;
+  border-width: 1.5px;
+  font-size: 0.8rem;
+}
+
+.sm-actions__group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}

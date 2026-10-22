@@ -180,6 +180,8 @@ export function InfluencerProfilePage() {
         </section>
 
         <NeedsSection id="other-needs" title="Other needs" text={influencer.needs} />
+        <NeedsSection id="allergies" title="General allergies" text={influencer.allergies} />
+        <NeedsSection id="food-allergies" title="Food allergies" text={influencer.food_allergies} />
 
         <section className="tile profile-section profile-section--wide" aria-labelledby="travel-heading">
           <div className="profile-section__header">

@@ -20,6 +20,7 @@ class EventViewSet(viewsets.ModelViewSet):
     Filters: ?start=<iso>&end=<iso> limits to events in that window,
     ?mine=1 limits to the signed-in user's own events, and ?person=<id> to
     someone else's (events they attend or that belong to their department).
+    ?department_page=<slug> limits to one department page's events.
     """
 
     serializer_class = EventSerializer
@@ -43,6 +44,8 @@ class EventViewSet(viewsets.ModelViewSet):
             if person is None:
                 raise ValidationError({"person": "No such person."})
             events = events.for_user(person)
+        if params.get("department_page"):
+            events = events.for_department_page(params["department_page"])
         return events
 
     def perform_create(self, serializer):

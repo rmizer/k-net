@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../../api'
-import { isDirectorLevel, type User } from '../../auth/roles'
+import type { User } from '../../auth/roles'
 import { useAuth } from '../../auth/useAuth'
 import { NewAccountNotice } from '../../components/NewAccountNotice'
 import { RequestRemovalDialog } from '../../components/RequestRemovalDialog'
@@ -13,6 +13,7 @@ import { useFetch } from '../../hooks/useFetch'
 import { StaffFormDialog } from '../directory/StaffFormDialog'
 import type { Department, ProductionSettings, StaffOverviewRow, Task } from '../../types'
 import { Stat } from '../finance/shared'
+import { NewDepartmentDialog } from './NewDepartmentDialog'
 import '../finance/finance.css'
 import './staff-manager.css'
 
@@ -38,6 +39,7 @@ export function StaffOverviewPage() {
   // The person being edited (null to add someone new), or undefined when the dialog is closed.
   const [editing, setEditing] = useState<User | null | undefined>(undefined)
   const [movingId, setMovingId] = useState<number | null>(null)
+  const [addingDepartment, setAddingDepartment] = useState(false)
   const [rowError, setRowError] = useState('')
   const sort = useSort<SortKey>('name')
   const timeZone = production.data?.time_zone ?? 'UTC'
@@ -141,7 +143,7 @@ export function StaffOverviewPage() {
     return (
       <>
         {event.title}
-        <span className="fin-sub">
+        <span className="fin-sub staff-overview-table__when">
           {day === today ? 'Today' : formatDay(day, { weekday: 'short', month: 'short', day: 'numeric' })} · {when}
         </span>
       </>
@@ -158,24 +160,32 @@ export function StaffOverviewPage() {
           <h1>Director Dashboard</h1>
           <p className="subtitle">Staff, departments, schedules and tasks in one place</p>
         </div>
-        <div className="inline-form__actions">
-          <button type="button" className="button" onClick={() => setBlocking(null)} disabled={!today}>
-            + Schedule a block
-          </button>
-          <button type="button" className="button button--secondary" onClick={() => setAssigning(null)}>
-            + Assign task
-          </button>
-          <button type="button" className="button button--secondary" onClick={() => setEditing(null)}>
-            + Add staff
-          </button>
-          <Link to="/crew/invite" className="button button--secondary">
-            Invite crew
-          </Link>
-          {isDirectorLevel(user) && (
-            <Link to="/staff-manager/shows?new=1" className="button button--secondary">
-              + Create new show
+        {/* Three groups: scheduling and tasks, people, shows. */}
+        <div className="sm-actions">
+          <div className="sm-actions__group">
+            <button type="button" className="button" onClick={() => setBlocking(null)} disabled={!today}>
+              + Schedule a block
+            </button>
+            <button type="button" className="button button--secondary" onClick={() => setAssigning(null)}>
+              + Assign task
+            </button>
+          </div>
+          <div className="sm-actions__group">
+            <button type="button" className="button button--secondary" onClick={() => setAddingDepartment(true)}>
+              + New department
+            </button>
+            <button type="button" className="button button--secondary" onClick={() => setEditing(null)}>
+              + Add staff
+            </button>
+            <Link to="/crew/invite" className="button button--secondary">
+              + Invite crew
             </Link>
-          )}
+          </div>
+          <div className="sm-actions__group">
+            <Link to="/staff-manager/shows" className="button button--secondary">
+              Show control hub
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -294,7 +304,7 @@ export function StaffOverviewPage() {
             <p className="muted">No one matches those filters.</p>
           ) : (
             <div className="table-wrap">
-              <table className="data-table fin-table">
+              <table className="data-table fin-table staff-overview-table">
                 <thead>
                   <tr>
                     <SortHeader sort={sort} column="name">
@@ -307,11 +317,15 @@ export function StaffOverviewPage() {
                     <SortHeader sort={sort} column="tasks">
                       Tasks
                     </SortHeader>
-                    <SortHeader sort={sort} column="next">
+                    <SortHeader sort={sort} column="next" className="staff-overview-table__next">
                       Next up
                     </SortHeader>
                     <SortHeader sort={sort} column="hours" className="fin-num">
-                      Hours this week
+                      <span className="staff-overview-table__hours">
+                        Hrs this
+                        <br />
+                        week
+                      </span>
                     </SortHeader>
                     <th>
                       <span className="visually-hidden">Actions</span>
@@ -372,7 +386,7 @@ export function StaffOverviewPage() {
                         )}
                       </td>
                       <td data-label="Next up">{nextUp(person.next_event)}</td>
-                      <td data-label="Hours this week" className="fin-num">
+                      <td data-label="Hrs this week" className="fin-num">
                         {person.hours_this_week}
                       </td>
                       <td className="fin-actions">
@@ -444,6 +458,17 @@ export function StaffOverviewPage() {
             setBlocking(undefined)
             setNotice(`Added ${count} ${count === 1 ? 'day' : 'days'} to the schedule.`)
             people.reload()
+          }}
+        />
+      )}
+
+      {addingDepartment && (
+        <NewDepartmentDialog
+          onClose={() => setAddingDepartment(false)}
+          onCreated={(created) => {
+            setAddingDepartment(false)
+            departments.reload()
+            setNotice(`Added the ${created.name} department.`)
           }}
         />
       )}

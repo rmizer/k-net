@@ -61,6 +61,8 @@ INSTALLED_APPS = [
     "influencers",
     "shows",
     "meetings",
+    "departments",
+    "culinary",
     "documents",
     "locations",
     "finance",

@@ -17,9 +17,18 @@ TIMELINE_NAME = "Battle House Live: Season 1 shoot"
 
 # Department names to fix before anyone is placed: old name -> new name.
 RENAME_DEPARTMENTS = {"Catering": "Culinary", "Logistics": "Transportation"}
-DEPARTMENTS = [
-    "Production", "Operations", "Tech", "Film Crew", "Audio", "Marketing", "Culinary", "Transportation", "Security",
-]  # fmt: skip
+# Each department and its page in the Departments menu (Film Crew and Audio share one).
+DEPARTMENTS = {
+    "Production": Department.Page.PRODUCTION,
+    "Operations": Department.Page.OPERATIONS,
+    "Tech": Department.Page.TECH,
+    "Film Crew": Department.Page.FILM_AUDIO,
+    "Audio": Department.Page.FILM_AUDIO,
+    "Marketing": Department.Page.MARKETING,
+    "Culinary": Department.Page.CULINARY,
+    "Transportation": Department.Page.TRANSPORTATION,
+    "Security": Department.Page.SECURITY,
+}
 
 CREW_HOTEL = "Home 2 Suites by Hilton"
 CAST_HOUSE = "Cast House 2.0"
@@ -158,11 +167,14 @@ class Command(BaseCommand):
                 department.save()
                 self.stdout.write(f"Renamed department {old} to {new}")
         departments = {}
-        for name in DEPARTMENTS:
+        for name, page in DEPARTMENTS.items():
             department = Department.objects.filter(name__iexact=name).first()
             if department is None:
-                department = Department.objects.create(name=name)
+                department = Department.objects.create(name=name, page=page)
                 self.stdout.write(f"Added department {name}")
+            elif not department.page:
+                department.page = page
+                department.save(update_fields=["page"])
             departments[name] = department
         return departments
 

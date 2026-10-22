@@ -18,6 +18,7 @@ export type NavIconName =
   | 'briefcase'
   | 'help'
   | 'megaphone'
+  | 'departments'
 
 // 24×24 line icons, drawn with the current text color.
 const PATHS: Record<NavIconName, ReactNode> = {
@@ -108,6 +109,14 @@ const PATHS: Record<NavIconName, ReactNode> = {
       <path d="M3 10v4a1 1 0 0 0 1 1h3l6 4V5L7 9H4a1 1 0 0 0-1 1z" />
       <path d="M16.5 8.5a5 5 0 0 1 0 7" />
       <path d="M19 6a8.5 8.5 0 0 1 0 12" />
+    </>
+  ),
+  departments: (
+    <>
+      <rect x="3" y="3" width="7.5" height="7.5" rx="1.5" />
+      <rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5" />
+      <rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5" />
+      <rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5" />
     </>
   ),
   tasks: (

@@ -14,18 +14,20 @@ interface DocumentFormDialogProps {
   initialCategory: DocumentCategory
   /** Managers can file any category; everyone else files receipts. */
   canChooseCategory: boolean
+  /** Starting values for a new upload, e.g. the store a shopping receipt is from. */
+  defaults?: { title?: string; vendor?: string }
   onSaved: (saved: ProjectDocument) => void
   onClose: () => void
 }
 
 export function DocumentFormDialog(props: DocumentFormDialogProps) {
-  const { document, initialCategory, canChooseCategory, onSaved, onClose } = props
+  const { document, initialCategory, canChooseCategory, defaults, onSaved, onClose } = props
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [file, setFile] = useState<File | null>(null)
   const [form, setForm] = useState({
-    title: document?.title ?? '',
+    title: document?.title ?? defaults?.title ?? '',
     category: document?.category ?? initialCategory,
-    vendor: document?.vendor ?? '',
+    vendor: document?.vendor ?? defaults?.vendor ?? '',
     amount: document?.amount ?? '',
     purchase_date: document?.purchase_date ?? '',
     expires_on: document?.expires_on ?? '',

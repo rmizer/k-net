@@ -297,6 +297,138 @@ a:hover {
   display: none;
 }
 
+/* A main nav entry whose pages slide down beneath it (Departments). The panel
+   grows from 0fr to 1fr rows, so it slides open at its natural height. */
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-dropdown__caret {
+  width: 0.4em;
+  height: 0.4em;
+  margin: -0.2em 0 0 0.1rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+}
+
+.nav-dropdown__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition:
+    grid-template-rows 0.2s ease,
+    visibility 0.2s;
+}
+
+.nav-dropdown__links {
+  min-height: 0;
+  overflow: hidden;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-dropdown__link {
+  display: block;
+  color: var(--knet-white);
+  font-size: 0.85rem;
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  text-decoration: none;
+  text-underline-offset: 0.3em;
+  text-decoration-thickness: 2px;
+  white-space: nowrap;
+}
+
+.nav-dropdown__link:hover,
+.nav-dropdown__link.is-active {
+  text-decoration: underline;
+}
+
+.nav-dropdown__link:focus-visible {
+  outline-color: var(--knet-white);
+}
+
+.nav-dropdown.is-open .nav-dropdown__panel {
+  grid-template-rows: 1fr;
+  visibility: visible;
+}
+
+.nav-dropdown.is-open .nav-dropdown__caret {
+  transform: rotate(-135deg);
+}
+
+/* Desktop: the panel hangs below the bar, and hovering (or tabbing into) the
+   entry opens it as well as clicking. */
+@media (min-width: 861px) {
+  .nav-dropdown__panel {
+    position: absolute;
+    top: 100%;
+    left: -1rem;
+    z-index: 20;
+    min-width: calc(100% + 2rem);
+    background: var(--knet-dark-red);
+    border-radius: 0 0 var(--radius) var(--radius);
+    box-shadow: 0 6px 12px rgb(0 0 0 / 0.2);
+  }
+
+  .nav-dropdown__links {
+    padding: 0 1rem;
+  }
+
+  .nav-dropdown__link {
+    padding: 0.45rem 0;
+  }
+
+  .nav-dropdown__links > li:first-child .nav-dropdown__link {
+    padding-top: 0.75rem;
+  }
+
+  .nav-dropdown__links > li:last-child .nav-dropdown__link {
+    padding-bottom: 0.75rem;
+  }
+
+  .nav-dropdown:has(:focus-visible) .nav-dropdown__panel {
+    grid-template-rows: 1fr;
+    visibility: visible;
+  }
+
+  .nav-dropdown:has(:focus-visible) .nav-dropdown__caret {
+    transform: rotate(-135deg);
+  }
+}
+
+@media (min-width: 861px) and (hover: hover) {
+  .nav-dropdown:hover .nav-dropdown__panel {
+    grid-template-rows: 1fr;
+    visibility: visible;
+  }
+
+  .nav-dropdown:hover .nav-dropdown__caret {
+    transform: rotate(-135deg);
+  }
+}
+
+/* Mobile: the pages open in place under the entry, indented past its icon. */
+@media (max-width: 860px) {
+  .nav-dropdown__toggle {
+    width: 100%;
+  }
+
+  .nav-dropdown__link {
+    padding: 0.5rem 0 0.5rem 1.6rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-dropdown__panel,
+  .nav-dropdown__caret {
+    transition: none;
+  }
+}
+
 /* Section submenu */
 
 .sub-nav {

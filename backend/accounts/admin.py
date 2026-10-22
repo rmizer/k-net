@@ -6,6 +6,8 @@ from .models import Department, RemovalRequest, User
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
+    list_display = ["name", "page"]
+    list_filter = ["page"]
     search_fields = ["name"]
 
 

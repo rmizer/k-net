@@ -1,0 +1,489 @@
+/* Culinary: menus and shopping lists. Department page styles are in ../departments.css. */
+
+/* Menus: month chips, the week, and one day in full. */
+.menu-chip .month__chip-time {
+  text-transform: uppercase;
+  font-size: 0.65rem;
+}
+
+.menu-week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+@media (max-width: 900px) {
+  .menu-week {
+    grid-template-columns: 1fr;
+  }
+}
+
+.menu-week__day {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-height: 9rem;
+  padding: 0.75rem;
+  border: 1px solid var(--knet-gray-300);
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.menu-week__day:hover {
+  border-color: var(--knet-dark-red);
+}
+
+.menu-week__day.is-selected {
+  border-color: var(--knet-dark-red);
+  box-shadow: inset 0 0 0 1px var(--knet-dark-red);
+}
+
+.menu-week__day.is-today .menu-week__date {
+  color: var(--knet-red);
+}
+
+.menu-week__date {
+  font-size: 0.8rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--knet-dark-red);
+}
+
+.menu-week__items {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.menu-week__item {
+  display: grid;
+  font-size: 0.88rem;
+  line-height: 1.25;
+}
+
+.menu-week__meal {
+  font-size: 0.68rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--knet-gray-600);
+}
+
+.menu-week__empty {
+  font-size: 0.82rem;
+}
+
+@media (max-width: 900px) {
+  .menu-week__day {
+    min-height: 0;
+  }
+}
+
+.menu-day__meals {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: 0.75rem;
+}
+
+.menu-meal__title {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--knet-red);
+}
+
+.menu-meal__items {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menu-meal__name {
+  font-weight: var(--weight-bold);
+}
+
+.menu-meal__notes {
+  margin: 0.2rem 0 0;
+  font-size: 0.88rem;
+  white-space: pre-wrap;
+}
+
+.menu-meal__ingredients {
+  margin: 0.35rem 0 0;
+  padding-left: 1.1rem;
+  font-size: 0.88rem;
+}
+
+/* Menu item form */
+.menu-form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.menu-view__name {
+  margin: 0;
+}
+
+.menu-form__ingredients {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0.9rem 1rem 1rem;
+  border: 1px solid var(--knet-gray-300);
+  border-radius: var(--radius);
+}
+
+.menu-form__ingredients legend {
+  padding: 0 0.35rem;
+  font-size: 0.8rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--knet-dark-red);
+}
+
+.ingredient-rows {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ingredient-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1.2fr) auto;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ingredient-row__listed {
+  grid-column: 1 / -1;
+  margin-top: -0.2rem;
+  font-size: 0.72rem;
+  color: var(--knet-success);
+}
+
+.ingredient-row--new {
+  padding-top: 0.5rem;
+  border-top: 1px dashed var(--knet-gray-300);
+}
+
+.ingredient-row__add,
+.ingredient-row__remove,
+.shopping-item__remove {
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1.5px solid var(--knet-dark-red);
+  border-radius: var(--radius);
+  font-size: 1.2rem;
+  font-weight: var(--weight-bold);
+  line-height: 1;
+}
+
+.ingredient-row__add {
+  background: var(--knet-dark-red);
+  color: var(--knet-white);
+}
+
+.ingredient-row__add:disabled {
+  opacity: 0.4;
+}
+
+.menu-form__to-list {
+  justify-self: start;
+}
+
+@media (max-width: 640px) {
+  .ingredient-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  }
+
+  .ingredient-row > :first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Shopping lists */
+.shopping-lists {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.shopping-card {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.shopping-card__store {
+  font-size: 1.2rem;
+  font-weight: var(--weight-bold);
+}
+
+.shopping-card__when,
+.shopping-card__count {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--knet-gray-600);
+}
+
+.shopping-card__when.is-late {
+  color: var(--knet-red);
+  font-weight: var(--weight-bold);
+}
+
+.shopping-card.is-done .shopping-card__count {
+  color: var(--knet-success);
+  font-weight: var(--weight-bold);
+}
+
+.shopping-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.35rem;
+}
+
+.shopping-progress {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--knet-gray-300);
+}
+
+.shopping-progress span {
+  display: block;
+  height: 100%;
+  background: var(--knet-success);
+}
+
+.shopping-new {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  max-width: 44rem;
+}
+
+/* One list */
+.shopping {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.shopping .meetings__breadcrumb {
+  margin: 0;
+}
+
+.shopping__header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+}
+
+.shopping__store {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.shopping__when,
+.shopping__notes {
+  margin: 0.2rem 0 0;
+  color: var(--knet-gray-600);
+}
+
+.shopping__notes {
+  white-space: pre-wrap;
+}
+
+.shopping__tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.shopping__progress-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  flex-basis: 100%;
+}
+
+.shopping__progress-row .shopping-progress {
+  flex: 1 1 10rem;
+}
+
+.shopping__count {
+  font-size: 0.88rem;
+  font-weight: var(--weight-bold);
+}
+
+.shopping__hide {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.88rem;
+}
+
+.shopping__details {
+  flex-basis: 100%;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.shopping-add__row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1.6fr) auto;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+@media (max-width: 760px) {
+  .shopping-add__row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .shopping-add__row > :first-child,
+  .shopping-add__row > :nth-child(4) {
+    grid-column: 1 / -1;
+  }
+}
+
+.shopping-section__title {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--knet-dark-red);
+}
+
+.shopping-items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.shopping-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--knet-gray-300);
+}
+
+.shopping-item:last-child {
+  border-bottom: 0;
+}
+
+/* Big tap targets for checking off in the store. */
+.shopping-item__check {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  cursor: pointer;
+}
+
+.shopping-item__check input {
+  flex: none;
+  width: 1.35rem;
+  height: 1.35rem;
+  accent-color: var(--knet-success);
+}
+
+.shopping-item__body {
+  display: grid;
+  min-width: 0;
+}
+
+.shopping-item__name {
+  font-weight: var(--weight-bold);
+}
+
+.shopping-item__qty {
+  margin-left: 0.5rem;
+  font-weight: normal;
+  color: var(--knet-gray-600);
+}
+
+.shopping-item__meal {
+  font-size: 0.8rem;
+  color: var(--knet-gray-600);
+}
+
+.shopping-item.is-checked .shopping-item__name {
+  text-decoration: line-through;
+  color: var(--knet-gray-600);
+}
+
+.shopping-item__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.shopping-item__editor {
+  flex-basis: 100%;
+}
+
+.shopping__receipt {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  padding: 1rem 0 0.5rem;
+}
+
+.shopping__receipt .button {
+  min-width: 14rem;
+}
+
+/* Printing a list: just the list, compact, with empty boxes to tick by hand. */
+@media print {
+  .trial-banner,
+  .site-header,
+  .site-nav,
+  .sub-nav,
+  .site-footer,
+  .no-print {
+    display: none !important;
+  }
+
+  .shopping .tile {
+    padding: 0.25rem 0;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .shopping-section {
+    break-inside: avoid;
+  }
+
+  .shopping-item {
+    padding: 0.1rem 0;
+  }
+
+  .shopping-item__check {
+    min-height: 0;
+  }
+}
+
+/* Food allergies: the allergies stand out, and line breaks people typed are kept. */
+.food-allergies__list {
+  font-weight: var(--weight-bold);
+  white-space: pre-line;
+}

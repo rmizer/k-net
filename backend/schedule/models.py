@@ -18,6 +18,10 @@ class EventQuerySet(models.QuerySet):
             condition |= Q(department_id=user.department_id)
         return self.filter(condition).distinct()
 
+    def for_department_page(self, page):
+        """Events for a department page: the departments on it, or anyone in them attending."""
+        return self.filter(Q(department__page=page) | Q(attendees__department__page=page)).distinct()
+
 
 class Event(models.Model):
     class EventType(models.TextChoices):

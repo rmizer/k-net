@@ -22,9 +22,11 @@ const TEXT_FIELDS = [
   'travel_needs',
   'lodging_needs',
   'needs',
+  'allergies',
+  'food_allergies',
 ] as const
 type TextField = (typeof TEXT_FIELDS)[number]
-type NeedsField = 'travel_needs' | 'lodging_needs' | 'needs'
+type NeedsField = 'travel_needs' | 'lodging_needs' | 'needs' | 'allergies' | 'food_allergies'
 type FormState = Record<TextField, string> & { platform: InfluencerPlatform; show: string; season: string; week: string }
 
 export function InfluencerFormDialog({ influencer, onSaved, onClose }: InfluencerFormDialogProps) {
@@ -200,6 +202,8 @@ export function InfluencerFormDialog({ influencer, onSaved, onClose }: Influence
           {needsField('travel_needs', 'Travel', 'Home airport, seat preference, ground transport, travel companions…')}
           {needsField('lodging_needs', 'Lodging', 'Room type, nights, accessibility, roommates…')}
           {needsField('needs', 'Other', 'Dietary, equipment, wardrobe…')}
+          {needsField('allergies', 'General allergies', 'Medications, insects, latex, pollen…')}
+          {needsField('food_allergies', 'Food allergies', 'Peanuts, shellfish, gluten… (shared with Culinary)')}
         </fieldset>
 
         <div className="inline-form__actions">

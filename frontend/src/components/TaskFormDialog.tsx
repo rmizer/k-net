@@ -15,20 +15,23 @@ interface TaskFormDialogProps {
   departments: Department[]
   /** Pre-select someone for a new task. */
   defaultAssignee?: number | null
+  /** A new task for this person's own list (My Tasks): no assignee or department to pick. */
+  forSelf?: number
   onSaved: (saved: Task) => void
   onDeleted?: () => void
   onClose: () => void
 }
 
 export function TaskFormDialog(props: TaskFormDialogProps) {
-  const { task, people, departments, defaultAssignee = null, onSaved, onDeleted, onClose } = props
+  const { task, people, departments, forSelf, onSaved, onDeleted, onClose } = props
+  const defaultAssignee = forSelf ?? props.defaultAssignee ?? null
   const dialogRef = useRef<HTMLDialogElement>(null)
   const defaultPerson = people.find((p) => p.id === defaultAssignee)
   const [form, setForm] = useState({
     title: task?.title ?? '',
     description: task?.description ?? '',
     assigned_to: task ? (task.assigned_to?.toString() ?? '') : (defaultAssignee?.toString() ?? ''),
-    department: task ? (task.department?.toString() ?? '') : (defaultPerson?.department?.toString() ?? ''),
+    department: task || forSelf ? (task?.department?.toString() ?? '') : (defaultPerson?.department?.toString() ?? ''),
     due_date: task?.due_date ?? '',
     priority: (task?.priority ?? 'normal') as TaskPriority,
     status: (task?.status ?? 'todo') as TaskStatus,
@@ -88,7 +91,7 @@ export function TaskFormDialog(props: TaskFormDialogProps) {
     <dialog ref={dialogRef} className="dialog" onClose={onClose} aria-labelledby="task-form-title">
       <form className="form" onSubmit={submit} noValidate>
         <div className="dialog__header">
-          <h2 id="task-form-title">{task ? 'Edit task' : 'Assign a task'}</h2>
+          <h2 id="task-form-title">{task ? 'Edit task' : forSelf ? 'Add a task' : 'Assign a task'}</h2>
           <button type="button" className="icon-button" onClick={onClose} aria-label="Close">
             ×
           </button>
@@ -115,33 +118,37 @@ export function TaskFormDialog(props: TaskFormDialogProps) {
         </label>
 
         <div className="form__grid">
-          <label className="form__field">
-            <span>Assign to</span>
-            <select
-              value={form.assigned_to}
-              onChange={(e) => choosePerson(e.target.value)}
-              aria-invalid={!!errors.assigned_to}
-            >
-              <option value="">No one person</option>
-              {people.map((person) => (
-                <option key={person.id} value={person.id}>
-                  {person.name}
-                </option>
-              ))}
-            </select>
-            {error('assigned_to')}
-          </label>
-          <label className="form__field">
-            <span>Department</span>
-            <select value={form.department} onChange={(e) => set('department', e.target.value)}>
-              <option value="">None</option>
-              {departments.map((department) => (
-                <option key={department.id} value={department.id}>
-                  {department.name}
-                </option>
-              ))}
-            </select>
-          </label>
+          {!forSelf && (
+            <>
+              <label className="form__field">
+                <span>Assign to</span>
+                <select
+                  value={form.assigned_to}
+                  onChange={(e) => choosePerson(e.target.value)}
+                  aria-invalid={!!errors.assigned_to}
+                >
+                  <option value="">No one person</option>
+                  {people.map((person) => (
+                    <option key={person.id} value={person.id}>
+                      {person.name}
+                    </option>
+                  ))}
+                </select>
+                {error('assigned_to')}
+              </label>
+              <label className="form__field">
+                <span>Department</span>
+                <select value={form.department} onChange={(e) => set('department', e.target.value)}>
+                  <option value="">None</option>
+                  {departments.map((department) => (
+                    <option key={department.id} value={department.id}>
+                      {department.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </>
+          )}
           <label className="form__field">
             <span>Due</span>
             <input type="date" value={form.due_date} onChange={(e) => set('due_date', e.target.value)} />
@@ -172,13 +179,14 @@ export function TaskFormDialog(props: TaskFormDialogProps) {
           <textarea rows={3} value={form.description} onChange={(e) => set('description', e.target.value)} />
         </label>
         <p className="form__hint">
-          Tasks assigned to a person show on their Staff Hub and in My Tasks. Department-only tasks stay here in Task
-          Management until someone is assigned.
+          {forSelf
+            ? 'This goes on your own task list, in My Tasks and on your Staff Hub.'
+            : 'Tasks assigned to a person show on their Staff Hub and in My Tasks. Department-only tasks stay here in Task Management until someone is assigned.'}
         </p>
 
         <div className="inline-form__actions">
           <button type="submit" className="button" disabled={saving}>
-            {saving ? 'Saving…' : task ? 'Save changes' : 'Assign task'}
+            {saving ? 'Saving…' : task ? 'Save changes' : forSelf ? 'Add task' : 'Assign task'}
           </button>
           <button type="button" className="button button--secondary" onClick={onClose}>
             Cancel

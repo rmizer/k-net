@@ -15,7 +15,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Department
-        fields = ["id", "name", "member_count"]
+        fields = ["id", "name", "page", "member_count"]
 
     def validate_name(self, name):
         name = name.strip()
@@ -30,11 +30,14 @@ class DepartmentSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     department_name = serializers.CharField(source="department.name", read_only=True, default=None)
     head_of_department_name = serializers.CharField(source="head_of_department.name", read_only=True, default=None)
+    # The department pages (Departments menu) they belong to and head.
+    department_page = serializers.CharField(source="department.page", read_only=True, default="")
+    head_of_department_page = serializers.CharField(source="head_of_department.page", read_only=True, default="")
     role_display = serializers.CharField(source="get_role_display", read_only=True)
     password = serializers.CharField(write_only=True, required=False, validators=[validate_password])
     slack_status = serializers.SerializerMethodField()
 
-    EMERGENCY_FIELDS = ("emergency_contact_name", "emergency_contact_phone")
+    EMERGENCY_FIELDS = ("emergency_contact_name", "emergency_contact_phone", "allergies", "food_allergies")
     ACCOUNT_FIELDS = ("email_verified", "date_joined", "last_login", "slack_status")
 
     class Meta:
@@ -53,11 +56,15 @@ class UserSerializer(serializers.ModelSerializer):
             "is_department_head",
             "head_of_department",
             "head_of_department_name",
+            "department_page",
+            "head_of_department_page",
             "profile_picture",
             "lodging",
             "room_number",
             "emergency_contact_name",
             "emergency_contact_phone",
+            "allergies",
+            "food_allergies",
             "is_active_crew",
             "email_verified",
             "date_joined",
@@ -81,8 +88,9 @@ class UserSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         viewer = self._viewer()
-        # Emergency contacts are visible only to Directors / Assistants (and Site
-        # Managers), plus the person themselves.
+        # Emergency contacts and allergies are visible only to Directors /
+        # Assistants (and Site Managers), plus the person themselves. (The
+        # Culinary team sees food allergies on their own page.)
         if not (viewer and (viewer.is_manager_level or viewer.pk == instance.pk)):
             for field in self.EMERGENCY_FIELDS:
                 data.pop(field, None)

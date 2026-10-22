@@ -115,6 +115,8 @@ class InfluencerSerializer(InfluencerListSerializer):
             "travel_needs",
             "lodging_needs",
             "needs",
+            "allergies",
+            "food_allergies",
             "notes",
             "travel",
             "upcoming_events",

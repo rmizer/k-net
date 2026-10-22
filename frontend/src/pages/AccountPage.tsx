@@ -13,12 +13,18 @@ const EDITABLE_FIELDS = [
   { name: 'emergency_contact_phone', label: 'Emergency contact phone', type: 'tel', autoComplete: 'off' },
 ] as const
 
-type EditableField = (typeof EDITABLE_FIELDS)[number]['name']
+// Only managers and the Culinary team (for food) see these.
+const ALLERGY_FIELDS = [
+  { name: 'allergies', label: 'General allergies', placeholder: 'Medications, insects, latex, pollen…' },
+  { name: 'food_allergies', label: 'Food allergies', placeholder: 'Peanuts, shellfish, gluten… (shared with Culinary)' },
+] as const
+
+type EditableField = (typeof EDITABLE_FIELDS)[number]['name'] | (typeof ALLERGY_FIELDS)[number]['name']
 
 export function AccountPage() {
   const { user, setUser } = useAuth()
   const [form, setForm] = useState<Record<EditableField, string>>(() =>
-    Object.fromEntries(EDITABLE_FIELDS.map(({ name }) => [name, user?.[name] ?? ''])) as Record<
+    Object.fromEntries([...EDITABLE_FIELDS, ...ALLERGY_FIELDS].map(({ name }) => [name, user?.[name] ?? ''])) as Record<
       EditableField,
       string
     >,
@@ -102,6 +108,18 @@ export function AccountPage() {
                 />
               </label>
             ))}
+            {ALLERGY_FIELDS.map((field) => (
+              <label key={field.name} className="form__field">
+                <span>{field.label}</span>
+                <textarea
+                  rows={2}
+                  placeholder={field.placeholder}
+                  value={form[field.name]}
+                  onChange={(event) => setForm({ ...form, [field.name]: event.target.value })}
+                />
+              </label>
+            ))}
+            <p className="form__hint">Allergies are only shown to Directors, Assistants and the Culinary team.</p>
             {user.slack_available && (
               <label className="form__check">
                 <input

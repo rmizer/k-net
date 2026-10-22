@@ -28,6 +28,8 @@ type FormState = {
   room_number: string
   emergency_contact_name: string
   emergency_contact_phone: string
+  allergies: string
+  food_allergies: string
   is_active_crew: boolean
   password: string
 }
@@ -47,6 +49,8 @@ function initialState(person: User | null, assignableRoles: Role[]): FormState {
     room_number: person?.room_number ?? '',
     emergency_contact_name: person?.emergency_contact_name ?? '',
     emergency_contact_phone: person?.emergency_contact_phone ?? '',
+    allergies: person?.allergies ?? '',
+    food_allergies: person?.food_allergies ?? '',
     is_active_crew: person?.is_active_crew ?? true,
     password: '',
   }
@@ -119,6 +123,20 @@ export function StaffFormDialog({ person, departments, assignableRoles, onSaved,
         onChange={(event) => set(name, event.target.value)}
         aria-invalid={!!errors[name]}
         {...props}
+      />
+      {errors[name] && <small className="form__field-error">{errors[name]}</small>}
+    </label>
+  )
+
+  const allergyField = (name: 'allergies' | 'food_allergies', label: string, placeholder: string) => (
+    <label className="form__field">
+      <span>{label}</span>
+      <textarea
+        rows={2}
+        value={form[name]}
+        onChange={(event) => set(name, event.target.value)}
+        aria-invalid={!!errors[name]}
+        placeholder={placeholder}
       />
       {errors[name] && <small className="form__field-error">{errors[name]}</small>}
     </label>
@@ -240,6 +258,9 @@ export function StaffFormDialog({ person, departments, assignableRoles, onSaved,
 
           {field('emergency_contact_name', 'Emergency contact name', { autoComplete: 'off' })}
           {field('emergency_contact_phone', 'Emergency contact phone', { type: 'tel', autoComplete: 'off' })}
+
+          {allergyField('allergies', 'General allergies', 'Medications, insects, latex, pollen…')}
+          {allergyField('food_allergies', 'Food allergies', 'Peanuts, shellfish, gluten… (shared with Culinary)')}
 
           {!person && (
             <div className="form__span">

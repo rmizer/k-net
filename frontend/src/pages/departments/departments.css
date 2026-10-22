@@ -1,0 +1,299 @@
+/* Department pages (Departments menu) and the Culinary tools. Shared tokens and
+   components live in src/index.css. */
+
+.department__section {
+  margin-top: 1.5rem;
+}
+
+.department__heading,
+.department__tile-header h2 {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--knet-dark-red);
+}
+
+.department__tile-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+}
+
+.department__tile-header h2 {
+  margin: 0;
+}
+
+.department__count {
+  font-size: 0.8rem;
+  font-weight: var(--weight-bold);
+  color: var(--knet-gray-600);
+}
+
+/* Department head banners: full width, one per head. */
+.department__heads {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.department-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  padding: 1rem 1.25rem;
+  border-left: 5px solid var(--knet-red);
+  border-radius: var(--radius);
+  background: var(--knet-red-wash);
+}
+
+.department-head__who {
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
+.department-head__eyebrow {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--knet-red);
+}
+
+.department-head__name {
+  margin: 0.1rem 0 0;
+  font-size: 1.25rem;
+}
+
+.department-head__title {
+  margin: 0.1rem 0 0;
+  color: var(--knet-gray-600);
+}
+
+.department-head__contact {
+  display: grid;
+  gap: 0.2rem;
+  text-align: right;
+}
+
+.department-head__link {
+  font-weight: var(--weight-bold);
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  .department-head__contact {
+    flex-basis: 100%;
+    text-align: left;
+  }
+}
+
+/* Department head tasks: full width, private. */
+.department__head-tasks {
+  margin-top: 1.5rem;
+  border-top: 4px solid var(--knet-dark-red);
+}
+
+.department__private {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+}
+
+/* Crew, next 7 days and staff tasks: three portrait tiles. */
+.department__tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 960px) {
+  .department__tiles {
+    grid-template-columns: 1fr;
+  }
+}
+
+.department__tile {
+  display: flex;
+  flex-direction: column;
+  min-height: 24rem;
+  max-height: 36rem;
+}
+
+.department__tile > :last-child {
+  overflow-y: auto;
+}
+
+@media (max-width: 960px) {
+  .department__tile {
+    min-height: 0;
+  }
+}
+
+.department-crew,
+.department-week,
+.department-week ul,
+.department-task-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.department-crew__person {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--knet-gray-300);
+}
+
+.department-crew__person:last-child {
+  border-bottom: 0;
+}
+
+.department-crew__who {
+  display: grid;
+  min-width: 0;
+}
+
+.department-crew__name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: var(--weight-bold);
+}
+
+.department-crew__meta {
+  font-size: 0.85rem;
+  color: var(--knet-gray-600);
+}
+
+.department-week__day {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--knet-gray-300);
+}
+
+.department-week__day:last-child {
+  border-bottom: 0;
+}
+
+.department-week__day h3,
+.department-tasks__group h3 {
+  margin: 0 0 0.3rem;
+  font-size: 0.85rem;
+  color: var(--knet-dark-red);
+}
+
+.department-week__day p {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.department-week__day li {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: 0.5rem;
+  padding: 0.15rem 0;
+  font-size: 0.9rem;
+}
+
+.department-week__time {
+  color: var(--knet-gray-600);
+  font-size: 0.82rem;
+}
+
+.department-tasks {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.department-task {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.4rem 0;
+}
+
+.department-task input {
+  margin-top: 0.2rem;
+}
+
+.department-task__dot {
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin: 0.45rem 0.2rem 0;
+  border-radius: 50%;
+  background: var(--knet-gray-300);
+}
+
+.department-task__body {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+
+.department-task__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.department-task.is-done .department-task__title {
+  text-decoration: line-through;
+  color: var(--knet-gray-600);
+}
+
+.department-task__meta {
+  font-size: 0.8rem;
+  color: var(--knet-gray-600);
+}
+
+.department-task__meta.is-overdue {
+  color: var(--knet-red);
+  font-weight: var(--weight-bold);
+}
+
+.department-task__edit {
+  flex: none;
+  font-size: 0.8rem;
+}
+
+/* Culinary: tools row (Overview / Menus / Shopping lists, and Upload receipt). */
+.culinary-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.culinary-nav__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.culinary-nav__tabs a,
+.culinary-nav__tabs span {
+  padding: 0.35rem 0.8rem;
+  border: 1.5px solid var(--knet-dark-red);
+  border-radius: var(--radius);
+  font-size: 0.8rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.culinary-nav__tabs span {
+  background: var(--knet-dark-red);
+  color: var(--knet-white);
+}

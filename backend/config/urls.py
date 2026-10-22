@@ -38,6 +38,8 @@ urlpatterns = [
     path("api/", include("influencers.urls")),
     path("api/", include("shows.urls")),
     path("api/", include("meetings.urls")),
+    path("api/", include("departments.urls")),
+    path("api/culinary/", include("culinary.urls")),
     path("api/", include("documents.urls")),
     path("api/", include("locations.urls")),
     path("api/", include("support.urls")),

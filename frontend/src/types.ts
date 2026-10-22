@@ -44,6 +44,7 @@ export interface Task {
   priority: TaskPriority
   status: TaskStatus
   is_overdue: boolean
+  created_by: number | null
   created_by_name: string | null
   created_at: string
   completed_at: string | null
@@ -621,6 +622,8 @@ export interface Influencer extends InfluencerSummary {
   travel_needs: string
   lodging_needs: string
   needs: string
+  allergies: string
+  food_allergies: string
   notes: InfluencerNote[]
   travel: TravelArrangement[]
   upcoming_events: { id: number; title: string; start: string; end: string; all_day: boolean; location: string }[]
@@ -686,4 +689,146 @@ export interface MeetingNote {
   updated_by_name: string | null
   created_at: string
   updated_at: string
+}
+
+/** Someone as a department page shows them. */
+export interface PagePerson {
+  id: number
+  name: string
+  first_name: string
+  last_name: string
+  title: string
+  role: Role
+  role_display: string
+  department: number | null
+  department_name: string | null
+  phone: string
+  email: string
+  profile_picture: string | null
+  is_active_crew: boolean
+  is_head: boolean
+}
+
+/** One department page (Departments menu). `head_tasks` is null for people who
+ *  aren't allowed to see the heads' own tasks. */
+export interface DepartmentPageData {
+  slug: string
+  label: string
+  can_edit: boolean
+  is_head: boolean
+  departments: { id: number; name: string }[]
+  heads: PagePerson[]
+  crew: PagePerson[]
+  head_tasks: Task[] | null
+  staff_tasks: Task[]
+}
+
+export type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'dessert' | 'beverage'
+
+export const MEAL_TYPES: { value: MealType; label: string }[] = [
+  { value: 'breakfast', label: 'Breakfast' },
+  { value: 'lunch', label: 'Lunch' },
+  { value: 'dinner', label: 'Dinner' },
+  { value: 'snack', label: 'Snack' },
+  { value: 'dessert', label: 'Dessert' },
+  { value: 'beverage', label: 'Beverage' },
+]
+
+export type ShoppingCategory =
+  | 'meat'
+  | 'produce'
+  | 'dairy'
+  | 'bakery'
+  | 'dietary'
+  | 'pantry'
+  | 'frozen'
+  | 'beverages'
+  | 'paper'
+  | 'tools'
+  | 'other'
+
+/** Shopping list sections, in store order. */
+export const SHOPPING_CATEGORIES: { value: ShoppingCategory; label: string }[] = [
+  { value: 'meat', label: 'Meat & seafood' },
+  { value: 'produce', label: 'Fruit & vegetables' },
+  { value: 'dairy', label: 'Dairy & eggs' },
+  { value: 'bakery', label: 'Bakery' },
+  { value: 'dietary', label: 'Dietary products' },
+  { value: 'pantry', label: 'Pantry' },
+  { value: 'frozen', label: 'Frozen' },
+  { value: 'beverages', label: 'Beverages' },
+  { value: 'paper', label: 'Paper products' },
+  { value: 'tools', label: 'Tools & equipment' },
+  { value: 'other', label: 'Other' },
+]
+
+export interface Ingredient {
+  /** Missing until the menu item is saved. */
+  id?: number
+  name: string
+  quantity: string
+  category: ShoppingCategory
+  /** Shopping lists it's already on. */
+  on_lists?: number[]
+}
+
+export interface MenuItem {
+  id: number
+  name: string
+  date: string
+  meal: MealType
+  meal_display: string
+  notes: string
+  ingredients: Ingredient[]
+  created_by_name: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface ShoppingItem {
+  id: number
+  shopping_list: number
+  name: string
+  quantity: string
+  category: ShoppingCategory
+  category_display: string
+  /** What it's for, e.g. "Chili · Dinner, Oct 23". */
+  meal: string
+  /** The menu ingredient it came from, if any. */
+  ingredient: number | null
+  checked: boolean
+}
+
+export interface ShoppingList {
+  id: number
+  store: string
+  needed_by: string | null
+  notes: string
+  item_count: number
+  checked_count: number
+  created_by_name: string | null
+  created_at: string
+  updated_at: string
+  /** Only on a single list. */
+  items?: ShoppingItem[]
+}
+
+/** A row on Culinary's Food allergies page: a staff or crew member, or an influencer. */
+export interface FoodAllergyPerson {
+  kind: 'staff' | 'influencer'
+  id: number
+  name: string
+  role_display: string
+  title: string
+  department_name: string | null
+  is_active_crew: boolean
+  show_name: string | null
+  food_allergies: string
+}
+
+/** GET /culinary/food-allergies/ */
+export interface FoodAllergies {
+  people: FoodAllergyPerson[]
+  /** Everyone on the project (active staff, crew and influencers). */
+  total: number
 }

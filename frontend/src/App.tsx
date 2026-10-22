@@ -1,6 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './auth/AuthContext'
-import { MANAGER_ROLES, MARKETING_ACCESS } from './auth/roles'
+import { MANAGER_ROLES } from './auth/roles'
 import { Layout } from './components/Layout'
 import { RequireAuth, RequireRole } from './components/RouteGuards'
 import { AccountPage } from './pages/AccountPage'
@@ -26,7 +26,12 @@ import { InfluencersPage } from './pages/influencers/InfluencersPage'
 import { InvestorLinkPage } from './pages/investors/InvestorLinkPage'
 import { InvestorPage } from './pages/investors/InvestorPage'
 import { LocationsPage } from './pages/locations/LocationsPage'
-import { MarketingPage } from './pages/marketing/MarketingPage'
+import { DepartmentPage, DepartmentsIndex } from './pages/departments/DepartmentPage'
+import { MenuItemFormPage } from './pages/departments/culinary/MenuItemFormPage'
+import { FoodAllergiesPage } from './pages/departments/culinary/FoodAllergiesPage'
+import { MenuPage } from './pages/departments/culinary/MenuPage'
+import { ShoppingListPage } from './pages/departments/culinary/ShoppingListPage'
+import { NewShoppingListPage, ShoppingListsPage } from './pages/departments/culinary/ShoppingListsPage'
 import { MeetingNoteFormPage } from './pages/meetings/MeetingNoteFormPage'
 import { MeetingNotePage } from './pages/meetings/MeetingNotePage'
 import { MeetingNotesPage } from './pages/meetings/MeetingNotesPage'
@@ -74,11 +79,19 @@ export default function App() {
               <Route path="/directory" element={<DirectoryPage />} />
               <Route path="/crew" element={<CrewPage />} />
               <Route path="/resources" element={<ResourcesPage />} />
-              {/* Social Media moved to Marketing. */}
-              <Route path="/social" element={<Navigate to="/marketing" replace />} />
-              <Route element={<RequireRole roles={MARKETING_ACCESS.roles ?? []} departments={MARKETING_ACCESS.departments} />}>
-                <Route path="/marketing" element={<MarketingPage />} />
-              </Route>
+              {/* Social Media moved to Marketing, which is now a department page. */}
+              <Route path="/social" element={<Navigate to="/departments/marketing" replace />} />
+              <Route path="/marketing" element={<Navigate to="/departments/marketing" replace />} />
+              {/* Department pages check access themselves (the API does too). */}
+              <Route path="/departments" element={<DepartmentsIndex />} />
+              <Route path="/departments/culinary/menu" element={<MenuPage />} />
+              <Route path="/departments/culinary/menu/new" element={<MenuItemFormPage />} />
+              <Route path="/departments/culinary/menu/:id" element={<MenuItemFormPage />} />
+              <Route path="/departments/culinary/shopping" element={<ShoppingListsPage />} />
+              <Route path="/departments/culinary/shopping/new" element={<NewShoppingListPage />} />
+              <Route path="/departments/culinary/shopping/:id" element={<ShoppingListPage />} />
+              <Route path="/departments/culinary/allergies" element={<FoodAllergiesPage />} />
+              <Route path="/departments/:slug" element={<DepartmentPage />} />
               <Route path="/schedule" element={<SchedulePage />} />
               <Route path="/schedule/tasks" element={<MyTasksPage />} />
               <Route path="/schedule/timeline" element={<TimelinePage />} />

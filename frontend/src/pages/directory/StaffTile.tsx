@@ -113,6 +113,18 @@ export function StaffTile({ person, onEdit, onRemove, onRequestRemoval }: StaffT
             </dd>
           </div>
         )}
+        {person.allergies && (
+          <div>
+            <dt>Allergies</dt>
+            <dd>{person.allergies}</dd>
+          </div>
+        )}
+        {person.food_allergies && (
+          <div>
+            <dt>Food allergies</dt>
+            <dd>{person.food_allergies}</dd>
+          </div>
+        )}
       </dl>
     </li>
   )

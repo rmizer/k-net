@@ -23,11 +23,12 @@ class TaskSerializer(serializers.ModelSerializer):
             "priority",
             "status",
             "is_overdue",
+            "created_by",
             "created_by_name",
             "created_at",
             "completed_at",
         ]
-        read_only_fields = ["completed_at"]
+        read_only_fields = ["created_by", "completed_at"]
         extra_kwargs = {"title": {"error_messages": {"blank": "Give the task a title."}}}
 
     def validate(self, attrs):
