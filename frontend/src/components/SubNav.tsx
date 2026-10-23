@@ -8,7 +8,7 @@ const currentOf = (items: NavItem[], pathname: string) =>
 
 /** Section submenu under the main nav. The current page is underlined (and not
  *  clickable when you're on it). A page with its own pages (Finance, inside
- *  Operations) gets a second row. */
+ *  Operations) gets a further row. */
 export function SubNav() {
   const { user } = useAuth()
   const { pathname } = useLocation()
@@ -21,7 +21,9 @@ export function SubNav() {
   let label = section.label
   while (items) {
     const visible = items.filter((item) => canSee(item, user))
-    rows.push({ label, items: visible })
+    // A dropdown section (Departments) already lists its pages in the main nav,
+    // so it gets no row of its own; its pages' own submenus still show.
+    if (!(items === section.children && section.dropdown)) rows.push({ label, items: visible })
     const current = currentOf(visible, pathname)
     items = current?.children
     label = current?.label ?? ''

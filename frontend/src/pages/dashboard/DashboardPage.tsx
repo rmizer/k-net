@@ -37,6 +37,7 @@ export function DashboardPage() {
         </p>
       </header>
 
+      <WeatherSection canEdit={manager} onLocationChange={reload} />
       <ShareSection />
       {user?.slack_invite_url && !user.slack_joined && (
         <SlackLink
@@ -47,7 +48,6 @@ export function DashboardPage() {
           }}
         />
       )}
-      <WeatherSection canEdit={manager} onLocationChange={reload} />
       <AnnouncementsSection
         announcements={data.announcements}
         latestCallSheet={data.latest_call_sheet}
@@ -56,9 +56,9 @@ export function DashboardPage() {
         canEdit={manager}
         onChange={reload}
       />
-      <DailyRundown events={data.daily_rundown} today={production.today} timeZone={timeZone} />
       <YourTasks tasks={data.my_tasks} onChange={reload} />
       {data.staff_tasks && <StaffTasks summary={data.staff_tasks} />}
+      <DailyRundown events={data.daily_rundown} today={production.today} timeZone={timeZone} />
       <WeekPreview
         events={data.week_events}
         weekStart={production.week_start}

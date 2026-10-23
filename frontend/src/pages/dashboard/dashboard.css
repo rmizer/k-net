@@ -455,14 +455,19 @@
   list-style: none;
 }
 
+.crew-tile {
+  padding: 0.5rem 0.75rem;
+}
+
 .crew-tile h3 {
-  margin: 0 0 0.35rem;
+  margin: 0 0 0.15rem;
   font-size: 1rem;
   color: var(--knet-red);
 }
 
 .crew-tile p {
   margin: 0;
+  line-height: 1.25;
   font-weight: var(--weight-regular);
 }
 
@@ -497,7 +502,7 @@
 /* Share K-Net: a callout band at the top, with the QR code on a white card. */
 .callout--share {
   grid-template-columns: auto 1fr auto;
-  padding: 1.25rem 1.75rem 1.25rem 1.25rem;
+  padding: 0.75rem 1.75rem 0.75rem 1.25rem;
 }
 
 .callout__qr {

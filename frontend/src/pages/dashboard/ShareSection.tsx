@@ -4,7 +4,7 @@ import qrCode from '../../assets/brand/knet-qr-code.png'
 
 const SIGNUP_URL = `${window.location.origin}/signup`
 
-/** Always at the top of the Staff Hub: the K-Net QR code, so anyone can bring a
+/** Near the top of the Staff Hub, under the weather: the K-Net QR code, so anyone can bring a
  *  teammate in by letting them scan it with a phone camera. */
 export function ShareSection() {
   const [copied, setCopied] = useState(false)
@@ -29,7 +29,7 @@ export function ShareSection() {
       </span>
       <div className="callout__text">
         <p className="callout__eyebrow">Share K-Net</p>
-        <h2 id="share-heading">Bring your team onto K-Net</h2>
+        <h2 id="share-heading">Invite a team member to join</h2>
         <p>
           Have a teammate point their phone camera at this code. It opens K-Net, where they tap{' '}
           <strong>Create an account</strong> and sign up with their own email.
