@@ -164,21 +164,6 @@ export function CostSummaryPage() {
         </div>
       </section>
 
-      <section className="investor__section" aria-labelledby="notes-heading">
-        <h2 id="notes-heading">Good to know</h2>
-        <ul className="investor__notes">
-          <li>
-            Hosting is billed at cost, with no markup. Railway and Netlify charge by usage, so a much larger production
-            (more crew, more uploads, more traffic) costs more; you’ll see it on each bill before it grows.
-          </li>
-          <li>Email (through K-Net’s support account) and Slack notifications run on free plans today.</li>
-          <li>
-            Prices are the providers’ published rates as of October 2026. Services K-Net might add later, such as a
-            licensed weather feed or a dedicated email service, would be quoted before they’re added.
-          </li>
-        </ul>
-      </section>
-
       <p className="investor__actions">
         <Link className="button button--secondary" to={investorPage}>
           Back to investor information
