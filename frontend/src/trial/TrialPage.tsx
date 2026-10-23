@@ -7,15 +7,15 @@ import { TRIAL_END_LABEL } from './trial'
 const SUPPORT_EMAIL = 'support.knet@gmail.com'
 
 const FEATURES: [string, string, NavIconName][] = [
-  ['Staff Hub', 'Weather, announcements and alerts, the daily rundown, your tasks, the week ahead and today’s crew.', 'home'],
-  ['Schedule', 'Daily, weekly and monthly views with staff, department and influencer filters, plus the Master Timeline.', 'calendar'],
-  ['Tasks', 'Directors and Assistants assign tasks to people or departments; they show up on each person’s dashboard.', 'tasks'],
-  ['Directory and crew', 'Contact details, departments, roles and lodging for everyone on the production.', 'contacts'],
-  ['Influencer Roster', 'Profiles for each creator: contacts, agents, notes, needs, schedules and travel.', 'star'],
-  ['Locations and Resources', 'Lodging and shooting locations on a map, and the vendors and services the production uses.', 'pin'],
-  ['Documents', 'Permits, insurance, contracts, invoices and receipts. Staff can upload their own receipts.', 'document'],
+  ['Staff Hub', 'Weather, a QR code to invite teammates, announcements, alerts and the latest call sheet, your tasks, the daily rundown, the week ahead and today’s crew.', 'home'],
+  ['Schedule', 'Daily, weekly and monthly views with staff, department and influencer filters, the Master Timeline, and Staff / Crew: who’s called each day.', 'calendar'],
+  ['Tasks', 'Directors, Assistants and department heads assign tasks to people or departments; they show up in My Tasks and on each person’s Staff Hub.', 'tasks'],
+  ['Departments', 'A page for each department with its schedule, crew, tasks and department heads. Culinary adds menus, shopping lists and food allergies.', 'departments'],
+  ['Influencer Roster', 'Profiles for each creator: contacts, agents, notes, needs, schedules, travel, and their show, season and week.', 'star'],
+  ['Directory, Locations and Resources', 'Contact details and roles for everyone, lodging and shooting locations on a map, and the vendors and services the production uses.', 'pin'],
+  ['Documents', 'Permits, insurance, contracts, invoices and receipts, stored privately. Staff can upload their own receipts.', 'document'],
   ['Finance', 'For Directors and Assistants: payroll, money in and out, invoices and a finance calendar.', 'dollar'],
-  ['Director Dashboard', 'For Directors and Assistants: departments, staff details, schedules and task assignments in one place.', 'clipboard'],
+  ['Director Dashboard', 'For Directors and Assistants: departments, staff, block scheduling, call sheets, task management, shows and meeting notes.', 'clipboard'],
 ]
 
 const NOT_INCLUDED: [string, string][] = [

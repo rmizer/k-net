@@ -207,9 +207,10 @@ export function InvestorPage() {
           <div className="tile">
             <h3>Working now</h3>
             <p>
-              In alpha testing with real crew through {TRIAL_END_LABEL}: dashboard, schedule and block scheduling,
-              tasks, directory and departments, influencer roster, locations and resources, documents, finance records,
-              email-verified sign-up and Slack notifications.
+              In alpha testing with real crew through {TRIAL_END_LABEL}: Staff Hub, schedule and block scheduling, call
+              sheets, tasks, department pages with Culinary menus and shopping lists, shows, meeting notes, directory,
+              influencer roster, locations and resources, documents, finance records, email-verified sign-up and Slack
+              notifications.
             </p>
             <p>
               <Link to="/trial">About the trial</Link>
