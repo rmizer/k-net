@@ -361,6 +361,11 @@ a:hover {
   white-space: nowrap;
 }
 
+/* Keep each icon full size, even on the longest name. */
+.nav-dropdown__link .nav-icon {
+  flex-shrink: 0;
+}
+
 .nav-dropdown__link:hover,
 .nav-dropdown__link.is-active {
   text-decoration: underline;
@@ -387,6 +392,7 @@ a:hover {
     top: 100%;
     left: -1rem;
     z-index: 20;
+    width: max-content;
     min-width: calc(100% + 2rem);
     background: var(--knet-dark-red);
     border-radius: 0 0 var(--radius) var(--radius);

@@ -1,7 +1,7 @@
-// The alpha trial runs until 11:59pm on October 23, 2026, Tampa (Eastern) time.
-export const TRIAL_ENDS_AT = Date.parse('2026-10-23T23:59:00-04:00')
+// The alpha trial runs until 11:59pm on October 24, 2026, Tampa (Eastern) time.
+export const TRIAL_ENDS_AT = Date.parse('2026-10-24T23:59:00-04:00')
 
-export const TRIAL_END_LABEL = 'Friday, October 23, 2026 at 11:59 PM Eastern'
+export const TRIAL_END_LABEL = 'Saturday, October 24, 2026 at 11:59 PM Eastern'
 
 const SECOND = 1000
 const MINUTE = 60 * SECOND
