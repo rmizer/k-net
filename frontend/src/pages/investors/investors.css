@@ -37,6 +37,18 @@
   padding: 3rem var(--gutter);
 }
 
+/* Paragraph text: tighter lines, fully justified. Hyphenation keeps the
+   justified lines from opening wide gaps between words. */
+.investor p,
+.investor li {
+  line-height: 1.35;
+}
+
+.investor p {
+  text-align: justify;
+  hyphens: auto;
+}
+
 .investor h2 {
   margin-bottom: 0.75rem;
 }
@@ -100,7 +112,8 @@
   max-width: 44rem;
   margin: 0;
   font-size: 1.15rem;
-  line-height: 1.55;
+  line-height: 1.4;
+  text-align-last: center;
 }
 
 .investor__actions {
@@ -286,6 +299,10 @@
 
 .investor__contact {
   text-align: center;
+}
+
+.investor__contact p {
+  text-align-last: center;
 }
 
 .investor__contact p {
