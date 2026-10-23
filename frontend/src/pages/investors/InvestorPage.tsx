@@ -7,8 +7,8 @@ import { NotFoundPage } from '../NotFoundPage'
 import './investors.css'
 
 const CONTACT_EMAIL = 'support.knet@gmail.com'
-export const PURCHASE_PRICE = 10_000
-export const WEEKLY_FEE = 1_000
+export const PURCHASE_PRICE = 15_000
+export const WEEKLY_FEE = 500
 
 const REPLACES: [string, string, string][] = [
   [
