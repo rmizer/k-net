@@ -43,6 +43,15 @@ export const NAV_ITEMS: NavItem[] = [
       { label: 'Master Schedule', path: '/schedule' },
       { label: 'My Tasks', path: '/schedule/tasks' },
       { label: 'Master Timeline', path: '/schedule/timeline' },
+      {
+        label: 'Staff / Crew',
+        path: '/schedule/crew',
+        children: [
+          { label: 'Active Crew', path: '/schedule/crew' },
+          { label: 'CrewFinder', path: '/schedule/crew/finder' },
+          { label: 'Invite Crew', path: '/schedule/crew/invite' },
+        ],
+      },
     ],
   },
   {
@@ -56,16 +65,6 @@ export const NAV_ITEMS: NavItem[] = [
       { label: 'Scheduling', path: '/staff-manager/scheduling' },
       { label: 'Task Management', path: '/staff-manager/tasks' },
       { label: 'Shows', path: '/staff-manager/shows' },
-    ],
-  },
-  {
-    label: 'Staff / Crew',
-    path: '/crew',
-    icon: 'crew',
-    children: [
-      { label: 'Active Crew', path: '/crew' },
-      { label: 'CrewFinder', path: '/crew/finder' },
-      { label: 'Invite Crew', path: '/crew/invite' },
     ],
   },
   { label: 'Influencers', path: '/influencers', icon: 'star' },

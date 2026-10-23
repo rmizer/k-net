@@ -171,7 +171,7 @@ a:hover {
 
 .site-header {
   background: var(--knet-white);
-  padding: 1.75rem 0 1.5rem;
+  padding: 1.75rem 0 0.6rem;
   text-align: center;
 }
 
@@ -1193,7 +1193,7 @@ th.is-numeric .sort-header {
 
 @media (max-width: 860px) {
   .site-header {
-    padding: 1.25rem 0 1rem;
+    padding: 1.25rem 0 0.5rem;
   }
 
   .site-header__logo {

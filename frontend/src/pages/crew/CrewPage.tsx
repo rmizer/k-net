@@ -41,7 +41,7 @@ function Crew({ today }: { today: string }) {
     )
   }, [people])
 
-  const dayHref = (target: string) => (target === today ? '/crew' : `/crew?date=${target}`)
+  const dayHref = (target: string) => (target === today ? '/schedule/crew' : `/schedule/crew?date=${target}`)
 
   return (
     <section className="crew">
@@ -56,7 +56,7 @@ function Crew({ today }: { today: string }) {
           </p>
         </div>
         <div className="page-header__actions">
-          <Link to="/crew/finder" className="button button--secondary">
+          <Link to="/schedule/crew/finder" className="button button--secondary">
             Open CrewFinder
           </Link>
           {isManagerLevel(user) && (

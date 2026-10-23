@@ -36,7 +36,7 @@ export function ShareSection() {
         </p>
       </div>
       <span className="callout__actions callout__actions--stack">
-        <Link to="/crew/invite" className="button callout__button">
+        <Link to="/schedule/crew/invite" className="button callout__button">
           Invite someone
         </Link>
         <a href={qrCode} download="K-Net-QR-code.png" className="button callout__button">

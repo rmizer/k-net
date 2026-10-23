@@ -90,14 +90,6 @@ export function TrialPage() {
         ))}
       </dl>
 
-      <h2>Data privacy</h2>
-      <div className="tile">
-        <p>
-          What you enter in K-Net is private to the production. It isn’t shared with or sold to any third parties. Contact
-          details and emergency contacts are visible only to the people whose role needs them.
-        </p>
-      </div>
-
       <h2>Feedback and help</h2>
       <div className="tile">
         <p>

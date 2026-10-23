@@ -1,0 +1,17 @@
+/* Legal page: same rhythm as the trial page. */
+.legal-page p {
+  line-height: 1.3;
+}
+
+.legal-page h2 {
+  margin-top: 2rem;
+  margin-bottom: 0.4rem;
+}
+
+.legal-page .tile p {
+  margin: 0 0 0.75rem;
+}
+
+.legal-page .tile p:last-child {
+  margin-bottom: 0;
+}

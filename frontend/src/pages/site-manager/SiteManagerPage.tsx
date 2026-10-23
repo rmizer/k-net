@@ -258,7 +258,7 @@ export function SiteManagerPage() {
           <button type="button" className="button" onClick={() => setEditing(null)}>
             + Add user
           </button>
-          <Link to="/crew/invite" className="button button--secondary">
+          <Link to="/schedule/crew/invite" className="button button--secondary">
             Invite crew
           </Link>
         </div>

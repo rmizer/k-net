@@ -4,7 +4,7 @@ import { DashboardSection } from './DashboardSection'
 
 export function TodaysCrew({ groups }: { groups: CrewGroup[] }) {
   return (
-    <DashboardSection title="Today’s Crew" action={<Link to="/crew">Full crew list</Link>}>
+    <DashboardSection title="Today’s Crew" action={<Link to="/schedule/crew">Full crew list</Link>}>
       {groups.length === 0 ? (
         <div className="tile">
           <p className="muted">No one is on the schedule today.</p>

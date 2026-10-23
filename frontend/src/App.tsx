@@ -27,6 +27,7 @@ import { InfluencersPage } from './pages/influencers/InfluencersPage'
 import { InvestorLinkPage } from './pages/investors/InvestorLinkPage'
 import { CostSummaryPage } from './pages/investors/CostSummaryPage'
 import { InvestorPage } from './pages/investors/InvestorPage'
+import { LegalPage } from './pages/legal/LegalPage'
 import { LocationsPage } from './pages/locations/LocationsPage'
 import { DepartmentPage, DepartmentsIndex } from './pages/departments/DepartmentPage'
 import { MenuItemFormPage } from './pages/departments/culinary/MenuItemFormPage'
@@ -78,11 +79,15 @@ export default function App() {
           <Route element={<Layout />}>
             {/* Public, so people can read about the trial before signing up. */}
             <Route path="/trial" element={<TrialPage />} />
+            <Route path="/legal" element={<LegalPage />} />
             <Route element={<RequireAuth />}>
               <Route path="/" element={<DashboardPage />} />
               <Route path="/call-sheets/:id" element={<PublishedCallSheetPage />} />
               <Route path="/directory" element={<DirectoryPage />} />
-              <Route path="/crew" element={<CrewPage />} />
+              {/* Staff / Crew moved under Schedule. */}
+              <Route path="/crew" element={<Navigate to="/schedule/crew" replace />} />
+              <Route path="/crew/finder" element={<Navigate to="/schedule/crew/finder" replace />} />
+              <Route path="/crew/invite" element={<Navigate to="/schedule/crew/invite" replace />} />
               <Route path="/resources" element={<ResourcesPage />} />
               {/* Social Media moved to Marketing, which is now a department page. */}
               <Route path="/social" element={<Navigate to="/departments/marketing" replace />} />
@@ -100,6 +105,9 @@ export default function App() {
               <Route path="/schedule" element={<SchedulePage />} />
               <Route path="/schedule/tasks" element={<MyTasksPage />} />
               <Route path="/schedule/timeline" element={<TimelinePage />} />
+              <Route path="/schedule/crew" element={<CrewPage />} />
+              <Route path="/schedule/crew/finder" element={<CrewFinderPage />} />
+              <Route path="/schedule/crew/invite" element={<InvitePage />} />
               <Route path="/documents" element={<DocumentsPage />} />
               <Route path="/locations" element={<LocationsPage />} />
               <Route element={<RequireRole roles={MANAGER_ROLES} />}>
@@ -126,8 +134,6 @@ export default function App() {
               </Route>
               <Route path="/influencers" element={<InfluencersPage />} />
               <Route path="/influencers/:id" element={<InfluencerProfilePage />} />
-              <Route path="/crew/finder" element={<CrewFinderPage />} />
-              <Route path="/crew/invite" element={<InvitePage />} />
               <Route path="/account" element={<AccountPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/help" element={<HelpPage />} />

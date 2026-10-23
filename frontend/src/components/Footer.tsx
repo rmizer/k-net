@@ -18,6 +18,12 @@ export function Footer() {
             </Link>
           </li>
           <li>
+            {/* Data privacy, confidentiality and trial terms. */}
+            <Link to="/legal" className="nav-link">
+              Legal
+            </Link>
+          </li>
+          <li>
             {/* Django admin; only Site Manager accounts can sign in there. */}
             <a href="/admin/" className="site-footer__admin">
               Dev Login
