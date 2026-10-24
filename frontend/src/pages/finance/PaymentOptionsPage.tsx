@@ -13,6 +13,8 @@ const KINDS: { value: PaymentMethodKind; label: string; plural: string }[] = [
   { value: 'digital', label: 'Digital payment', plural: 'Digital payments' },
 ]
 
+const AMEX = /\bamex\b|american express/i
+
 export function PaymentOptionsPage() {
   const methods = useFetch<PaymentMethod[]>('/finance/payment-methods/')
   // ?add=1 (from the Finance overview) opens the form straight away.
@@ -104,7 +106,7 @@ export function PaymentOptionsPage() {
                     </div>
                     <p className="fin-method__number">
                       {method.institution}
-                      {method.last4 && <span> •••• {method.last4}</span>}
+                      {method.last_digits && <span> •••• {method.last_digits}</span>}
                     </p>
                     {method.holder && <p className="muted">Held by {method.holder}</p>}
                     {method.notes && <p className="fin-method__notes">{method.notes}</p>}
@@ -162,13 +164,15 @@ function MethodDialog({ method, kind, onSaved, onClose }: MethodDialogProps) {
     name: method?.name ?? '',
     kind: method?.kind ?? kind,
     institution: method?.institution ?? '',
-    last4: method?.last4 ?? '',
+    last_digits: method?.last_digits ?? '',
     holder: method?.holder ?? '',
     notes: method?.notes ?? '',
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [saving, setSaving] = useState(false)
   const set = (name: keyof typeof form, value: string) => setForm({ ...form, [name]: value })
+  // American Express cards have 15 digits and go by their last five. (Mirrors the server.)
+  const amex = form.kind === 'card' && [form.institution, form.name].some((text) => AMEX.test(text))
 
   const submit = async (event: FormEvent) => {
     event.preventDefault()
@@ -219,7 +223,11 @@ function MethodDialog({ method, kind, onSaved, onClose }: MethodDialogProps) {
           {field('institution', form.kind === 'digital' ? 'Service' : 'Bank or card issuer', {
             placeholder: form.kind === 'digital' ? 'PayPal, Venmo, Zelle…' : 'Chase, American Express…',
           })}
-          {field('last4', 'Last four digits', { inputMode: 'numeric', maxLength: 4, placeholder: '1234' })}
+          {field('last_digits', amex ? 'Last five digits' : 'Last four digits', {
+            inputMode: 'numeric',
+            maxLength: amex ? 5 : 4,
+            placeholder: amex ? '10005' : '1234',
+          })}
           {field('holder', form.kind === 'card' ? 'Cardholder' : 'Managed by')}
         </div>
         <label className="form__field">

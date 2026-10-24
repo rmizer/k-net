@@ -190,7 +190,8 @@ export interface PaymentMethod {
   /** Name plus "ending 1234". */
   label: string
   institution: string
-  last4: string
+  /** Last four digits, or five for American Express. */
+  last_digits: string
   holder: string
   notes: string
   is_active: boolean

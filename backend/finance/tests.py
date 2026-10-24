@@ -32,7 +32,7 @@ class FinanceTestCase(APITestCase):
 
         self.director = make_user("director@test.com", User.Role.DIRECTOR, "Coach")
         self.staff = make_user("staff@test.com", User.Role.STAFF, "Jimmy")
-        self.card = PaymentMethod.objects.create(name="Production Amex", kind="card", last4="1004")
+        self.card = PaymentMethod.objects.create(name="Production Amex", kind="card", last_digits="1004")
         self.client.force_authenticate(self.director)
 
     def receipt(self, person, amount="20.00", **extra):
@@ -50,9 +50,25 @@ class PermissionTests(FinanceTestCase):
 
 
 class PaymentMethodTests(FinanceTestCase):
-    def test_last4_must_be_four_digits(self):
-        response = self.client.post("/api/finance/payment-methods/", {"name": "Chase", "kind": "bank", "last4": "12"})
+    def test_last_digits_must_be_four_digits(self):
+        response = self.client.post("/api/finance/payment-methods/", {"name": "Chase", "kind": "bank", "last_digits": "12"})
         self.assertEqual(response.status_code, 400)
+        response = self.client.post("/api/finance/payment-methods/", {"name": "Chase", "kind": "bank", "last_digits": "12345"})
+        self.assertEqual(response.status_code, 400)
+
+    def test_amex_cards_take_five_digits(self):
+        url = "/api/finance/payment-methods/"
+        amex = {"name": "Travel card", "kind": "card", "institution": "American Express"}
+        self.assertEqual(self.client.post(url, {**amex, "last_digits": "0005"}).status_code, 400)
+        response = self.client.post(url, {**amex, "last_digits": "10005"})
+        self.assertEqual(response.status_code, 201, response.data)
+        self.assertEqual(response.data["label"], "Travel card ending 10005")
+        # Changing an Amex card to another issuer needs four again.
+        response = self.client.patch(f"{url}{response.data['id']}/", {"institution": "Chase"})
+        self.assertIn("last_digits", response.data)
+        # An "Amex" bank account isn't a card.
+        response = self.client.post(url, {"name": "Amex savings", "kind": "bank", "last_digits": "1234"})
+        self.assertEqual(response.status_code, 201, response.data)
 
     def test_uses_counts_what_points_at_it(self):
         Payment.objects.create(paid_on=date(2026, 10, 1), payee="X", amount=1, payment_method=self.card)

@@ -208,3 +208,21 @@ class LoadCallSheetTests(APITestCase):
         lunches = Event.objects.filter(title="Cast lunch")
         self.assertEqual(lunches.count(), 15)
         self.assertEqual(lunches.first().talent_crew, "BG & creators")
+
+    def test_adding_days_keeps_earlier_days_and_people(self):
+        call_command("load_call_sheet", stdout=StringIO())
+        babe = User.objects.get(first_name="Babe")
+        babe.title = "Changed on the site"
+        babe.save()
+        args = ["--start", "2026-10-24", "--end", "2026-11-07", "--schedule-only"]
+        call_command("load_call_sheet", *args, stdout=StringIO())
+        call_command("load_call_sheet", *args, stdout=StringIO())
+
+        # Oct 9 to Nov 7, once each.
+        self.assertEqual(Event.objects.filter(title="Cast lunch").count(), 30)
+        babe.refresh_from_db()
+        self.assertEqual(babe.title, "Changed on the site")
+        crew_call = Event.objects.filter(title="Crew call: Cast House 2.0").latest("start")
+        self.assertIn(babe, crew_call.attendees.all())
+        timeline = TimelineItem.objects.get(name__startswith="Battle House")
+        self.assertEqual((str(timeline.start_date), str(timeline.end_date)), ("2026-10-09", "2026-11-07"))

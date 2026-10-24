@@ -1,7 +1,7 @@
 import uuid
 from datetime import date, datetime, time, timedelta
 
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.db.models import Q
 
@@ -12,7 +12,7 @@ from schedule.models import Event, TimelineItem
 
 # From the Battle House Live season 1 call sheet (dev/img/Battle House Assets/call_sheet_example.jpg).
 FIRST_DAY = date(2026, 10, 9)  # Shoot day 1
-LAST_DAY = date(2026, 10, 23)
+LAST_DAY = date(2026, 10, 23)  # The first load ran through day 15; --start/--end add more days.
 TIMELINE_NAME = "Battle House Live: Season 1 shoot"
 
 # Department names to fix before anyone is placed: old name -> new name.
@@ -137,8 +137,8 @@ def block_for(key):
 class Command(BaseCommand):
     help = (
         "Load the Battle House Live call sheet: staff (with titles, site roles and departments), "
-        f"locations, and the shoot schedule every day from {FIRST_DAY:%b %d} to {LAST_DAY:%b %d}. "
-        "Safe to run more than once."
+        f"locations, and the shoot schedule every day from {FIRST_DAY:%b %d} to {LAST_DAY:%b %d} "
+        "(or --start to --end). Safe to run more than once: it replaces only the days it loads."
     )
 
     def add_arguments(self, parser):
@@ -147,14 +147,30 @@ class Command(BaseCommand):
             action="store_true",
             help="Also delete the placeholder 'Filming' events in those dates (the shoot schedule replaces them).",
         )
+        parser.add_argument(
+            "--start", type=date.fromisoformat, default=FIRST_DAY, help="First day to load (YYYY-MM-DD)."
+        )
+        parser.add_argument("--end", type=date.fromisoformat, default=LAST_DAY, help="Last day to load (YYYY-MM-DD).")
+        parser.add_argument(
+            "--schedule-only",
+            action="store_true",
+            help="Only add the shoot schedule: leave staff, departments and locations as they are on the site.",
+        )
         parser.add_argument("--dry-run", action="store_true", help="Show what would change without saving.")
 
     @transaction.atomic
-    def handle(self, *args, remove_filming=False, dry_run=False, **options):
-        departments = self.load_departments()
-        people = self.load_staff(departments)
-        self.load_locations()
-        self.load_schedule(people, remove_filming)
+    def handle(
+        self, *args, start=FIRST_DAY, end=LAST_DAY, schedule_only=False, remove_filming=False, dry_run=False, **options
+    ):
+        if end < start:
+            raise CommandError("--end is before --start.")
+        if schedule_only:
+            people = self.find_staff()
+        else:
+            departments = self.load_departments()
+            people = self.load_staff(departments)
+            self.load_locations()
+        self.load_schedule(people, start, end, remove_filming)
         if dry_run:
             transaction.set_rollback(True)
             self.stdout.write(self.style.WARNING("Dry run: nothing was saved."))
@@ -211,6 +227,18 @@ class Command(BaseCommand):
         self.stdout.write(f"Staff: {added} added, {updated} updated")
         return people
 
+    def find_staff(self):
+        """The call sheet's people as they are on the site, without changing them."""
+        people = {}
+        for first, last, *_, email, _phone, call in STAFF:
+            person = User.objects.filter(email__iexact=email, is_active=True).first()
+            if person is None:
+                self.stdout.write(self.style.WARNING(f"Not on the site, so left off the schedule: {first} {last}"))
+                continue
+            people[(first, last)] = (person, call)
+        self.stdout.write(f"Staff: found {len(people)} of {len(STAFF)}")
+        return people
+
     def load_locations(self):
         for name, kind, address, label in LOCATIONS:
             _, created = Location.objects.update_or_create(
@@ -219,14 +247,15 @@ class Command(BaseCommand):
             if created:
                 self.stdout.write(f"Added location {name}")
 
-    def load_schedule(self, people, remove_filming):
+    def load_schedule(self, people, first, last, remove_filming):
         zone = ProductionSettings.load().zone
-        days = [FIRST_DAY + timedelta(days=n) for n in range((LAST_DAY - FIRST_DAY).days + 1)]
-        window = Q(start__gte=datetime.combine(FIRST_DAY, time.min, tzinfo=zone)) & Q(
-            start__lt=datetime.combine(LAST_DAY + timedelta(days=1), time.min, tzinfo=zone)
+        days = [first + timedelta(days=n) for n in range((last - first).days + 1)]
+        window = Q(start__gte=datetime.combine(first, time.min, tzinfo=zone)) & Q(
+            start__lt=datetime.combine(last + timedelta(days=1), time.min, tzinfo=zone)
         )
 
-        _, deleted = Event.objects.filter(block__in=[block_for(row[0]) for row in SCHEDULE]).delete()
+        # Only the days being loaded: earlier and later shoot days stay as they are.
+        _, deleted = Event.objects.filter(window, block__in=[block_for(row[0]) for row in SCHEDULE]).delete()
         replaced = deleted.get("schedule.Event", 0)
         if remove_filming:
             _, deleted = Event.objects.filter(window, title="Filming").delete()
@@ -262,11 +291,15 @@ class Command(BaseCommand):
                 )
         self.stdout.write(f"Shoot schedule: {created} events over {len(days)} days (replaced {replaced})")
 
-        TimelineItem.objects.update_or_create(
-            name=TIMELINE_NAME,
-            defaults={
-                "start_date": FIRST_DAY,
-                "end_date": LAST_DAY,
-                "description": "Shoot days 1 to 15, live every day from 12:00 PM.",
-            },
-        )
+        # The timeline bar covers every shoot day loaded so far.
+        loaded = Event.objects.filter(block=block_for("live")).order_by("start")
+        shoot_days = sorted({event.start.astimezone(zone).date() for event in loaded})
+        if shoot_days:
+            TimelineItem.objects.update_or_create(
+                name=TIMELINE_NAME,
+                defaults={
+                    "start_date": shoot_days[0],
+                    "end_date": shoot_days[-1],
+                    "description": f"Shoot days 1 to {(shoot_days[-1] - FIRST_DAY).days + 1}, live every day from 12:00 PM.",
+                },
+            )

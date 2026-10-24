@@ -442,13 +442,13 @@ class Command(BaseCommand):
         M = PaymentMethod.Kind
 
         amex = PaymentMethod.objects.create(
-            name="Production Amex", kind=M.CARD, institution="American Express", last4="1004", holder="Coach K"
+            name="Production Amex", kind=M.CARD, institution="American Express", last_digits="31004", holder="Coach K"
         )
         operating = PaymentMethod.objects.create(
-            name="Operating account", kind=M.BANK, institution="Chase", last4="2290", notes="Vendor payments."
+            name="Operating account", kind=M.BANK, institution="Chase", last_digits="2290", notes="Vendor payments."
         )
         payroll_account = PaymentMethod.objects.create(
-            name="Payroll account", kind=M.BANK, institution="Chase", last4="7731", notes="Direct deposits only."
+            name="Payroll account", kind=M.BANK, institution="Chase", last_digits="7731", notes="Direct deposits only."
         )
         PaymentMethod.objects.create(
             name="Production PayPal", kind=M.DIGITAL, institution="PayPal", holder="Jared",

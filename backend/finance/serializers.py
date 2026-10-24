@@ -7,7 +7,7 @@ from rest_framework import serializers
 from accounts.models import User
 from documents.models import ALLOWED_EXTENSIONS, Document
 
-from .models import AutoDraft, Deposit, Invoice, Paycheck, PaymentMethod, PayRate, Payment
+from .models import AutoDraft, Deposit, Invoice, Paycheck, PaymentMethod, PayRate, Payment, looks_like_amex
 
 MAX_UPLOAD_MB = 20
 
@@ -51,7 +51,7 @@ class PaymentMethodSerializer(serializers.ModelSerializer):
             "kind_display",
             "label",
             "institution",
-            "last4",
+            "last_digits",
             "holder",
             "notes",
             "is_active",
@@ -72,8 +72,20 @@ class PaymentMethodSerializer(serializers.ModelSerializer):
             ]
         )
 
-    def validate_last4(self, value):
+    def validate_last_digits(self, value):
         return value.strip()
+
+    def validate(self, attrs):
+        # American Express cards are known by their last five digits; others by four.
+        get = lambda field: attrs.get(field, getattr(self.instance, field, ""))
+        digits = get("last_digits")
+        if digits:
+            amex = get("kind") == PaymentMethod.Kind.CARD and looks_like_amex(get("institution"), get("name"))
+            if amex and len(digits) != 5:
+                raise serializers.ValidationError({"last_digits": "American Express cards: enter the last five digits."})
+            if not amex and len(digits) != 4:
+                raise serializers.ValidationError({"last_digits": "Enter the last four digits."})
+        return attrs
 
 
 class _MethodNameMixin(serializers.Serializer):

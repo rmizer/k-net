@@ -117,34 +117,43 @@ export const ARTICLES: HelpArticle[] = [
   },
   {
     slug: 'submit-receipt',
-    title: 'Submit a receipt from your phone',
-    summary: 'Photograph or scan a receipt and send it in for reimbursement, then follow it until it’s paid.',
+    title: 'Submit receipts and documents from your phone',
+    summary:
+      'Send in a receipt to be paid back, or a document the office needs, then follow everything you’ve sent on the Paperwork page.',
     body: () => (
       <>
         <p>
-          Bought something for the production with your own money? Send the receipt in through K-Net and a Director or
-          Assistant will review it and add it to your pay. You can do the whole thing from your phone.
+          Everything you send to the office goes through one page: <Link to="/paperwork">Resources → Paperwork</Link>.
+          Use it for <strong>receipts</strong>, when you bought something for the production with your own money and
+          want it paid back, and for <strong>documents</strong> the office asks you for, like a signed contract, proof of
+          insurance or your vehicle registration. You can do it all from your phone.
         </p>
 
-        <h2>1. Get a clear picture of the receipt</h2>
+        <h2>1. Get a clear picture of it</h2>
         <p>You can take a photo or make a scan. A scan is easiest to read, but a good photo works too.</p>
         <ul>
-          <li>Lay the receipt flat on a dark, plain surface, in good light, with no shadow from your phone.</li>
-          <li>Fit the whole receipt in the frame, top to bottom. Long receipts can be folded in half or scanned in two.</li>
-          <li>Make sure the store name, date and total are sharp and readable before you send it.</li>
+          <li>Lay the page flat on a dark, plain surface, in good light, with no shadow from your phone.</li>
+          <li>Fit the whole thing in the frame, top to bottom. Long receipts can be folded in half or scanned in two.</li>
+          <li>
+            Make sure the important parts are sharp and readable: on a receipt, the store name, date and total; on a
+            document, names, dates and signatures.
+          </li>
         </ul>
         <p>
           <strong>Scanning on iPhone:</strong> open the <strong>Notes</strong> app, start a new note, tap the camera
-          icon and choose <strong>Scan Documents</strong>. Hold the phone over the receipt; it snaps the scan
+          icon and choose <strong>Scan Documents</strong>. Hold the phone over the page; it snaps the scan
           automatically. Tap <strong>Save</strong>, then share it as a PDF or save it to Files.
         </p>
         <p>
           <strong>Scanning on Android:</strong> open <strong>Google Drive</strong>, tap <strong>+</strong> and choose{' '}
-          <strong>Scan</strong>. Line up the receipt, take the picture, crop if needed and save it as a PDF.
+          <strong>Scan</strong>. Line up the page, take the picture, crop if needed and save it as a PDF.
         </p>
-        <p>Or skip this step and take the photo straight from K-Net in step 2.</p>
+        <p>
+          Or skip this step and take the photo straight from K-Net in step 2. Documents you already have as a file
+          (PDF, Word, Excel) can be uploaded as they are.
+        </p>
 
-        <h2>2. Upload it to K-Net</h2>
+        <h2>2a. Submit a receipt</h2>
         <ol className="help-article__steps">
           <li>
             Go to <Link to="/paperwork">Resources → Paperwork</Link> and tap <strong>+ Submit receipt</strong>.
@@ -168,21 +177,52 @@ export const ARTICLES: HelpArticle[] = [
             Tap <strong>Submit receipt</strong>.
           </li>
         </ol>
+        <p>Send one receipt per upload.</p>
+
+        <h2>2b. Upload a document</h2>
+        <ol className="help-article__steps">
+          <li>
+            Go to <Link to="/paperwork">Resources → Paperwork</Link> and tap <strong>+ Upload document</strong>.
+          </li>
+          <li>
+            Tap the <strong>File</strong> box and take a photo or choose the file.
+          </li>
+          <li>
+            Give it a <strong>Name</strong> the office will recognize, like “Jordan Lee – signed deal memo”.
+          </li>
+          <li>
+            Pick its <strong>Type</strong>: Contracts, Insurance, Permits, Vehicle documents, Invoices, Vouchers, or
+            Miscellaneous if nothing fits. For insurance, permits, contracts and vehicle documents, add the date it{' '}
+            <strong>Expires</strong> if it has one.
+          </li>
+          <li>
+            Add <strong>Notes</strong> if anything needs explaining, then tap <strong>Upload</strong>.
+          </li>
+        </ol>
         <p>
-          Send one receipt per upload. Photos, scans and PDFs up to 20 MB are accepted, including iPhone (HEIC) photos.
+          Photos, scans, PDFs, Word and Excel files up to 20 MB are accepted, including iPhone (HEIC) photos.
         </p>
 
-        <h2>3. Follow it until it’s paid</h2>
+        <h2>3. Check it went through</h2>
         <p>
-          As soon as it’s sent you’ll see a confirmation. Your receipts are listed under{' '}
-          <strong>My Submissions</strong> on the <Link to="/paperwork">Paperwork</Link> page, each with its progress:
+          As soon as it’s sent, a green confirmation appears at the top of the page with the name, the amount for a
+          receipt, and the date and time it was sent. The new entry is highlighted in <strong>My Submissions</strong>{' '}
+          below. If you don’t see the confirmation, it wasn’t sent: check the form for a message in red and try again.
         </p>
+
+        <h2>4. Follow it in My Submissions</h2>
+        <p>
+          <strong>My Submissions</strong> on the <Link to="/paperwork">Paperwork</Link> page lists everything you’ve
+          sent, newest first, with its type, the day you sent it and where it stands. Only you, and the people who
+          handle it, can see what you’ve sent. At the top it shows how much you’re still waiting to be paid back.
+        </p>
+        <p>Receipts move through four steps:</p>
         <ul>
           <li>
             <strong>Submitted</strong>: sent, waiting to be looked at.
           </li>
           <li>
-            <strong>Viewed</strong>: a Director or Assistant has opened it.
+            <strong>Viewed</strong>: the Finance team, a Director or an Assistant has opened it.
           </li>
           <li>
             <strong>In process</strong>: approved and being added to your pay.
@@ -192,13 +232,18 @@ export const ARTICLES: HelpArticle[] = [
           </li>
         </ul>
         <p>
-          Made a mistake? You can edit or withdraw a receipt from My Submissions until it’s been viewed. After that, ask
-          your Director or Assistant to fix it. Keep the paper receipt until it shows Processed, in case anyone needs
-          to see the original.
+          Documents show <strong>Sent</strong> until the office opens them, then <strong>Seen by the office</strong>.
+        </p>
+
+        <h2>Made a mistake?</h2>
+        <p>
+          Tap <strong>Edit</strong> to fix the details or replace the file, or <strong>×</strong> to withdraw it. You
+          can do either until the office has opened it. After that, ask your Director or Assistant to fix it. Keep
+          paper receipts until they show Processed, in case anyone needs to see the original.
         </p>
 
         <p>
-          Questions about a reimbursement? Ask your Director or Assistant, or send us a message from the{' '}
+          Questions about a reimbursement or a document? Ask your Director or Assistant, or send us a message from the{' '}
           <Link to="/contact">Contact page</Link>.
         </p>
       </>

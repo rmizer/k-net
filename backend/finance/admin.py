@@ -5,7 +5,7 @@ from .models import AutoDraft, Deposit, Invoice, Paycheck, PaymentMethod, PayRat
 
 @admin.register(PaymentMethod)
 class PaymentMethodAdmin(admin.ModelAdmin):
-    list_display = ["name", "kind", "institution", "last4", "is_active"]
+    list_display = ["name", "kind", "institution", "last_digits", "is_active"]
     list_filter = ["kind", "is_active"]
 
 

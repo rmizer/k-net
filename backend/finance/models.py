@@ -1,9 +1,10 @@
-"""Money in and out of the production. Directors, Assistants and Site Managers only.
+"""Money in and out of the production. The Finance department, Directors, Assistants and Site Managers only.
 
 Amounts are dollars (two decimal places). Card and account numbers are never
-stored, only their last four digits.
+stored, only their last four digits (five for American Express).
 """
 
+import re
 from datetime import timedelta
 from decimal import Decimal
 
@@ -21,6 +22,10 @@ def money_field(**kwargs):
     return models.DecimalField(max_digits=12, decimal_places=2, **kwargs)
 
 
+def looks_like_amex(*names):
+    return any(re.search(r"\bamex\b|american express", name or "", re.IGNORECASE) for name in names)
+
+
 class PaymentMethod(models.Model):
     """A company card, bank account or digital payment account."""
 
@@ -32,11 +37,13 @@ class PaymentMethod(models.Model):
     name = models.CharField(max_length=100, help_text="e.g. Production Amex")
     kind = models.CharField(max_length=10, choices=Kind.choices)
     institution = models.CharField(max_length=100, blank=True, help_text="Bank, card network or service.")
-    last4 = models.CharField(
-        "last four digits",
-        max_length=4,
+    # Four digits, or five for American Express (their cards have 15 digits and
+    # are known by the last five). Only these: K-Net never stores card numbers.
+    last_digits = models.CharField(
+        "last digits",
+        max_length=5,
         blank=True,
-        validators=[RegexValidator(r"^\d{4}$", "Enter exactly four digits.")],
+        validators=[RegexValidator(r"^\d{4,5}$", "Enter the last four digits (five for American Express).")],
     )
     holder = models.CharField("held by", max_length=150, blank=True)
     notes = models.TextField(blank=True)
@@ -47,7 +54,7 @@ class PaymentMethod(models.Model):
         ordering = ["kind", "name"]
 
     def __str__(self):
-        return f"{self.name} ending {self.last4}" if self.last4 else self.name
+        return f"{self.name} ending {self.last_digits}" if self.last_digits else self.name
 
 
 class Invoice(models.Model):
