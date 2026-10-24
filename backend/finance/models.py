@@ -27,12 +27,12 @@ def looks_like_amex(*names):
 
 
 class PaymentMethod(models.Model):
-    """A company card, bank account or digital payment account."""
+    """A company card, bank account or digital account (PayPal, Venmo, Zelle…)."""
 
     class Kind(models.TextChoices):
         CARD = "card", "Company card"
         BANK = "bank", "Bank account"
-        DIGITAL = "digital", "Digital payment"
+        DIGITAL = "digital", "Digital account"
 
     name = models.CharField(max_length=100, help_text="e.g. Production Amex")
     kind = models.CharField(max_length=10, choices=Kind.choices)

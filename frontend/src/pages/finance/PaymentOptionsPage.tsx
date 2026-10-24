@@ -10,7 +10,7 @@ import './finance.css'
 const KINDS: { value: PaymentMethodKind; label: string; plural: string }[] = [
   { value: 'card', label: 'Company card', plural: 'Company cards' },
   { value: 'bank', label: 'Bank account', plural: 'Bank accounts' },
-  { value: 'digital', label: 'Digital payment', plural: 'Digital payments' },
+  { value: 'digital', label: 'Digital account', plural: 'Digital accounts' },
 ]
 
 const AMEX = /\bamex\b|american express/i
@@ -62,7 +62,7 @@ export function PaymentOptionsPage() {
             <NavIcon name="card" />
             Payment Options
           </h1>
-          <p className="subtitle">Company cards, bank accounts and digital payment methods</p>
+          <p className="subtitle">Company cards, bank accounts and digital accounts</p>
         </div>
         <button type="button" className="button" onClick={() => setEditing({ method: null, kind: 'card' })}>
           + Add payment option
