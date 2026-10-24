@@ -1,0 +1,204 @@
+K-NET: FEATURE LIST
+K Network Project Center. Production coordination for large film shoots.
+Written 2026-10-21 from the live site (knetwork on Railway). Updated 2026-10-24.
+
+======================================================================
+THE BIG PICTURE
+======================================================================
+- One web app for the whole production: schedules, tasks, crew, talent, locations, vendors,
+  documents and finance. Everyone works from the same current information.
+- Works in any browser, on a phone or a computer. Nothing to install.
+- Four roles, each seeing only what it needs:
+    Site Manager  : everything, plus account, role and system tools
+    Director      : runs the production (staff, schedule, shows, finance, documents)
+    Assistant     : the same permissions as a Director, except creating shows
+    Staff         : their own schedule, tasks and paperwork, plus the shared crew info
+- Permissions are enforced on the server, not just hidden in the menus.
+- Slack connection: announcements, alerts and task messages go to Slack, with a link back
+  to K-Net. Sensitive details (finance, emergency contacts) stay in the app.
+- Branded in K Network colors (dark red, red, black).
+
+======================================================================
+GETTING PEOPLE ON BOARD
+======================================================================
+- Sign-up page: name, email, phone, a strong password and agreement to the privacy statement.
+- Email verification: new accounts can't sign in until they click the emailed link, which
+  works once and expires after 3 days. People added by a manager skip this step.
+- Invite Crew page: a QR code and link to the sign-up page, which you can download, share
+  or print.
+- Starter task: every new account gets "Join the K-Net Slack" with the invite link. Marking
+  it done hides the Slack reminder on their Staff Hub.
+- Built-in protection: sign-up is rate-limited and has a hidden bot trap.
+
+======================================================================
+STAFF HUB (the home page everyone lands on)
+======================================================================
+- Weather for the production location.
+- Announcements and alerts, posted by managers and also sent to Slack.
+- Daily Rundown: the day's key items.
+- Your Tasks: tasks assigned to you, with overdue flags.
+- Staff Tasks: tasks assigned to your department.
+- This week's schedule preview.
+- Today's Crew: who is working today.
+- Share K-Net: a QR code to invite more crew.
+- Join Slack band, until the person has joined.
+
+======================================================================
+SCHEDULE
+======================================================================
+- Day, week and month views.
+- Filters by staff member, department and influencer. Influencer events are shown in a
+  different style.
+- Staff see their own schedule. Managers see the whole crew.
+- My Tasks: open tasks grouped by when they're due.
+- Master Timeline: the full production timeline. Managers add and edit timeline entries.
+
+======================================================================
+DIRECTOR'S DASHBOARD (Directors, Assistants, Site Managers)
+======================================================================
+- Overview: the master staff list and your own task list.
+- Departments: add, rename and delete departments, and check people in or out of each one.
+- Scheduling: edit each person's week, with overlapping shifts flagged.
+- Block scheduling: book the same hours over date ranges on chosen weekdays in one step
+  (e.g. Oct 5 to 30, weekdays, 9 to 5). Each day can be edited on its own, or the whole
+  block deleted at once.
+- Task Management: assign tasks to a person or a whole department, with a priority and due
+  date. Tasks show on their Staff Hub and can message them on Slack.
+- Shows (Directors, Assistants and Site Managers view; only Directors and Site Managers
+  create and edit). Each show has its own page with its details, people and the influencers
+  on it, sorted by week:
+    name, description, start date, shooting location
+    status: Planning, Pre-production or Production
+    number of seasons and weeks per season
+    lead Director, other Directors and Department Heads, chosen with side-by-side pick lists
+    link to the show's influencers on the roster
+- Request removal: Directors and Assistants ask Site Managers to remove an account.
+
+======================================================================
+STAFF / CREW
+======================================================================
+- Active Crew: the people currently working the production.
+- Directory: everyone's contact info, department, role and lodging. Emergency contacts are
+  visible only to managers.
+- Department heads: mark a person as head of a department. If the department is deleted,
+  their tile shows "No department listed".
+- CrewFinder (preview): a live map of crew locations from trackers or phones. Only Site
+  Managers add trackers. This is shown as a future feature.
+- Invite Crew: QR code sign-up (see above).
+
+======================================================================
+INFLUENCERS
+======================================================================
+- Influencer roster in a sortable, searchable table.
+- Columns and filters: show, season, week, platform (Instagram, TikTok, YouTube, Kick,
+  Twitch), status, agent, travel and next scheduled item.
+- Battle House Live is loaded with every influencer placed in their current week (1 to 3).
+- Each influencer has a profile page with:
+    contact details and agent or manager
+    travel, lodging and other needs
+    travel and lodging bookings (flight, ground transport, hotel, train)
+    upcoming schedule
+    notes that managers write and everyone can read
+- Managers add and edit influencers, including their show, season and week.
+
+======================================================================
+RESOURCES
+======================================================================
+- Locations: lodging, airports, shooting locations, production base and other places, shown
+  on a map and as tiles. Currently set up for Miami.
+- Resources Directory: vendors and services by category: catering, film equipment, rentals
+  (including boat and yacht rentals), transportation, utilities, technical, stores, permits
+  and film office, medical and safety, lodging. Currently set up with 17 Miami vendors.
+- Directory: the staff directory (see Staff / Crew).
+- Paperwork: where everyone sends receipts and documents to the office (see below).
+- Social Media: the show's official links (battlehouselive.com, Instagram @battlehouselive).
+
+======================================================================
+RESOURCES: PAPERWORK (everyone)
+======================================================================
+- Submit a receipt (photo, scan or PDF, with amount, store and date) or upload a document
+  (contracts, insurance, permits, vehicle documents, invoices, vouchers, miscellaneous).
+- A confirmation appears as soon as it's sent, and the new entry is highlighted.
+- My Submissions: everything you've sent, with type, date, amount and status, plus how much
+  you're still waiting to be paid back.
+- Receipt tracking: Submitted, then Viewed, then In process, then Processed. Documents show
+  Sent, then Seen by the office.
+- Edit or withdraw anything until the office has opened it.
+- Everyone sees only their own submissions.
+
+======================================================================
+OPERATIONS: DOCUMENTS (Directors, Assistants, Site Managers)
+======================================================================
+- Every document and receipt, filed by type: insurance, permits, contracts, vehicle
+  documents, invoices, vouchers, receipts and miscellaneous.
+- "Expiring soon" warnings for permits, insurance and other dated paperwork.
+- Managers move each receipt along and see who sent what.
+
+======================================================================
+DEPARTMENTS: FINANCE (Finance department, Directors, Assistants, Site Managers)
+======================================================================
+- Its own entry in the Departments menu. Other departments' heads can't see it.
+- The Finance department can also open everyone's receipts, to reimburse them.
+- Team: the Finance department's people, schedule and tasks.
+- Overview:
+    staff paychecks due, vendor payments due, scheduled auto drafts and new receipts
+    finance calendar showing what is due, scheduled and received
+- Payroll:
+    each person's pay rate and paychecks
+    receipts attached to a paycheck as reimbursements
+    the next pay period worked out automatically
+- Incoming: money received, with a "revenue to date" chart.
+- Outgoing: payments, receipts awaiting reimbursement, scheduled auto drafts, and a form to
+  record a one-off payment.
+- Invoices: track invoices and record payment.
+- Payment Options: company cards, bank accounts and digital accounts (PayPal, Venmo, Zelle).
+  Only the last four digits are kept (five for American Express), never full numbers.
+
+======================================================================
+SITE MANAGER DASHBOARD (Site Managers only)
+======================================================================
+- Users and roles: add users and change anyone's role or department inline. Nobody can
+  change their own role.
+- Remove accounts. Removed accounts are deactivated and kept on record, so they can be
+  restored.
+- Removal requests from Directors and Assistants: approve or dismiss.
+- Email verification queue: resend the link or mark someone verified.
+- Slack status for every person (Connected, Joined, Not in Slack or Off), plus a one-click
+  Slack check that matches everyone by email.
+- Departments: add and delete.
+- Dev Login: the admin back end.
+
+======================================================================
+FOR EVERYONE
+======================================================================
+- Account page: edit your details, upload a profile picture, change your password, change
+  your email (confirmed by email) and turn Slack messages on or off.
+- Contact: report a bug or technical issue (what happened, where, what you expected) to the
+  Site Managers.
+- Help: how-to articles (e.g. joining Slack, submitting receipts and documents from your phone).
+- Trial page: what the trial includes and excludes, data privacy, feedback.
+- Investor page: what K-Net replaces, a savings estimate, the offer and where it could go.
+
+======================================================================
+BEHIND THE SCENES
+======================================================================
+- Hosted on Railway with a PostgreSQL database and stored uploads.
+- Automatic database updates on every deploy.
+- Full data export and import (one bundle file) for moving or backing up a production.
+- Loaders that set up a production city in one command (Miami locations, vendors and
+  documents) and load the Battle House weeks. The call sheet loader repeats the shoot day
+  over any date range (now Oct 9 to Nov 7).
+- Automated tests on the server, plus type checking and linting on the app.
+
+======================================================================
+WHERE IT COULD GO NEXT (from the investor page, not built yet)
+======================================================================
+- CrewFinder live crew tracking
+- Shift handovers
+- Clock-in / clock-out for payroll
+- Call sheets generated from the live schedule
+- Budget tracking by department
+- Payments and payroll exports
+- Offline mode
+- Calendar sync (Google or Outlook)
+- Multi-production dashboard
