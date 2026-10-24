@@ -29,7 +29,7 @@ const REPLACES: [string, string, string][] = [
   [
     'Paper receipts and reimbursement chasing',
     'Receipts from a phone',
-    'Crew upload receipts; managers see each one move from Submitted to Processed and attach it to a paycheck.',
+    'Crew send in receipts and paperwork, get a confirmation and keep a history; Finance moves each receipt from Submitted to Processed and onto a paycheck.',
   ],
   [
     'Permits and insurance that lapse unnoticed',
@@ -208,9 +208,9 @@ export function InvestorPage() {
             <h3>Working now</h3>
             <p>
               In alpha testing with real crew through {TRIAL_END_LABEL}: Staff Hub, schedule and block scheduling, call
-              sheets, tasks, department pages with Culinary menus and shopping lists, shows, meeting notes, directory,
-              influencer roster, locations and resources, documents, finance records, email-verified sign-up and Slack
-              notifications.
+              sheets, tasks, department pages with Culinary menus and shopping lists, a private Finance department,
+              shows, meeting notes, directory, influencer roster, locations and resources, documents, crew paperwork and
+              receipt submission, email-verified sign-up and Slack notifications.
             </p>
             <p>
               <Link to="/trial">About the trial</Link>

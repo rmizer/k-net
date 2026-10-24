@@ -36,9 +36,10 @@ class DepartmentPageTests(APITestCase):
         return [page["slug"] for page in self.client.get("/api/department-pages/").data]
 
     def test_who_sees_which_pages(self):
-        self.assertEqual(len(self.pages(self.director)), 8)
-        self.assertEqual(len(self.pages(self.assistant)), 8)
-        self.assertEqual(len(self.pages(self.lisa)), 8)  # heads see every page
+        self.assertEqual(len(self.pages(self.director)), 9)
+        self.assertEqual(len(self.pages(self.assistant)), 9)
+        self.assertEqual(len(self.pages(self.lisa)), 8)  # heads see every page but Finance
+        self.assertNotIn("finance", self.pages(self.lisa))
         self.assertEqual(self.pages(self.techie), ["tech"])
         self.assertEqual(self.pages(self.sous), ["culinary"])
         self.assertEqual(self.pages(self.camera), ["film-audio"])
@@ -47,6 +48,18 @@ class DepartmentPageTests(APITestCase):
         self.client.force_authenticate(self.techie)
         self.assertEqual(self.client.get("/api/department-pages/culinary/").status_code, 403)
         self.assertEqual(self.client.get("/api/department-pages/nope/").status_code, 404)
+
+    def test_finance_is_only_for_finance_and_managers(self):
+        finance = Department.objects.get(page=Department.Page.FINANCE)  # made by a migration
+        head = make_user("cfo@test.com", department=finance, is_department_head=True, head_of_department=finance)
+        bookkeeper = make_user("books@test.com", department=finance)
+        self.assertEqual(len(self.pages(head)), 9)
+        self.assertEqual(self.pages(bookkeeper), ["finance"])
+        for user, allowed in [(self.director, True), (bookkeeper, True), (head, True), (self.lisa, False), (self.techie, False)]:
+            self.client.force_authenticate(user)
+            status = self.client.get("/api/finance/overview/").status_code
+            self.assertEqual(status == 200, allowed, user.email)
+            self.assertEqual(self.client.get("/api/department-pages/finance/").status_code == 200, allowed, user.email)
 
     def test_heads_edit_only_their_own_page(self):
         self.client.force_authenticate(self.lisa)

@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from accounts.models import User
-from accounts.permissions import IsManagerLevel
+from accounts.permissions import IsFinance
 from documents.models import Document
 
 from .models import AutoDraft, Deposit, Invoice, Paycheck, PaymentMethod, PayRate, Payment
@@ -36,9 +36,9 @@ UPLOAD_PARSERS = [MultiPartParser, FormParser, JSONParser]
 
 
 class FinanceViewSet(viewsets.ModelViewSet):
-    """Finance is for Directors, Assistants and Site Managers only."""
+    """Finance is for the Finance department, Directors, Assistants and Site Managers only."""
 
-    permission_classes = [IsManagerLevel]
+    permission_classes = [IsFinance]
 
 
 def _pay_details(request):
@@ -197,7 +197,7 @@ def _payroll_people():
 class PayrollViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """The staff pay table, a page per person, and setting pay rates."""
 
-    permission_classes = [IsManagerLevel]
+    permission_classes = [IsFinance]
     serializer_class = PayrollPersonSerializer
 
     def get_queryset(self):
@@ -233,7 +233,7 @@ def _sum(queryset):
 class OverviewView(APIView):
     """Everything the Finance overview shows."""
 
-    permission_classes = [IsManagerLevel]
+    permission_classes = [IsFinance]
 
     def get(self, request):
         today = timezone.localdate()
@@ -295,7 +295,7 @@ class CalendarView(APIView):
     """Money dates between ?start= and ?end= (inclusive): what's due, what's scheduled,
     and what already went in or out."""
 
-    permission_classes = [IsManagerLevel]
+    permission_classes = [IsFinance]
 
     def get(self, request):
         start = parse_date(request.query_params.get("start", ""))

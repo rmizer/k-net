@@ -10,11 +10,12 @@ const FEATURES: [string, string, NavIconName][] = [
   ['Staff Hub', 'Weather, a QR code to invite teammates, announcements, alerts and the latest call sheet, your tasks, the daily rundown, the week ahead and today’s crew.', 'home'],
   ['Schedule', 'Daily, weekly and monthly views with staff, department and influencer filters, the Master Timeline, and Staff / Crew: who’s called each day.', 'calendar'],
   ['Tasks', 'Directors, Assistants and department heads assign tasks to people or departments; they show up in My Tasks and on each person’s Staff Hub.', 'tasks'],
-  ['Departments', 'A page for each department with its schedule, crew, tasks and department heads. Culinary adds menus, shopping lists and food allergies.', 'departments'],
+  ['Departments', 'A page for each department with its schedule, crew, tasks and department heads. Culinary adds menus, shopping lists and food allergies; Finance holds the money pages.', 'departments'],
   ['Influencer Roster', 'Profiles for each creator: contacts, agents, notes, needs, schedules, travel, and their show, season and week.', 'star'],
   ['Directory, Locations and Resources', 'Contact details and roles for everyone, lodging and shooting locations on a map, and the vendors and services the production uses.', 'pin'],
-  ['Documents', 'Permits, insurance, contracts, invoices and receipts, stored privately. Staff can upload their own receipts.', 'document'],
-  ['Finance', 'For Directors and Assistants: payroll, money in and out, invoices and a finance calendar.', 'dollar'],
+  ['Paperwork', 'Everyone sends in receipts and documents, gets a confirmation, and follows each one in their own history until it’s handled.', 'receipt'],
+  ['Documents', 'For Directors and Assistants: permits, insurance, contracts, invoices and receipts, stored privately, with expiry alerts.', 'document'],
+  ['Finance', 'Its own department, open only to the Finance team, Directors and Assistants: payroll, money in and out, invoices and a finance calendar.', 'dollar'],
   ['Director Dashboard', 'For Directors and Assistants: departments, staff, block scheduling, call sheets, task management, shows and meeting notes.', 'clipboard'],
 ]
 

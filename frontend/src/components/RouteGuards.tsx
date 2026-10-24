@@ -21,14 +21,17 @@ export function RequireAuth() {
 export function RequireRole({
   roles,
   departments,
+  departmentPage,
   children,
 }: {
-  roles: Role[]
+  roles?: Role[]
   /** Also lets in anyone in these departments, whatever their role. */
   departments?: string[]
+  /** Instead follows this department page's rules (e.g. Finance). */
+  departmentPage?: string
   children?: ReactNode
 }) {
   const { user } = useAuth()
-  if (!canAccess(user, { roles, departments })) return <ForbiddenPage />
+  if (!canAccess(user, { roles, departments, departmentPage })) return <ForbiddenPage />
   return children ?? <Outlet />
 }

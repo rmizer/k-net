@@ -28,6 +28,7 @@ class Department(models.Model):
         NONE = "", "No department page"
         PRODUCTION = "production", "Production"
         OPERATIONS = "operations", "Operations"
+        FINANCE = "finance", "Finance"
         MARKETING = "marketing", "Marketing"
         TRANSPORTATION = "transportation", "Transportation"
         CULINARY = "culinary", "Culinary"

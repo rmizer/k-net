@@ -59,8 +59,7 @@ class DocumentSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         request = self.context["request"]
         if not request.user.is_manager_level:
-            # Everyone else can only file receipts, and can't move them along.
-            attrs["category"] = Document.Category.RECEIPT
+            # Everyone else files their own paperwork but can't move it along.
             attrs.pop("status", None)
 
         category = attrs.get("category", getattr(self.instance, "category", None))

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Navigate, useSearchParams } from 'react-router-dom'
 import { api, ApiError } from '../../api'
 import { isManagerLevel } from '../../auth/roles'
 import { useAuth } from '../../auth/useAuth'
@@ -20,19 +20,19 @@ import './documents.css'
 /** Documents expiring within this many days are flagged. */
 const EXPIRY_WARNING_DAYS = 30
 
-const money = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })
+export const money = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })
 
-const fileUrl = (doc: ProjectDocument, download = false) =>
+export const fileUrl = (doc: ProjectDocument, download = false) =>
   `/api/documents/${doc.id}/file/${download ? '?download=1' : ''}`
 
-function fileSize(bytes: number | null) {
+export function fileSize(bytes: number | null) {
   if (bytes == null) return ''
   if (bytes < 1024) return `${bytes} B`
   if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`
 }
 
-const shortDate = (day: string) => formatDay(day, { month: 'short', day: 'numeric', year: 'numeric' })
+export const shortDate = (day: string) => formatDay(day, { month: 'short', day: 'numeric', year: 'numeric' })
 
 function Expiry({ day, today }: { day: string | null; today: string }) {
   if (!day) return <span className="muted">—</span>
@@ -63,17 +63,22 @@ export function ReceiptProgress({ status }: { status: ReceiptStatus }) {
 
 type DialogState = { document: ProjectDocument | null; category: DocumentCategory }
 
+/** The office's filing cabinet: every document and receipt. Everyone else sends
+ *  theirs in, and follows them, on the Paperwork page. */
 export function DocumentsPage() {
   const { user } = useAuth()
-  const manager = isManagerLevel(user)
+  if (!isManagerLevel(user)) return <Navigate to="/paperwork" replace />
+  return <AllDocuments />
+}
+
+function AllDocuments() {
   const production = useFetch<ProductionSettings>('/production/')
   const documents = useFetch<ProjectDocument[]>('/documents/')
   const [dialog, setDialog] = useState<DialogState | null>(null)
   const [error, setError] = useState('')
 
   const remove = async (doc: ProjectDocument) => {
-    const what = doc.category === 'receipt' && !manager ? 'Withdraw this receipt' : `Delete “${doc.title}”`
-    if (!window.confirm(`${what}? The file will be deleted.`)) return
+    if (!window.confirm(`Delete “${doc.title}”? The file will be deleted.`)) return
     setError('')
     try {
       await api(`/documents/${doc.id}/`, { method: 'DELETE' })
@@ -103,21 +108,19 @@ export function DocumentsPage() {
             <NavIcon name="document" />
             Documents
           </h1>
-          <p className="subtitle">{manager ? 'Project paperwork and crew receipts' : 'Your receipts'}</p>
+          <p className="subtitle">Project paperwork and crew receipts</p>
         </div>
         <div className="documents__buttons">
           <button
             type="button"
-            className={manager ? 'button button--secondary' : 'button'}
+            className="button button--secondary"
             onClick={() => setDialog({ document: null, category: 'receipt' })}
           >
             + Submit receipt
           </button>
-          {manager && (
-            <button type="button" className="button" onClick={() => setDialog({ document: null, category: 'other' })}>
-              + Upload document
-            </button>
-          )}
+          <button type="button" className="button" onClick={() => setDialog({ document: null, category: 'other' })}>
+            + Upload document
+          </button>
         </div>
       </div>
 
@@ -127,17 +130,13 @@ export function DocumentsPage() {
         </p>
       )}
 
-      {manager ? (
-        <ManagerDocuments documents={documents.data} today={today} timeZone={production.data.time_zone} {...actions} />
-      ) : (
-        <MyReceipts receipts={documents.data} {...actions} />
-      )}
+      <ManagerDocuments documents={documents.data} today={today} timeZone={production.data.time_zone} {...actions} />
 
       {dialog && (
         <DocumentFormDialog
           document={dialog.document}
           initialCategory={dialog.category}
-          canChooseCategory={manager}
+          canChooseCategory
           onClose={() => setDialog(null)}
           onSaved={() => {
             setDialog(null)
@@ -153,36 +152,6 @@ interface ListActions {
   onEdit: (doc: ProjectDocument) => void
   onDelete: (doc: ProjectDocument) => void
   reload: () => void
-}
-
-/** Staff: the receipts they've submitted and where each one is. */
-function MyReceipts({ receipts, onEdit, onDelete }: { receipts: ProjectDocument[] } & ListActions) {
-  const outstanding = receipts
-    .filter((r) => r.status !== 'processed')
-    .reduce((sum, r) => sum + Number(r.amount ?? 0), 0)
-
-  return (
-    <section className="tile" aria-labelledby="my-receipts-heading">
-      <div className="documents__section-head">
-        <h2 id="my-receipts-heading">My Receipts</h2>
-        {receipts.length > 0 && (
-          <p className="muted">{money.format(outstanding)} waiting to be reimbursed</p>
-        )}
-      </div>
-      {receipts.length === 0 ? (
-        <p className="muted">
-          No receipts yet. Submit one with a photo or PDF and you can follow it here from Submitted to Processed.
-        </p>
-      ) : (
-        <ReceiptTable receipts={receipts} showSubmitter={false} onEdit={onEdit} onDelete={onDelete} />
-      )}
-      <p className="form__hint documents__status-help">
-        <strong>Submitted</strong> → <strong>Viewed</strong> (a Director or Assistant opened it) →{' '}
-        <strong>In process</strong> → <strong>Processed</strong> (added to your pay). You can edit or withdraw a
-        receipt until it’s been viewed.
-      </p>
-    </section>
-  )
 }
 
 interface ReceiptTableProps {

@@ -7,8 +7,8 @@ const currentOf = (items: NavItem[], pathname: string) =>
   items.filter((item) => isInItem(pathname, item)).sort((a, b) => b.path.length - a.path.length)[0]
 
 /** Section submenu under the main nav. The current page is underlined (and not
- *  clickable when you're on it). A page with its own pages (Finance, inside
- *  Operations) gets a further row. */
+ *  clickable when you're on it). A page with its own pages (Finance, under
+ *  Departments) gets a further row. */
 export function SubNav() {
   const { user } = useAuth()
   const { pathname } = useLocation()

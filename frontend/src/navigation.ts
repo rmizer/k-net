@@ -5,6 +5,7 @@ import type { NavIconName } from './components/NavIcon'
 export const DEPARTMENT_ICONS: Record<DepartmentPageSlug, NavIconName> = {
   production: 'clapper',
   operations: 'briefcase',
+  finance: 'dollar',
   marketing: 'megaphone',
   transportation: 'bus',
   culinary: 'utensils',
@@ -74,36 +75,40 @@ export const NAV_ITEMS: NavItem[] = [
     icon: 'departments',
     ifAnyChild: true,
     dropdown: true,
-    children: DEPARTMENT_PAGES.map(({ slug, label }): NavItem =>
-      slug === 'operations'
-        ? {
-            // Operations also holds the office pages, which everyone can open
-            // even when the department page itself is closed to them.
-            label,
-            path: `/departments/${slug}`,
-            icon: DEPARTMENT_ICONS[slug],
-            ifAnyChild: true,
-            children: [
-              { label: 'Overview', path: `/departments/${slug}`, departmentPage: slug },
-              { label: 'Documents', path: '/documents' },
-              { label: 'Meeting Notes', path: '/meeting-notes', roles: MANAGER_ROLES },
-              {
-                label: 'Finance',
-                path: '/finance',
-                roles: MANAGER_ROLES,
-                children: [
-                  { label: 'Overview', path: '/finance' },
-                  { label: 'Payroll', path: '/finance/payroll' },
-                  { label: 'Incoming', path: '/finance/incoming' },
-                  { label: 'Outgoing', path: '/finance/outgoing' },
-                  { label: 'Invoices', path: '/finance/invoices' },
-                  { label: 'Payment Options', path: '/finance/payment-options' },
-                ],
-              },
-            ],
-          }
-        : { label, path: `/departments/${slug}`, icon: DEPARTMENT_ICONS[slug], departmentPage: slug },
-    ),
+    children: DEPARTMENT_PAGES.map(({ slug, label }): NavItem => {
+      const page = { label, path: `/departments/${slug}`, icon: DEPARTMENT_ICONS[slug], departmentPage: slug }
+      if (slug === 'operations') {
+        return {
+          ...page,
+          departmentPage: undefined,
+          // Managers see the office pages even without the department page.
+          ifAnyChild: true,
+          children: [
+            { label: 'Overview', path: page.path, departmentPage: slug },
+            { label: 'Documents', path: '/documents', roles: MANAGER_ROLES },
+            { label: 'Meeting Notes', path: '/meeting-notes', roles: MANAGER_ROLES },
+          ],
+        }
+      }
+      if (slug === 'finance') {
+        // The money pages, then the department's people and tasks. Only the
+        // Finance department and managers see any of it.
+        return {
+          ...page,
+          path: '/finance',
+          children: [
+            { label: 'Overview', path: '/finance' },
+            { label: 'Payroll', path: '/finance/payroll' },
+            { label: 'Incoming', path: '/finance/incoming' },
+            { label: 'Outgoing', path: '/finance/outgoing' },
+            { label: 'Invoices', path: '/finance/invoices' },
+            { label: 'Payment Options', path: '/finance/payment-options' },
+            { label: 'Team', path: page.path },
+          ].map((child) => ({ ...child, departmentPage: slug })),
+        }
+      }
+      return page
+    }),
   },
   // Groups: the main link opens one page, and the submenu lists the rest.
   {
@@ -114,6 +119,7 @@ export const NAV_ITEMS: NavItem[] = [
       { label: 'Locations', path: '/locations' },
       { label: 'Directory', path: '/directory' },
       { label: 'Resources', path: '/resources' },
+      { label: 'Paperwork', path: '/paperwork' },
     ],
   },
   { label: 'Contact', path: '/contact', icon: 'mail' },
@@ -124,7 +130,7 @@ export const canSee = (item: NavItem, user: User | null): boolean =>
   canAccess(user, item) && (!item.ifAnyChild || !!item.children?.some((child) => canSee(child, user)))
 
 /** Where a menu entry links: its first page this user can open (Operations opens
- *  Documents for staff who can't see the department page), else its own path. */
+ *  Documents for managers who can't see the department page), else its own path. */
 export const linkPath = (item: NavItem, user: User | null) =>
   item.children?.find((child) => canSee(child, user))?.path ?? item.path
 

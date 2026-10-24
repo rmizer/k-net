@@ -147,7 +147,7 @@ export const ARTICLES: HelpArticle[] = [
         <h2>2. Upload it to K-Net</h2>
         <ol className="help-article__steps">
           <li>
-            Go to <Link to="/documents">Operations → Documents</Link> and tap <strong>+ Submit receipt</strong>.
+            Go to <Link to="/paperwork">Resources → Paperwork</Link> and tap <strong>+ Submit receipt</strong>.
           </li>
           <li>
             Tap the <strong>File</strong> box. Your phone offers to <strong>Take Photo</strong> (or{' '}
@@ -174,8 +174,8 @@ export const ARTICLES: HelpArticle[] = [
 
         <h2>3. Follow it until it’s paid</h2>
         <p>
-          Your receipts are listed under <strong>My Receipts</strong> on the <Link to="/documents">Documents</Link>{' '}
-          page, each with its progress:
+          As soon as it’s sent you’ll see a confirmation. Your receipts are listed under{' '}
+          <strong>My Submissions</strong> on the <Link to="/paperwork">Paperwork</Link> page, each with its progress:
         </p>
         <ul>
           <li>
@@ -192,7 +192,7 @@ export const ARTICLES: HelpArticle[] = [
           </li>
         </ul>
         <p>
-          Made a mistake? You can edit or withdraw a receipt from My Receipts until it’s been viewed. After that, ask
+          Made a mistake? You can edit or withdraw a receipt from My Submissions until it’s been viewed. After that, ask
           your Director or Assistant to fix it. Keep the paper receipt until it shows Processed, in case anyone needs
           to see the original.
         </p>

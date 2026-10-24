@@ -26,7 +26,7 @@ export function ReceiptButton({ defaults, label = 'Upload receipt', className = 
           onClose={() => setOpen(false)}
           onSaved={() => {
             setOpen(false)
-            onSent('Receipt sent. You can follow it in Operations → Documents.')
+            onSent('Receipt sent. You can follow it in Resources → Paperwork.')
           }}
         />
       )}

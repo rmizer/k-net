@@ -1,5 +1,7 @@
 from rest_framework.permissions import SAFE_METHODS, BasePermission
 
+from departments.access import is_finance
+
 
 class IsSiteManager(BasePermission):
     def has_permission(self, request, view):
@@ -13,6 +15,13 @@ class IsManagerLevel(BasePermission):
         return bool(
             request.user and request.user.is_authenticated and request.user.is_manager_level
         )
+
+
+class IsFinance(BasePermission):
+    """Site Managers, Directors, Assistants and the Finance department."""
+
+    def has_permission(self, request, view):
+        return is_finance(request.user)
 
 
 class ReadOnlyOrDirectorLevel(BasePermission):

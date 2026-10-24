@@ -13,6 +13,7 @@ import { CrewPage } from './pages/crew/CrewPage'
 import { InvitePage } from './pages/crew/InvitePage'
 import { DirectoryPage } from './pages/directory/DirectoryPage'
 import { DocumentsPage } from './pages/documents/DocumentsPage'
+import { PaperworkPage } from './pages/documents/PaperworkPage'
 import { HelpArticlePage } from './pages/help/HelpArticlePage'
 import { HelpPage } from './pages/help/HelpPage'
 import { FinanceOverviewPage } from './pages/finance/FinanceOverviewPage'
@@ -109,8 +110,9 @@ export default function App() {
               <Route path="/schedule/crew/finder" element={<CrewFinderPage />} />
               <Route path="/schedule/crew/invite" element={<InvitePage />} />
               <Route path="/documents" element={<DocumentsPage />} />
-              <Route path="/locations" element={<LocationsPage />} />
-              <Route element={<RequireRole roles={MANAGER_ROLES} />}>
+              <Route path="/paperwork" element={<PaperworkPage />} />
+              {/* Finance is a department: only its people and managers get in. */}
+              <Route element={<RequireRole departmentPage="finance" />}>
                 <Route path="/finance" element={<FinanceOverviewPage />} />
                 <Route path="/finance/payroll" element={<PayrollPage />} />
                 <Route path="/finance/payroll/:id" element={<PayrollPersonPage />} />
@@ -118,6 +120,9 @@ export default function App() {
                 <Route path="/finance/outgoing" element={<OutgoingPage />} />
                 <Route path="/finance/invoices" element={<InvoicesPage />} />
                 <Route path="/finance/payment-options" element={<PaymentOptionsPage />} />
+              </Route>
+              <Route path="/locations" element={<LocationsPage />} />
+              <Route element={<RequireRole roles={MANAGER_ROLES} />}>
                 <Route path="/staff-manager" element={<StaffOverviewPage />} />
                 <Route path="/staff-manager/departments" element={<DepartmentsPage />} />
                 <Route path="/staff-manager/scheduling" element={<SchedulingPage />} />

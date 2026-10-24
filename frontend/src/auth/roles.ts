@@ -76,6 +76,7 @@ export const isManagerLevel = (user: User | null) => !!user && MANAGER_ROLES.inc
 export const DEPARTMENT_PAGES = [
   { slug: 'production', label: 'Production' },
   { slug: 'operations', label: 'Operations' },
+  { slug: 'finance', label: 'Finance' },
   { slug: 'marketing', label: 'Marketing' },
   { slug: 'transportation', label: 'Transportation' },
   { slug: 'culinary', label: 'Culinary' },
@@ -86,10 +87,17 @@ export const DEPARTMENT_PAGES = [
 
 export type DepartmentPageSlug = (typeof DEPARTMENT_PAGES)[number]['slug']
 
+/** Pages other departments' heads can't see: only managers and the department itself. */
+const PRIVATE_PAGES: string[] = ['finance']
+
 /** Site Managers, Directors, Assistants and department heads see every department
- *  page; everyone else only their own department's. (Mirrors the server.) */
+ *  page (but Finance only if they head it); everyone else only their own
+ *  department's. (Mirrors the server.) */
 export const canSeeDepartmentPage = (user: User | null, page: string) =>
-  !!user && (isManagerLevel(user) || user.is_department_head || user.department_page === page)
+  !!user &&
+  (isManagerLevel(user) ||
+    (user.is_department_head && (!PRIVATE_PAGES.includes(page) || user.head_of_department_page === page)) ||
+    user.department_page === page)
 
 /** Managers edit every department page; a department head only the one they head. */
 export const canEditDepartmentPage = (user: User | null, page: string) =>

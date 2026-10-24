@@ -3,11 +3,18 @@
 - Site Managers, Directors and Assistants see and edit every page.
 - Department heads see every page but edit only the one for the department they head.
 - Everyone else sees only their own department's page.
+- Finance is private: only Site Managers, Directors, Assistants and the Finance
+  department (its staff and its head) see it, not other departments' heads.
 """
 
 from accounts.models import Department, User
 
 PAGES = [choice for choice in Department.Page if choice != Department.Page.NONE]
+
+FINANCE = Department.Page.FINANCE
+
+# Pages other departments' heads can't see.
+PRIVATE_PAGES = {FINANCE}
 
 
 def page_label(page):
@@ -39,9 +46,16 @@ def head_department_ids(user):
 
 
 def can_view(user, page):
-    if user.is_manager_level or user.is_department_head:
+    if user.is_manager_level:
+        return True
+    if user.is_department_head and (page not in PRIVATE_PAGES or headed_page(user) == page):
         return True
     return bool(user.department_id) and user.department.page == page
+
+
+def is_finance(user):
+    """Who can open the Finance pages and handle everyone's receipts."""
+    return bool(user and user.is_authenticated) and can_view(user, FINANCE)
 
 
 def can_edit(user, page):

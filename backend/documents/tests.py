@@ -5,7 +5,7 @@ from django.core.files.storage import FileSystemStorage
 from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.test import APITestCase
 
-from accounts.models import User
+from accounts.models import Department, User
 
 from .models import Document
 
@@ -36,15 +36,30 @@ class DocumentApiTests(APITestCase):
 
     def post_receipt(self, user, **extra):
         self.client.force_authenticate(user)
-        data = {"title": "Gaff tape", "amount": "23.50", "vendor": "Home Depot", "file": upload(), **extra}
+        data = {"title": "Gaff tape", "category": "receipt", "amount": "23.50", "vendor": "Home Depot", "file": upload(), **extra}
         return self.client.post("/api/documents/", data, format="multipart")
 
-    def test_staff_receipt_is_forced_to_submitted_receipt(self):
-        response = self.post_receipt(self.staff, category="insurance", status="processed")
+    def test_staff_submission_starts_as_submitted(self):
+        response = self.post_receipt(self.staff, status="processed")
         self.assertEqual(response.status_code, 201, response.data)
         self.assertEqual((response.data["category"], response.data["status"]), ("receipt", "submitted"))
         self.assertTrue(response.data["is_mine"])
         self.assertNotIn("file", response.data)
+
+    def test_staff_can_submit_other_paperwork(self):
+        response = self.post_receipt(self.staff, title="Car insurance", category="vehicle", amount="")
+        self.assertEqual(response.status_code, 201, response.data)
+        self.assertEqual(response.data["category"], "vehicle")
+        self.client.force_authenticate(self.staff)
+        self.assertEqual([d["title"] for d in self.client.get("/api/documents/?mine=1").data], ["Car insurance"])
+
+    def test_director_opening_a_document_marks_it_viewed(self):
+        document_id = self.post_receipt(self.staff, category="vehicle", amount="").data["id"]
+        self.client.force_authenticate(self.director)
+        self.client.get(f"/api/documents/{document_id}/file/")
+        self.assertEqual(Document.objects.get(pk=document_id).status, "viewed")
+        self.client.force_authenticate(self.staff)
+        self.assertEqual(self.client.delete(f"/api/documents/{document_id}/").status_code, 403)
 
     def test_receipt_needs_an_amount(self):
         response = self.post_receipt(self.staff, amount="")
@@ -99,6 +114,20 @@ class DocumentApiTests(APITestCase):
         receipt_id = self.post_receipt(self.other).data["id"]
         self.client.force_authenticate(self.staff)
         self.assertEqual(self.client.get(f"/api/documents/{receipt_id}/file/").status_code, 404)
+
+    def test_finance_sees_receipts_but_not_other_paperwork(self):
+        finance = Department.objects.get(page=Department.Page.FINANCE)  # made by a migration
+        bookkeeper = make_user("books@test.com", User.Role.STAFF)
+        bookkeeper.department = finance
+        bookkeeper.save()
+        receipt_id = self.post_receipt(self.staff).data["id"]
+        self.post_receipt(self.staff, title="Car insurance", category="vehicle", amount="")
+        self.client.force_authenticate(bookkeeper)
+        self.assertEqual([d["id"] for d in self.client.get("/api/documents/").data], [receipt_id])
+        self.assertEqual(self.client.get(f"/api/documents/{receipt_id}/file/").status_code, 200)
+        self.assertEqual(Document.objects.get(pk=receipt_id).status, "viewed")
+        # Seeing a receipt isn't changing it.
+        self.assertEqual(self.client.delete(f"/api/documents/{receipt_id}/").status_code, 403)
 
     def test_disallowed_file_type_rejected(self):
         response = self.post_receipt(self.staff, file=upload("run.exe", b"MZ"))
