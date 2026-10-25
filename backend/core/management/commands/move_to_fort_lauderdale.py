@@ -208,7 +208,9 @@ class Command(BaseCommand):
     def first_live_day(self, zone):
         day = TRAVEL_DAY + timedelta(days=1)
         start = datetime.combine(day, FIRST_LIVE_START, tzinfo=zone)
-        changed = Event.objects.filter(block=block_for("live"), **self.window(zone, day, day)).update(start=start)
+        changed = Event.objects.filter(block=block_for("live"), **self.window(zone, day, day)).update(
+            start=start, description="The show is live from 8:00 AM."
+        )
         self.stdout.write(f"First Fort Lauderdale day: live from {FIRST_LIVE_START:%H:%M} ({changed} event)")
 
     def timeline(self):
