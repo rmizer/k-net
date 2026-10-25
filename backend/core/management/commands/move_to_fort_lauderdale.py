@@ -17,6 +17,8 @@ from schedule.models import Event, TimelineItem
 # in Fort Lauderdale from Oct 26. The Support Office stays in Raleigh.
 FIRST_DAY = date(2026, 10, 9)
 TRAVEL_DAY = date(2026, 10, 25)
+# The first Fort Lauderdale day goes live early: 8:00 AM to the usual 10:00 PM.
+FIRST_LIVE_START = time(8, 0)
 
 TAMPA_HOUSE = "Tampa Cast House"
 TAMPA_HOTEL = "Hilton Tampa Airport Westshore"
@@ -57,26 +59,29 @@ TRAVEL = [
      "Bags in the lobby by 9:15. Keys back at the front desk.", TAMPA_HOTEL, ST, "crew-call"),
     ("driver", "09:00", "09:30", "Transportation", "Bus driver call", "", TAMPA_HOTEL, ST, "driver"),
     ("cast-breakfast", "08:30", "09:30", "All cast", "Cast breakfast & pack up (off camera)", "", TAMPA_HOUSE, INF, None),
-    ("load", "09:30", "10:00", "All crew", "Load buses", "", TAMPA_HOTEL, ST, "crew-call"),
+    ("load", "09:30", "10:00", "All crew", "Load buses", "", TAMPA_HOUSE, ST, "crew-call"),
     ("drive", "10:00", "15:00", "All cast / all crew", "Travel: Tampa to Fort Lauderdale",
-     "About 4½ hours on I-75 (Alligator Alley), with a lunch stop.", "Shuttle buses", O, "crew-call"),
+     "Buses leave the Tampa mansion for the airport at 10:00 AM, then we fly to Fort Lauderdale.",
+     "Tampa mansion to the airport", O, "crew-call"),
     ("lunch", "12:30", "13:15", "All cast / all crew", "Lunch stop", "", "En route", O, None),
     ("check-in", "15:00", "16:00", "All crew", "Check-in: Candlewood Suites", "", CREW_HOTEL, ST, "crew-call"),
     ("cast-move-in", "15:00", "16:30", "All cast", "Cast move-in: Cast House 2.0", "", CAST_HOUSE, INF, None),
     ("walk-through", "16:30", "18:00", "All crew", "Walk-through & tech set up: Cast House 2.0",
      "Camera positions, audio and the PRIIME trailer for tomorrow's live show.", CAST_HOUSE, P, "crew-call"),
     ("dinner", "18:30", "19:30", "All cast / all crew", "Welcome dinner", "", CAST_HOUSE, INF, None),
-    ("wrap", "20:00", "20:15", "All crew", "Travel day wrap", "No shooting today. Live again Oct 26 at 12:00 PM.",
+    ("wrap", "20:00", "20:15", "All crew", "Travel day wrap", "No shooting today. Live again Oct 26 at 8:00 AM.",
      CREW_HOTEL, ST, None),
 ]  # fmt: skip
 
 ANNOUNCEMENT = "We're moving to Fort Lauderdale today"
 ANNOUNCEMENT_BODY = (
-    "Today is a travel day: no shooting. Buses leave the Hilton Tampa Airport Westshore at 10:00 AM, so bags in "
+    "Today is a travel day: no shooting. Buses leave the Tampa mansion for the airport at 10:00 AM. Bags in "
     "the lobby by 9:15. The crew hotel is now Candlewood Suites Ft. Lauderdale Airport/Cruise, 1120 W State Road "
     "84, and we shoot at Cast House 2.0, 720 Isle of Palms Dr. Walk-through at 4:30 PM, welcome dinner at 6:30 PM. "
-    "We're live again tomorrow at 12:00 PM. The Support Office is still in Raleigh."
+    "We're live again tomorrow at 8:00 AM."
 )
+# Posted by Stephanie Bartley (assistant to Coach K); a Site Manager if her account is gone.
+ANNOUNCEMENT_AUTHOR = "sellingncbysteph@gmail.com"
 
 
 def travel_block(key):
@@ -101,6 +106,7 @@ class Command(BaseCommand):
         self.tampa_days(zone)
         self.travel_day(zone)
         self.fort_lauderdale_days(zone)
+        self.first_live_day(zone)
         self.timeline()
         self.announce()
         if dry_run:
@@ -199,12 +205,18 @@ class Command(BaseCommand):
         moved = later.filter(location=OLD_CREW_HOTEL).update(location=CREW_HOTEL)
         self.stdout.write(f"Fort Lauderdale days: {moved} events now at {CREW_HOTEL}")
 
+    def first_live_day(self, zone):
+        day = TRAVEL_DAY + timedelta(days=1)
+        start = datetime.combine(day, FIRST_LIVE_START, tzinfo=zone)
+        changed = Event.objects.filter(block=block_for("live"), **self.window(zone, day, day)).update(start=start)
+        self.stdout.write(f"First Fort Lauderdale day: live from {FIRST_LIVE_START:%H:%M} ({changed} event)")
+
     def timeline(self):
         shoot = TimelineItem.objects.filter(name=TIMELINE_NAME).first()
         if shoot:
             shoot.description = (
                 f"Tampa from Oct 9 to Oct 24, travel day Oct 25, Fort Lauderdale from Oct 26 to {shoot.end_date:%b} "
-                f"{shoot.end_date.day}. Live every shoot day from 12:00 PM."
+                f"{shoot.end_date.day}. Live every shoot day from 12:00 PM (8:00 AM on Oct 26)."
             )
             shoot.save(update_fields=["description", "updated_at"])
         TimelineItem.objects.update_or_create(
@@ -218,7 +230,10 @@ class Command(BaseCommand):
         self.stdout.write("Timeline: travel day milestone added")
 
     def announce(self):
-        author = User.objects.filter(role=User.Role.SITE_MANAGER, is_active=True).order_by("pk").first()
+        author = (
+            User.objects.filter(email__iexact=ANNOUNCEMENT_AUTHOR, is_active=True).first()
+            or User.objects.filter(role=User.Role.SITE_MANAGER, is_active=True).order_by("pk").first()
+        )
         _, created = Announcement.objects.update_or_create(
             title=ANNOUNCEMENT, defaults={"body": ANNOUNCEMENT_BODY, "pinned": True, "created_by": author}
         )

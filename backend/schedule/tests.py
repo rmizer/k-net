@@ -218,8 +218,8 @@ class LoadCallSheetTests(APITestCase):
         call_command("load_call_sheet", *args, stdout=StringIO())
         call_command("load_call_sheet", *args, stdout=StringIO())
 
-        # Oct 9 to Nov 7, once each.
-        self.assertEqual(Event.objects.filter(title="Cast lunch").count(), 30)
+        # Oct 9 to Nov 7, once each, except the Oct 25 travel day.
+        self.assertEqual(Event.objects.filter(title="Cast lunch").count(), 29)
         babe.refresh_from_db()
         self.assertEqual(babe.title, "Changed on the site")
         crew_call = Event.objects.filter(title="Crew call: Cast House 2.0").latest("start")
