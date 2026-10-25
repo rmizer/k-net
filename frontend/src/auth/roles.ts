@@ -73,16 +73,17 @@ export const isDirectorLevel = (user: User | null) => !!user && DIRECTOR_ROLES.i
 export const isManagerLevel = (user: User | null) => !!user && MANAGER_ROLES.includes(user.role)
 
 /** The department pages, in menu order (Film Crew and Audio share one). */
+/** In Departments menu order: Production and Operations first, then the rest alphabetically. */
 export const DEPARTMENT_PAGES = [
   { slug: 'production', label: 'Production' },
   { slug: 'operations', label: 'Operations' },
+  { slug: 'culinary', label: 'Culinary' },
+  { slug: 'film-audio', label: 'Film & Audio Crew' },
   { slug: 'finance', label: 'Finance' },
   { slug: 'marketing', label: 'Marketing' },
-  { slug: 'transportation', label: 'Transportation' },
-  { slug: 'culinary', label: 'Culinary' },
-  { slug: 'tech', label: 'Tech' },
-  { slug: 'film-audio', label: 'Film & Audio Crew' },
   { slug: 'security', label: 'Security' },
+  { slug: 'tech', label: 'Tech' },
+  { slug: 'transportation', label: 'Transportation' },
 ] as const
 
 export type DepartmentPageSlug = (typeof DEPARTMENT_PAGES)[number]['slug']

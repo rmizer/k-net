@@ -13,6 +13,8 @@ from schedule.models import Event, TimelineItem
 # From the Battle House Live season 1 call sheet (dev/img/Battle House Assets/call_sheet_example.jpg).
 FIRST_DAY = date(2026, 10, 9)  # Shoot day 1
 LAST_DAY = date(2026, 10, 23)  # The first load ran through day 15; --start/--end add more days.
+# No shooting: the move from Tampa to Fort Lauderdale (see move_to_fort_lauderdale).
+TRAVEL_DAYS = {date(2026, 10, 25)}
 TIMELINE_NAME = "Battle House Live: Season 1 shoot"
 
 # Department names to fix before anyone is placed: old name -> new name.
@@ -30,12 +32,12 @@ DEPARTMENTS = {
     "Security": Department.Page.SECURITY,
 }
 
-CREW_HOTEL = "Home 2 Suites by Hilton"
+CREW_HOTEL = "Candlewood Suites Ft. Lauderdale Airport/Cruise"
 CAST_HOUSE = "Cast House 2.0"
 SEGMENT_HOUSE = "Segment House"
 
 LOCATIONS = [
-    (CREW_HOTEL, Location.Kind.LODGING, "315 NW First Ave, Fort Lauderdale, FL 33301", "Crew hotel"),
+    (CREW_HOTEL, Location.Kind.LODGING, "1120 W State Road 84, Fort Lauderdale, FL 33315", "Crew hotel"),
     (CAST_HOUSE, Location.Kind.SHOOTING, "720 Isle of Palms Dr, Fort Lauderdale, FL 33301", "Location #1"),
     (SEGMENT_HOUSE, Location.Kind.SHOOTING, "433 NW 15th Way, Fort Lauderdale, FL 33311", "Location #2"),
 ]
@@ -250,6 +252,7 @@ class Command(BaseCommand):
     def load_schedule(self, people, first, last, remove_filming):
         zone = ProductionSettings.load().zone
         days = [first + timedelta(days=n) for n in range((last - first).days + 1)]
+        days = [day for day in days if day not in TRAVEL_DAYS]
         window = Q(start__gte=datetime.combine(first, time.min, tzinfo=zone)) & Q(
             start__lt=datetime.combine(last + timedelta(days=1), time.min, tzinfo=zone)
         )
