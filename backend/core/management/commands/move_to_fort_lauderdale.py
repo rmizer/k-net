@@ -63,7 +63,6 @@ TRAVEL = [
     ("drive", "10:00", "15:00", "All cast / all crew", "Travel: Tampa to Fort Lauderdale",
      "Buses leave the Tampa mansion for the airport at 10:00 AM, then we fly to Fort Lauderdale.",
      "Tampa mansion to the airport", O, "crew-call"),
-    ("lunch", "12:30", "13:15", "All cast / all crew", "Lunch stop", "", "En route", O, None),
     ("check-in", "15:00", "16:00", "All crew", "Check-in: Candlewood Suites", "", CREW_HOTEL, ST, "crew-call"),
     ("cast-move-in", "15:00", "16:30", "All cast", "Cast move-in: Cast House 2.0", "", CAST_HOUSE, INF, None),
     ("walk-through", "16:30", "18:00", "All crew", "Walk-through & tech set up: Cast House 2.0",
@@ -82,6 +81,11 @@ ANNOUNCEMENT_BODY = (
 )
 # Posted by Stephanie Bartley (assistant to Coach K); a Site Manager if her account is gone.
 ANNOUNCEMENT_AUTHOR = "sellingncbysteph@gmail.com"
+
+
+# Travel day rows taken out since the first run; running again deletes them.
+# "lunch" was a stop on the drive, and the move is by air.
+REMOVED_TRAVEL = ["lunch"]
 
 
 def travel_block(key):
@@ -183,7 +187,10 @@ class Command(BaseCommand):
             }
 
         replaced = Event.objects.filter(
-            block__in=[block_for(row[0]) for row in SCHEDULE] + [travel_block(row[0]) for row in TRAVEL], **window
+            block__in=[block_for(row[0]) for row in SCHEDULE]
+            + [travel_block(row[0]) for row in TRAVEL]
+            + [travel_block(key) for key in REMOVED_TRAVEL],
+            **window,
         ).delete()[1].get("schedule.Event", 0)
         for key, start, end, talent_crew, title, description, location, event_type, call in TRAVEL:
             event = Event.objects.create(
