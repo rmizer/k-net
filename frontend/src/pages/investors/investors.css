@@ -339,3 +339,93 @@
 .investor__invest p:last-child {
   margin-bottom: 0;
 }
+
+/* Presentation call to action on the investor page: a solid red band, unlike
+   the white tiles around it, so it reads as the next thing to do. */
+.investor__deck {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem 2rem;
+  padding: 1.75rem 2rem;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--knet-dark-red), var(--knet-red));
+  color: var(--knet-white);
+  box-shadow: 0 10px 28px rgba(136, 1, 1, 0.3);
+}
+
+.investor__deck-text {
+  flex: 1 1 22rem;
+}
+
+.investor__deck-label {
+  margin: 0 0 0.3rem;
+  font-size: 0.8rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.investor .investor__deck h2 {
+  margin: 0 0 0.4rem;
+  color: var(--knet-white);
+  font-size: clamp(1.4rem, 3.5vw, 1.75rem);
+}
+
+.investor__deck p:last-child {
+  margin: 0;
+}
+
+.investor__deck .button {
+  flex: 0 0 auto;
+  padding: 0.85rem 1.6rem;
+  border-color: var(--knet-white);
+  background: var(--knet-white);
+  color: var(--knet-dark-red);
+  font-size: 1.05rem;
+}
+
+.investor__deck .button:hover {
+  background: transparent;
+  color: var(--knet-white);
+}
+
+/* The presentation page */
+.investor--presentation {
+  gap: 1.5rem;
+}
+
+.investor__viewer {
+  padding: 0;
+  overflow: hidden;
+}
+
+.investor__viewer iframe {
+  display: block;
+  width: 100%;
+  height: min(80vh, 900px);
+  border: 0;
+}
+
+.investor .investor__viewer-note {
+  margin: -0.5rem 0 0;
+  color: var(--knet-gray-600);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .investor__deck {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .investor__deck .button {
+    width: 100%;
+  }
+
+  .investor__viewer iframe {
+    height: 70vh;
+  }
+}

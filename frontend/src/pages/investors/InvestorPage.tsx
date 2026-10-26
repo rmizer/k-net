@@ -124,6 +124,17 @@ export function InvestorPage() {
         </p>
       </header>
 
+      <section className="investor__deck" aria-labelledby="deck-heading">
+        <div className="investor__deck-text">
+          <p className="investor__deck-label">Investor presentation</p>
+          <h2 id="deck-heading">See the full K-Net pitch</h2>
+          <p>Our presentation for investors. View it here in your browser, or download the PDF to keep.</p>
+        </div>
+        <Link className="button" to={token ? `/investors/${token}/presentation` : '/for-investors/presentation'}>
+          View the presentation <span aria-hidden="true">→</span>
+        </Link>
+      </section>
+
       <section className="investor__section" aria-labelledby="replaces-heading">
         <h2 id="replaces-heading">What K-Net replaces</h2>
         <ul className="investor__replaces">

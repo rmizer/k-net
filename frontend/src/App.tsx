@@ -28,6 +28,7 @@ import { InfluencersPage } from './pages/influencers/InfluencersPage'
 import { InvestorLinkPage } from './pages/investors/InvestorLinkPage'
 import { CostSummaryPage } from './pages/investors/CostSummaryPage'
 import { InvestorPage } from './pages/investors/InvestorPage'
+import { PresentationPage } from './pages/investors/PresentationPage'
 import { LegalPage } from './pages/legal/LegalPage'
 import { LocationsPage } from './pages/locations/LocationsPage'
 import { DepartmentPage, DepartmentsIndex } from './pages/departments/DepartmentPage'
@@ -77,6 +78,8 @@ export default function App() {
           <Route path="/investors/:token" element={<InvestorPage />} />
           <Route path="/for-investors/costs" element={<CostSummaryPage />} />
           <Route path="/investors/:token/costs" element={<CostSummaryPage />} />
+          <Route path="/for-investors/presentation" element={<PresentationPage />} />
+          <Route path="/investors/:token/presentation" element={<PresentationPage />} />
           <Route element={<Layout />}>
             {/* Public, so people can read about the trial before signing up. */}
             <Route path="/trial" element={<TrialPage />} />
