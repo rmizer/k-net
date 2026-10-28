@@ -228,7 +228,7 @@ export function InvestorPage() {
         </p>
         <div className="tile">
           <div className="table-wrap">
-            <table className="data-table investor__table">
+            <table className="data-table investor__table investor__turnaround">
               <thead>
                 <tr>
                   <th scope="col">Change</th>

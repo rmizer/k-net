@@ -142,6 +142,15 @@
   color: var(--knet-dark-red);
 }
 
+/* How long changes take: a touch larger than the site's other tables. */
+.investor__turnaround {
+  font-size: 1.05rem;
+}
+
+.investor__turnaround th {
+  font-size: 0.85rem;
+}
+
 .investor__change {
   display: flex;
   align-items: center;
