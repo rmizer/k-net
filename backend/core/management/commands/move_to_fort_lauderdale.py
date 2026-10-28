@@ -243,7 +243,10 @@ class Command(BaseCommand):
             User.objects.filter(email__iexact=ANNOUNCEMENT_AUTHOR, is_active=True).first()
             or User.objects.filter(role=User.Role.SITE_MANAGER, is_active=True).order_by("pk").first()
         )
+        # Pinned when it's first posted; move_to_doral unpins it later.
         _, created = Announcement.objects.update_or_create(
-            title=ANNOUNCEMENT, defaults={"body": ANNOUNCEMENT_BODY, "pinned": True, "created_by": author}
+            title=ANNOUNCEMENT,
+            defaults={"body": ANNOUNCEMENT_BODY, "created_by": author},
+            create_defaults={"body": ANNOUNCEMENT_BODY, "pinned": True, "created_by": author},
         )
         self.stdout.write(f"Announcement {'posted' if created else 'updated'}: {ANNOUNCEMENT}")

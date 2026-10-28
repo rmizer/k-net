@@ -8,6 +8,7 @@ from django.utils import timezone
 from rest_framework.test import APITestCase
 
 from accounts.models import Department, User
+from announcements.models import Announcement
 
 from .models import Event, TimelineItem
 
@@ -255,3 +256,4 @@ class LoadCallSheetTests(APITestCase):
         self.assertIn(jessie, garage_call.attendees.all())
         self.assertFalse(User.objects.get(first_name="Miguel").has_usable_password())
         self.assertEqual(User.objects.get(email="ask@battlehouselive.com").department.name, "Production")
+        self.assertTrue(Announcement.objects.get(title="The crew hotel is now in Doral").pinned)

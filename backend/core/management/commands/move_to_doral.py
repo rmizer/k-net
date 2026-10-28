@@ -5,10 +5,14 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 
 from accounts.models import User
+from announcements.models import Announcement
 from core.management.commands import load_call_sheet
 from core.management.commands.load_call_sheet import (
+    CREW_AIRBNB,
     CREW_HOTEL,
     FORT_LAUDERDALE_HOTEL,
+    GARAGE,
+    HOST_AIRBNB,
     LOCATIONS,
     NEW_SHEET_DAY,
     STAFF,
@@ -24,6 +28,18 @@ from schedule.models import TimelineItem
 CHANGED_STAFF = ["ask@battlehouselive.com", "je@battlehouselive.com", "anyelomiguel@gmail.com", "JessieR28221@gmail.com"]
 # If the shoot's timeline bar is missing, load the new sheet through this day.
 LAST_DAY = date(2026, 11, 7)
+
+ANNOUNCEMENT = "The crew hotel is now in Doral"
+ANNOUNCEMENT_BODY = (
+    f"From today's call sheet (shoot day 18), the crew hotel is {CREW_HOTEL}, 10505 NW 36th St, Doral, FL 33178. "
+    f"The hosts are at the {HOST_AIRBNB} (2000 Coral Shores Drive, Fort Lauderdale) and some crew at the "
+    f"{CREW_AIRBNB} (608 SW 13th St, Fort Lauderdale). We still shoot at Cast House 2.0, 720 Isle of Palms Dr. "
+    "Production crew: the shuttle bus leaves the hotel at 10:00 AM. PRIIME crew: call is 10:30 AM at the "
+    f"{GARAGE}, 151 SW 2nd St. Check the schedule for your call."
+)
+# Posted by Stephanie Bartley (assistant to Coach K), like the Fort Lauderdale one.
+ANNOUNCEMENT_AUTHOR = "sellingncbysteph@gmail.com"
+OLD_ANNOUNCEMENT = "We're moving to Fort Lauderdale today"
 
 
 class Command(BaseCommand):
@@ -53,6 +69,7 @@ class Command(BaseCommand):
             last.isoformat(),
             stdout=self.stdout,
         )
+        self.announce()
         if dry_run:
             transaction.set_rollback(True)
             self.stdout.write(self.style.WARNING("Dry run: nothing was saved."))
@@ -80,3 +97,16 @@ class Command(BaseCommand):
     def move_crew(self):
         moved = User.objects.filter(lodging=FORT_LAUDERDALE_HOTEL).update(lodging=CREW_HOTEL)
         self.stdout.write(f"Lodging: {moved} people moved to {CREW_HOTEL}")
+
+    def announce(self):
+        author = (
+            User.objects.filter(email__iexact=ANNOUNCEMENT_AUTHOR, is_active=True).first()
+            or User.objects.filter(role=User.Role.SITE_MANAGER, is_active=True).order_by("pk").first()
+        )
+        _, created = Announcement.objects.update_or_create(
+            title=ANNOUNCEMENT, defaults={"body": ANNOUNCEMENT_BODY, "pinned": True, "created_by": author}
+        )
+        unpinned = Announcement.objects.filter(title=OLD_ANNOUNCEMENT, pinned=True).update(pinned=False)
+        self.stdout.write(f"Announcement {'posted' if created else 'updated'}: {ANNOUNCEMENT}")
+        if unpinned:
+            self.stdout.write(f"Unpinned: {OLD_ANNOUNCEMENT}")
