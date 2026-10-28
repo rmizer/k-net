@@ -53,6 +53,9 @@ export function TrialBanner() {
       <Link to="/trial" className="trial-banner__link">
         About the trial
       </Link>
+      <Link to="/for-investors" className="trial-banner__link">
+        For investors
+      </Link>
     </aside>
   )
 }
