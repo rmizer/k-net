@@ -131,14 +131,13 @@
   color: var(--knet-gray-600);
 }
 
-/* The round icon at the top of a tile, and beside each change in the turnaround table. */
+/* The round icon beside each tile's title, and beside each change in the turnaround table. */
 .investor__icon {
   display: grid;
   flex: none;
   place-items: center;
   width: 2.25rem;
   height: 2.25rem;
-  margin-bottom: 0.6rem;
   border-radius: 50%;
   background: var(--knet-red-tint);
   color: var(--knet-dark-red);
@@ -153,6 +152,7 @@
   font-size: 0.85rem;
 }
 
+.investor__tile-title,
 .investor__change {
   display: flex;
   align-items: center;
@@ -162,7 +162,6 @@
 .investor__change .investor__icon {
   width: 2rem;
   height: 2rem;
-  margin-bottom: 0;
 }
 
 /* What K-Net replaces */

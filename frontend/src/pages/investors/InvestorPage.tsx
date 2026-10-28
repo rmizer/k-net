@@ -145,11 +145,13 @@ export function InvestorPage() {
         <ul className="investor__replaces">
           {REPLACES.map(([before, after, detail, icon]) => (
             <li key={after} className="tile">
-              <span className="investor__icon" aria-hidden="true">
-                <NavIcon name={icon} size={20} />
-              </span>
               <p className="investor__before">{before}</p>
-              <h3>{after}</h3>
+              <h3 className="investor__tile-title">
+                <span className="investor__icon" aria-hidden="true">
+                  <NavIcon name={icon} size={20} />
+                </span>
+                {after}
+              </h3>
               <p>{detail}</p>
             </li>
           ))}
@@ -261,10 +263,12 @@ export function InvestorPage() {
         <h2 id="today-heading">Where K-Net is today</h2>
         <div className="investor__today">
           <div className="tile">
-            <span className="investor__icon" aria-hidden="true">
-              <NavIcon name="check" size={20} />
-            </span>
-            <h3>Working now</h3>
+            <h3 className="investor__tile-title">
+              <span className="investor__icon" aria-hidden="true">
+                <NavIcon name="check" size={20} />
+              </span>
+              Working now
+            </h3>
             <p>
               In alpha testing with real crew through {TRIAL_END_LABEL}: Staff Hub, schedule and block scheduling, call
               sheets, tasks, department pages with Culinary menus and shopping lists, a private Finance department,
@@ -276,20 +280,24 @@ export function InvestorPage() {
             </p>
           </div>
           <div className="tile">
-            <span className="investor__icon" aria-hidden="true">
-              <NavIcon name="trend" size={20} />
-            </span>
-            <h3>Next</h3>
+            <h3 className="investor__tile-title">
+              <span className="investor__icon" aria-hidden="true">
+                <NavIcon name="trend" size={20} />
+              </span>
+              Next
+            </h3>
             <p>
               Live crew tracking on a map (CrewFinder), password reset by email, and feature requests from trial
               feedback.
             </p>
           </div>
           <div className="tile">
-            <span className="investor__icon" aria-hidden="true">
-              <NavIcon name="globe" size={20} />
-            </span>
-            <h3>At launch</h3>
+            <h3 className="investor__tile-title">
+              <span className="investor__icon" aria-hidden="true">
+                <NavIcon name="globe" size={20} />
+              </span>
+              At launch
+            </h3>
             <p>
               The trial runs on a temporary hosting address. For final deployment K-Net moves to its own web
               address, knetwork.online, with a secure (https) connection and email sent from that domain.
@@ -307,10 +315,12 @@ export function InvestorPage() {
         <ul className="investor__replaces">
           {FUTURE.map(([title, detail, icon]) => (
             <li key={title} className="tile">
-              <span className="investor__icon" aria-hidden="true">
-                <NavIcon name={icon} size={20} />
-              </span>
-              <h3>{title}</h3>
+              <h3 className="investor__tile-title">
+                <span className="investor__icon" aria-hidden="true">
+                  <NavIcon name={icon} size={20} />
+                </span>
+                {title}
+              </h3>
               <p>{detail}</p>
             </li>
           ))}
