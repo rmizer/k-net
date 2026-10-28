@@ -34,7 +34,7 @@ LOCATIONS = [
      "https://www.hilton.com/en/hotels/tpaahhf-hilton-tampa-airport-westshore/",
      "Crew hotel in Tampa, Oct 9 to Oct 24. Checked out Oct 25."),
     (CREW_HOTEL, Location.Kind.LODGING, "", "1120 W State Road 84, Fort Lauderdale, FL 33315", "(954) 522-8822", "",
-     "Crew hotel in Fort Lauderdale from Oct 25. Free airport shuttle at limited hours."),
+     "Crew hotel in Fort Lauderdale from Oct 25, until the move to Doral. Free airport shuttle at limited hours."),
     ("Rock Bar", Location.Kind.OTHER, "Bar", "219 S Fort Lauderdale Beach Blvd, Fort Lauderdale, FL 33316",
      "(954) 533-1568", "https://rockbarflb.com/", "Beach bar, open 11 AM to 4 AM. A cast and crew favorite."),
 ]  # fmt: skip

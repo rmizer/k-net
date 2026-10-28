@@ -1,5 +1,6 @@
 from datetime import date, datetime, time, timedelta
 from io import StringIO
+from unittest import mock
 
 from django.core.management import call_command
 from django.utils import timezone
@@ -226,3 +227,31 @@ class LoadCallSheetTests(APITestCase):
         self.assertIn(babe, crew_call.attendees.all())
         timeline = TimelineItem.objects.get(name__startswith="Battle House")
         self.assertEqual((str(timeline.start_date), str(timeline.end_date)), ("2026-10-09", "2026-11-07"))
+
+    def test_day_18_call_sheet_from_oct_28(self):
+        call_command("load_call_sheet", stdout=StringIO())
+        args = ["--start", "2026-10-24", "--end", "2026-11-07", "--schedule-only"]
+        call_command("load_call_sheet", *args, stdout=StringIO())
+        espinosa = User.objects.get(email="je@battlehouselive.com")
+        espinosa.lodging = "Candlewood Suites Ft. Lauderdale Airport/Cruise"
+        espinosa.save()
+        with mock.patch("core.management.commands.move_to_doral.geocode", return_value=None):
+            call_command("move_to_doral", stdout=StringIO())
+            call_command("move_to_doral", stdout=StringIO())
+
+        # Oct 27 keeps the first call sheet; Oct 28 to Nov 7 follow day 18, once each.
+        zone = timezone.get_current_timezone()
+        oct_27 = Event.objects.filter(start__date=date(2026, 10, 27))
+        self.assertTrue(oct_27.filter(title="Challenge 3", description="Jenga").exists())
+        self.assertEqual(Event.objects.filter(title="Challenge 4", description="Water Hanging").count(), 11)
+        self.assertFalse(Event.objects.filter(title="Challenge 3", description="Jenga", start__date__gte=date(2026, 10, 28)).exists())
+
+        espinosa.refresh_from_db()
+        self.assertEqual((espinosa.title, espinosa.department.name), ("Camera Operator", "Film Crew"))
+        self.assertEqual(espinosa.lodging, "Candlewood Suites Miami - Doral")
+        jessie = User.objects.get(email="jessier28221@gmail.com")
+        garage_call = Event.objects.filter(title="Call time: PRIIME crew").latest("start")
+        self.assertEqual(garage_call.start.astimezone(zone).time(), time(10, 30))
+        self.assertIn(jessie, garage_call.attendees.all())
+        self.assertFalse(User.objects.get(first_name="Miguel").has_usable_password())
+        self.assertEqual(User.objects.get(email="ask@battlehouselive.com").department.name, "Production")
