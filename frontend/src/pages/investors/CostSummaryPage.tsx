@@ -3,38 +3,22 @@ import { Link, useParams } from 'react-router-dom'
 import wordmark from '../../assets/brand/knet-wordmark.png'
 import { useFetch } from '../../hooks/useFetch'
 import { NotFoundPage } from '../NotFoundPage'
-import { money, PURCHASE_PRICE, WEEKLY_FEE } from './InvestorPage'
+import {
+  DOMAIN,
+  dollars,
+  firstYear,
+  HOSTING,
+  hostingHigh,
+  hostingLow,
+  laterYears,
+  maintenance,
+  money,
+  PURCHASE_PRICE,
+  range,
+  WEEKLY_FEE,
+  WEEKS,
+} from './costs'
 import './investors.css'
-
-const WEEKS = 52
-
-/** Hosting, billed to the buyer at cost. Low and high ends of a year, at the
- *  providers' prices in October 2026 (Railway and Netlify bill by usage). */
-const HOSTING: { item: string; provider: string; low: number; high: number; detail: string }[] = [
-  {
-    item: 'App server and database',
-    provider: 'Railway (Hobby plan)',
-    low: 60,
-    high: 120,
-    detail: '$5 a month, which includes $5 of usage. K-Net uses about $4–7 a month today; budgeted up to $10 for growth.',
-  },
-  {
-    item: 'Website hosting',
-    provider: 'Netlify (Personal plan)',
-    low: 108,
-    high: 108,
-    detail: '$9 a month. Covers the site’s weekly updates and visitor traffic.',
-  },
-]
-const DOMAIN = { item: 'Web address', provider: 'knetwork.online', firstYear: 1.2, renewal: 29 }
-
-const hostingLow = HOSTING.reduce((sum, row) => sum + row.low, 0)
-const hostingHigh = HOSTING.reduce((sum, row) => sum + row.high, 0)
-const maintenance = WEEKLY_FEE * WEEKS
-
-const dollars = (value: number) =>
-  value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 2 })
-const range = (low: number, high: number) => (low === high ? dollars(low) : `${dollars(low)}–${dollars(high)}`)
 
 /** What K-Net costs to run each year: the maintenance fee, plus hosting billed
  *  at cost. Linked from the investor page, with the same access. */
@@ -63,9 +47,6 @@ export function CostSummaryPage() {
         <NotFoundPage />
       </main>
     )
-
-  const firstYear = [PURCHASE_PRICE + maintenance + hostingLow + DOMAIN.firstYear, PURCHASE_PRICE + maintenance + hostingHigh + DOMAIN.firstYear]
-  const laterYears = [maintenance + hostingLow + DOMAIN.renewal, maintenance + hostingHigh + DOMAIN.renewal]
 
   return (
     <main className="investor">

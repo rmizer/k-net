@@ -86,6 +86,9 @@ export function LoginPage() {
             Create an account
           </Link>
         </div>
+        <p className="login__investors">
+          Investor? <Link to="/for-investors">See the investor page and costs</Link>, no login needed.
+        </p>
       </section>
     </main>
   )

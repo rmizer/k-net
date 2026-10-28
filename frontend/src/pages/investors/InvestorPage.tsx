@@ -4,11 +4,10 @@ import wordmark from '../../assets/brand/knet-wordmark.png'
 import { useFetch } from '../../hooks/useFetch'
 import { TRIAL_END_LABEL } from '../../trial/trial'
 import { NotFoundPage } from '../NotFoundPage'
+import { DOMAIN, firstYear, hostingHigh, hostingLow, laterYears, maintenance, money, PURCHASE_PRICE, range, WEEKLY_FEE } from './costs'
 import './investors.css'
 
 const CONTACT_EMAIL = 'support.knet@gmail.com'
-export const PURCHASE_PRICE = 15_000
-export const WEEKLY_FEE = 500
 
 const REPLACES: [string, string, string][] = [
   [
@@ -69,8 +68,6 @@ const FUTURE: [string, string][] = [
   ['Multi-production dashboard', 'A studio-level view across several productions at once, with crew and resources shared between them.'],
 ]
 
-export const money = (value: number) =>
-  value.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
 const number = (value: number) => Math.round(value).toLocaleString('en-US')
 
 /** The investor page. Open to anyone at /for-investors (linked from About the
@@ -175,9 +172,39 @@ export function InvestorPage() {
             </ul>
           </div>
         </div>
+      </section>
+
+      <section className="investor__section" aria-labelledby="yearly-costs-heading">
+        <h2 id="yearly-costs-heading">Yearly Operation Costs</h2>
+        <p className="investor__intro">
+          The weekly maintenance fee, plus hosting billed at cost. Hosting is a small share of the total: about{' '}
+          {range(hostingLow + DOMAIN.renewal, hostingHigh + DOMAIN.renewal)} a year for the server, database, website
+          and web address.
+        </p>
+        <div className="investor__offer">
+          <div className="tile investor__price">
+            <p className="investor__price-label">First year</p>
+            <p className="investor__price-value">{money(firstYear[0])}</p>
+            <p className="investor__price-term">to {money(firstYear[1])}</p>
+            <ul>
+              <li>{money(PURCHASE_PRICE)} purchase, one time</li>
+              <li>{money(maintenance)} maintenance</li>
+              <li>{range(hostingLow + DOMAIN.firstYear, hostingHigh + DOMAIN.firstYear)} hosting</li>
+            </ul>
+          </div>
+          <div className="tile investor__price">
+            <p className="investor__price-label">Each year after</p>
+            <p className="investor__price-value">{money(laterYears[0])}</p>
+            <p className="investor__price-term">to {money(laterYears[1])}</p>
+            <ul>
+              <li>{money(maintenance)} maintenance</li>
+              <li>{range(hostingLow + DOMAIN.renewal, hostingHigh + DOMAIN.renewal)} hosting</li>
+            </ul>
+          </div>
+        </div>
         <p className="investor__intro">
           <Link to={token ? `/investors/${token}/costs` : '/for-investors/costs'}>
-            See what K-Net costs to run each year →
+            Learn more <span aria-hidden="true">→</span>
           </Link>
         </p>
       </section>
