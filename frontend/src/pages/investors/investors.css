@@ -129,6 +129,31 @@
   color: var(--knet-gray-600);
 }
 
+/* The round icon at the top of a tile, and beside each change in the turnaround table. */
+.investor__icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-bottom: 0.6rem;
+  border-radius: 50%;
+  background: var(--knet-red-tint);
+  color: var(--knet-dark-red);
+}
+
+.investor__change {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.investor__change .investor__icon {
+  width: 2rem;
+  height: 2rem;
+  margin-bottom: 0;
+}
+
 /* What K-Net replaces */
 .investor__replaces {
   display: grid;

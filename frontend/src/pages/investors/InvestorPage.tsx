@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import wordmark from '../../assets/brand/knet-wordmark.png'
+import { NavIcon, type NavIconName } from '../../components/NavIcon'
 import { useFetch } from '../../hooks/useFetch'
 import { TRIAL_END_LABEL } from '../../trial/trial'
 import { NotFoundPage } from '../NotFoundPage'
@@ -9,63 +10,70 @@ import './investors.css'
 
 const CONTACT_EMAIL = 'support.knet@gmail.com'
 
-const REPLACES: [string, string, string][] = [
+const REPLACES: [string, string, string, NavIconName][] = [
   [
     'Schedules in group texts and emailed PDFs',
     'One live schedule',
     'Daily, weekly and monthly views everyone sees the moment it changes. Block scheduling books a month of shifts (e.g. Oct 5–30, weekdays, 9 to 5) in one step.',
+    'calendar',
   ],
   [
     'Tasks lost in chat threads',
     'Assigned tasks with owners',
     'Tasks go to a person or a whole department, show on their Staff Hub, flag when overdue and can message them on Slack.',
+    'tasks',
   ],
   [
     'Contact spreadsheets that are always out of date',
     'A self-updating directory',
     'Crew sign up from a QR code with a verified email. Departments, roles, lodging and emergency contacts in one place, visible only to the roles that need them.',
+    'contacts',
   ],
   [
     'Paper receipts and reimbursement chasing',
     'Receipts from a phone',
     'Crew send in receipts and paperwork, get a confirmation and keep a history; Finance moves each receipt from Submitted to Processed and onto a paycheck.',
+    'receipt',
   ],
   [
     'Permits and insurance that lapse unnoticed',
     'Documents with expiry alerts',
     'Permits, insurance, contracts, invoices and vehicle paperwork filed by type, with “expiring soon” warnings.',
+    'document',
   ],
   [
     'Talent travel buried in email',
     'An influencer roster',
     'Each creator’s contacts, agent, needs, flights, hotels and schedule on one profile, in a sortable table.',
+    'star',
   ],
 ]
 
 // Everything here is covered by the weekly maintenance fee.
-const TURNAROUND: [string, string, string][] = [
-  ['Bug fixes', '1 week', 'Shipped in the weekly update. Site-breaking issues are fixed the same day.'],
-  ['Wording, labels and small layout changes', '1 day', 'Shipped in the weekly update.'],
-  ['A new field, filter or column on an existing page', '1–3 days', 'Shipped in the weekly update.'],
-  ['A new page or report built on existing data', '1–2 weeks', 'Planned with you, then shipped in weekly updates.'],
+const TURNAROUND: [string, string, string, NavIconName][] = [
+  ['Bug fixes', '1 week', 'Shipped in the weekly update. Site-breaking issues are fixed the same day.', 'bug'],
+  ['Wording, labels and small layout changes', '1 day', 'Shipped in the weekly update.', 'pencil'],
+  ['A new field, filter or column on an existing page', '1–3 days', 'Shipped in the weekly update.', 'plus'],
+  ['A new page or report built on existing data', '1–2 weeks', 'Planned with you, then shipped in weekly updates.', 'layers'],
   [
     'Large features (live GPS crew tracking, a native phone app, payment processing)',
     '4–8+ weeks',
     'Planned with you and built in stages, shipped in weekly updates.',
+    'rocket',
   ],
 ]
 
 // Possible directions, not commitments; the buyer chooses what gets built.
-const FUTURE: [string, string][] = [
-  ['CrewFinder: live crew tracking', 'See where crew are on a map during the shoot, with opt-in sharing that switches off when a shift ends.'],
-  ['Shift handovers', 'A handover log for round-the-clock shoots: what happened, what’s pending and who’s on next, read before every shift.'],
-  ['Clock-in / clock-out system for staff', 'Staff clock in and out from their phone, giving payroll accurate hours to work from; turnaround and overtime are tracked and flagged automatically.'],
-  ['Call sheets', 'Generate the daily call sheet from the live schedule, locations and directory, and send it to everyone on it.'],
-  ['Budget tracking', 'Spending from receipts and invoices measured against each department’s budget as the shoot goes.'],
-  ['Payments and payroll exports', 'Pay reimbursements and export hours to payroll providers, instead of re-keying them.'],
-  ['Offline mode', 'Schedules, contacts and documents stay readable on remote locations with no signal, and sync when back online.'],
-  ['Calendar sync', 'Each person’s shifts appear in Google Calendar or Outlook and update when the schedule changes.'],
-  ['Multi-production dashboard', 'A studio-level view across several productions at once, with crew and resources shared between them.'],
+const FUTURE: [string, string, NavIconName][] = [
+  ['CrewFinder: live crew tracking', 'See where crew are on a map during the shoot, with opt-in sharing that switches off when a shift ends.', 'locate'],
+  ['Shift handovers', 'A handover log for round-the-clock shoots: what happened, what’s pending and who’s on next, read before every shift.', 'notes'],
+  ['Clock-in / clock-out system for staff', 'Staff clock in and out from their phone, giving payroll accurate hours to work from; turnaround and overtime are tracked and flagged automatically.', 'clock'],
+  ['Call sheets', 'Generate the daily call sheet from the live schedule, locations and directory, and send it to everyone on it.', 'sheet'],
+  ['Budget tracking', 'Spending from receipts and invoices measured against each department’s budget as the shoot goes.', 'wallet'],
+  ['Payments and payroll exports', 'Pay reimbursements and export hours to payroll providers, instead of re-keying them.', 'card'],
+  ['Offline mode', 'Schedules, contacts and documents stay readable on remote locations with no signal, and sync when back online.', 'wifiOff'],
+  ['Calendar sync', 'Each person’s shifts appear in Google Calendar or Outlook and update when the schedule changes.', 'calendar'],
+  ['Multi-production dashboard', 'A studio-level view across several productions at once, with crew and resources shared between them.', 'monitor'],
 ]
 
 const number = (value: number) => Math.round(value).toLocaleString('en-US')
@@ -135,8 +143,11 @@ export function InvestorPage() {
       <section className="investor__section" aria-labelledby="replaces-heading">
         <h2 id="replaces-heading">What K-Net replaces</h2>
         <ul className="investor__replaces">
-          {REPLACES.map(([before, after, detail]) => (
+          {REPLACES.map(([before, after, detail, icon]) => (
             <li key={after} className="tile">
+              <span className="investor__icon" aria-hidden="true">
+                <NavIcon name={icon} size={20} />
+              </span>
               <p className="investor__before">{before}</p>
               <h3>{after}</h3>
               <p>{detail}</p>
@@ -226,9 +237,16 @@ export function InvestorPage() {
                 </tr>
               </thead>
               <tbody>
-                {TURNAROUND.map(([change, time, how]) => (
+                {TURNAROUND.map(([change, time, how, icon]) => (
                   <tr key={change}>
-                    <td>{change}</td>
+                    <td>
+                      <span className="investor__change">
+                        <span className="investor__icon" aria-hidden="true">
+                          <NavIcon name={icon} size={18} />
+                        </span>
+                        {change}
+                      </span>
+                    </td>
                     <td className="investor__time">{time}</td>
                     <td>{how}</td>
                   </tr>
@@ -243,6 +261,9 @@ export function InvestorPage() {
         <h2 id="today-heading">Where K-Net is today</h2>
         <div className="investor__today">
           <div className="tile">
+            <span className="investor__icon" aria-hidden="true">
+              <NavIcon name="check" size={20} />
+            </span>
             <h3>Working now</h3>
             <p>
               In alpha testing with real crew through {TRIAL_END_LABEL}: Staff Hub, schedule and block scheduling, call
@@ -255,6 +276,9 @@ export function InvestorPage() {
             </p>
           </div>
           <div className="tile">
+            <span className="investor__icon" aria-hidden="true">
+              <NavIcon name="trend" size={20} />
+            </span>
             <h3>Next</h3>
             <p>
               Live crew tracking on a map (CrewFinder), password reset by email, and feature requests from trial
@@ -262,6 +286,9 @@ export function InvestorPage() {
             </p>
           </div>
           <div className="tile">
+            <span className="investor__icon" aria-hidden="true">
+              <NavIcon name="globe" size={20} />
+            </span>
             <h3>At launch</h3>
             <p>
               The trial runs on a temporary hosting address. For final deployment K-Net moves to its own web
@@ -278,8 +305,11 @@ export function InvestorPage() {
           and it’s all covered by the weekly fee.
         </p>
         <ul className="investor__replaces">
-          {FUTURE.map(([title, detail]) => (
+          {FUTURE.map(([title, detail, icon]) => (
             <li key={title} className="tile">
+              <span className="investor__icon" aria-hidden="true">
+                <NavIcon name={icon} size={20} />
+              </span>
               <h3>{title}</h3>
               <p>{detail}</p>
             </li>

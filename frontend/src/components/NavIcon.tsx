@@ -38,6 +38,14 @@ export type NavIconName =
   | 'timeline'
   | 'tv'
   | 'clock'
+  | 'bug'
+  | 'pencil'
+  | 'plus'
+  | 'layers'
+  | 'rocket'
+  | 'check'
+  | 'globe'
+  | 'wifiOff'
 
 // 24×24 line icons, drawn with the current text color.
 const PATHS: Record<NavIconName, ReactNode> = {
@@ -257,6 +265,55 @@ const PATHS: Record<NavIconName, ReactNode> = {
     <>
       <circle cx="12" cy="12" r="9" />
       <path d="M12 7v5l3 2" />
+    </>
+  ),
+  bug: (
+    <>
+      <rect x="7" y="7" width="10" height="13" rx="5" />
+      <path d="M9 7.5a3 3 0 0 1 6 0M12 11v9M3 13h4M17 13h4M4 8l3 2M20 8l-3 2M4 19l3-2M20 19l-3-2" />
+    </>
+  ),
+  pencil: (
+    <>
+      <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" />
+      <path d="m14.5 5.5 3 3" />
+    </>
+  ),
+  plus: (
+    <>
+      <rect x="3" y="3" width="18" height="18" rx="2" />
+      <path d="M12 8v8M8 12h8" />
+    </>
+  ),
+  layers: (
+    <>
+      <path d="m12 3 9 5-9 5-9-5z" />
+      <path d="m3 13 9 5 9-5" />
+    </>
+  ),
+  rocket: (
+    <>
+      <path d="M12 15l-3-3c1.5-5 5-8.5 11-9-.5 6-4 9.5-9 11z" />
+      <path d="M9 12H5l2.5-3.5H11M12 15v4l3.5-2.5V13" />
+      <path d="M6.5 16.5C5 17 4.5 19.5 4.5 19.5S7 19 7.5 17.5" />
+    </>
+  ),
+  check: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="m8 12.5 2.5 2.5L16 9.5" />
+    </>
+  ),
+  globe: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M3 12h18M12 3c2.5 2.5 3.5 5.5 3.5 9s-1 6.5-3.5 9c-2.5-2.5-3.5-5.5-3.5-9s1-6.5 3.5-9z" />
+    </>
+  ),
+  wifiOff: (
+    <>
+      <path d="M2 8.5a15 15 0 0 1 4-2.5M10 5.1A15 15 0 0 1 22 8.5M5 12a10 10 0 0 1 4-2.2M15 10a10 10 0 0 1 4 2M8.5 15.5a5 5 0 0 1 7 0" />
+      <path d="M12 19h.01M3 3l18 18" />
     </>
   ),
 }
