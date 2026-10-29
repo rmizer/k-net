@@ -3,6 +3,7 @@ import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { ApiError } from '../api'
 import { useAuth } from '../auth/useAuth'
 import { isSiteManager } from '../auth/roles'
+import { PasswordToggle } from '../components/PasswordToggle'
 import wordmark from '../assets/brand/knet-wordmark.png'
 import './signup/signup.css'
 
@@ -12,6 +13,8 @@ export function LoginPage() {
   const location = useLocation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [remember, setRemember] = useState(true)
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
@@ -30,7 +33,7 @@ export function LoginPage() {
     setError('')
     setSubmitting(true)
     try {
-      const signedIn = await login(email, password)
+      const signedIn = await login(email, password, remember)
       // Site Managers land on their own dashboard.
       navigate(from ?? (isSiteManager(signedIn) ? '/site-manager' : '/'), { replace: true })
     } catch (err) {
@@ -67,13 +70,20 @@ export function LoginPage() {
           </label>
           <label className="form__field">
             <span>Password</span>
-            <input
-              type="password"
-              autoComplete="current-password"
-              required
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-            />
+            <span className="password-box">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="current-password"
+                required
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+              />
+              <PasswordToggle shown={showPassword} onToggle={() => setShowPassword(!showPassword)} />
+            </span>
+          </label>
+          <label className="form__check">
+            <input type="checkbox" checked={remember} onChange={(event) => setRemember(event.target.checked)} />
+            Keep me logged in on this device for 14 days
           </label>
           <button type="submit" className="button" disabled={submitting}>
             {submitting ? 'Logging in…' : 'Log in'}

@@ -4,7 +4,7 @@ import type { User } from './roles'
 export interface AuthState {
   user: User | null
   loading: boolean
-  login: (email: string, password: string) => Promise<User>
+  login: (email: string, password: string, remember?: boolean) => Promise<User>
   logout: () => Promise<void>
   setUser: (user: User) => void
 }

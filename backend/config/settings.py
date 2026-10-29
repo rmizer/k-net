@@ -127,6 +127,8 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "accounts.validators.PasswordComplexityValidator"},
 ]
 
+# A login lasts 14 days, or until the browser closes if they untick "Keep me logged in".
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 14
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"
 SESSION_COOKIE_SECURE = not DEBUG

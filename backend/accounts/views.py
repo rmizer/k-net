@@ -81,6 +81,9 @@ class LoginView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         login(request, user)
+        if not serializer.validated_data["remember"]:
+            # Logged out when the browser closes, e.g. on a shared device.
+            request.session.set_expiry(0)
         return Response(ProfileSerializer(user, context={"request": request}).data)
 
 

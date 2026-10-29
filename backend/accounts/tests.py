@@ -26,6 +26,14 @@ class AuthTests(APITestCase):
         self.assertEqual(response.data["role"], "staff")
         self.assertEqual(self.client.get("/api/auth/me/").data["email"], "staff@test.com")
 
+    def test_login_remembers_the_device_for_14_days_unless_unticked(self):
+        response = self.client.post("/api/auth/login/", {"email": "staff@test.com", "password": PASSWORD})
+        self.assertEqual(response.cookies["sessionid"]["max-age"], 60 * 60 * 24 * 14)
+        response = self.client.post(
+            "/api/auth/login/", {"email": "staff@test.com", "password": PASSWORD, "remember": False}, format="json"
+        )
+        self.assertEqual(response.cookies["sessionid"]["max-age"], "")
+
     def test_login_email_is_case_insensitive(self):
         response = self.client.post("/api/auth/login/", {"email": "Staff@Test.com", "password": PASSWORD})
         self.assertEqual(response.status_code, 200)

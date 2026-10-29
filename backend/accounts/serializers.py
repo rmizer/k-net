@@ -294,6 +294,7 @@ class SignupSerializer(serializers.Serializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(trim_whitespace=False)
+    remember = serializers.BooleanField(required=False, default=True)
 
 
 class RemovalRequestSerializer(serializers.ModelSerializer):
