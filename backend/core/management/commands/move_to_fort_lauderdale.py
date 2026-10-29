@@ -72,15 +72,8 @@ TRAVEL = [
      CREW_HOTEL, ST, None),
 ]  # fmt: skip
 
+# The move's announcement came down after the move to Doral; running again deletes it.
 ANNOUNCEMENT = "We're moving to Fort Lauderdale today"
-ANNOUNCEMENT_BODY = (
-    "Today is a travel day: no shooting. Buses leave the Tampa mansion for the airport at 10:00 AM. Bags in "
-    "the lobby by 9:15. The crew hotel is now Candlewood Suites Ft. Lauderdale Airport/Cruise, 1120 W State Road "
-    "84, and we shoot at Cast House 2.0, 720 Isle of Palms Dr. Walk-through at 4:30 PM, welcome dinner at 6:30 PM. "
-    "We're live again tomorrow at 8:00 AM."
-)
-# Posted by Stephanie Bartley (assistant to Coach K); a Site Manager if her account is gone.
-ANNOUNCEMENT_AUTHOR = "sellingncbysteph@gmail.com"
 
 
 # Travel day rows taken out since the first run; running again deletes them.
@@ -95,8 +88,8 @@ def travel_block(key):
 class Command(BaseCommand):
     help = (
         "Move Battle House Live from Tampa to Fort Lauderdale: Tampa places on the shoot days before "
-        f"{TRAVEL_DAY:%b %d}, a travel day on {TRAVEL_DAY:%b %d}, the Fort Lauderdale crew hotel after it, "
-        "and a pinned announcement. Safe to run more than once."
+        f"{TRAVEL_DAY:%b %d}, a travel day on {TRAVEL_DAY:%b %d} and the Fort Lauderdale crew hotel after it. "
+        "Safe to run more than once."
     )
 
     def add_arguments(self, parser):
@@ -112,7 +105,7 @@ class Command(BaseCommand):
         self.fort_lauderdale_days(zone)
         self.first_live_day(zone)
         self.timeline()
-        self.announce()
+        self.remove_announcement()
         if dry_run:
             transaction.set_rollback(True)
             self.stdout.write(self.style.WARNING("Dry run: nothing was saved."))
@@ -238,15 +231,7 @@ class Command(BaseCommand):
         )
         self.stdout.write("Timeline: travel day milestone added")
 
-    def announce(self):
-        author = (
-            User.objects.filter(email__iexact=ANNOUNCEMENT_AUTHOR, is_active=True).first()
-            or User.objects.filter(role=User.Role.SITE_MANAGER, is_active=True).order_by("pk").first()
-        )
-        # Pinned when it's first posted; move_to_doral unpins it later.
-        _, created = Announcement.objects.update_or_create(
-            title=ANNOUNCEMENT,
-            defaults={"body": ANNOUNCEMENT_BODY, "created_by": author},
-            create_defaults={"body": ANNOUNCEMENT_BODY, "pinned": True, "created_by": author},
-        )
-        self.stdout.write(f"Announcement {'posted' if created else 'updated'}: {ANNOUNCEMENT}")
+    def remove_announcement(self):
+        removed = Announcement.objects.filter(title=ANNOUNCEMENT).delete()[0]
+        if removed:
+            self.stdout.write(f"Announcement removed: {ANNOUNCEMENT}")

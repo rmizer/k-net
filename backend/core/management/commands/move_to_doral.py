@@ -39,7 +39,6 @@ ANNOUNCEMENT_BODY = (
 )
 # Posted by Stephanie Bartley (assistant to Coach K), like the Fort Lauderdale one.
 ANNOUNCEMENT_AUTHOR = "sellingncbysteph@gmail.com"
-OLD_ANNOUNCEMENT = "We're moving to Fort Lauderdale today"
 
 
 class Command(BaseCommand):
@@ -106,7 +105,4 @@ class Command(BaseCommand):
         _, created = Announcement.objects.update_or_create(
             title=ANNOUNCEMENT, defaults={"body": ANNOUNCEMENT_BODY, "pinned": True, "created_by": author}
         )
-        unpinned = Announcement.objects.filter(title=OLD_ANNOUNCEMENT, pinned=True).update(pinned=False)
         self.stdout.write(f"Announcement {'posted' if created else 'updated'}: {ANNOUNCEMENT}")
-        if unpinned:
-            self.stdout.write(f"Unpinned: {OLD_ANNOUNCEMENT}")
