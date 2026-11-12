@@ -296,7 +296,7 @@ function Scheduling({ today, timeZone }: { today: string; timeZone: string }) {
         <BlockScheduleDialog
           defaultDay={days.includes(today) ? today : weekStart}
           defaultAttendees={[person.id]}
-          people={(people.data ?? []).map((p) => ({ id: p.id, name: p.name }))}
+          people={(people.data ?? []).map((p) => ({ id: p.id, name: p.name, department: p.department }))}
           departments={departments.data ?? []}
           timeZone={timeZone}
           onClose={() => setBlocking(false)}
@@ -313,7 +313,7 @@ function Scheduling({ today, timeZone }: { today: string; timeZone: string }) {
           event={dialog.event}
           defaultDay={dialog.day}
           defaultAttendees={[person.id]}
-          people={(people.data ?? []).map((p) => ({ id: p.id, name: p.name }))}
+          people={(people.data ?? []).map((p) => ({ id: p.id, name: p.name, department: p.department }))}
           departments={departments.data ?? []}
           timeZone={timeZone}
           onClose={() => setDialog(null)}

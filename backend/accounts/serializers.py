@@ -317,3 +317,54 @@ class RemovalRequestSerializer(serializers.ModelSerializer):
             "created_at",
         ]
         read_only_fields = fields
+
+
+class CredentialRequestSerializer(serializers.ModelSerializer):
+    kind_display = serializers.CharField(source="get_kind_display", read_only=True)
+    status_display = serializers.CharField(source="get_status_display", read_only=True)
+    who = serializers.CharField(read_only=True)
+    person_email = serializers.CharField(source="person.email", read_only=True, default=None)
+    requested_by_name = serializers.CharField(source="requested_by.get_full_name", read_only=True, default=None)
+    resolved_by_name = serializers.CharField(source="resolved_by.get_full_name", read_only=True, default=None)
+
+    class Meta:
+        from .models import CredentialRequest
+
+        model = CredentialRequest
+        fields = [
+            "id",
+            "kind",
+            "kind_display",
+            "person",
+            "person_email",
+            "name",
+            "email",
+            "who",
+            "details",
+            "status",
+            "status_display",
+            "requested_by_name",
+            "created_at",
+            "resolved_at",
+            "resolved_by_name",
+        ]
+        read_only_fields = ["status", "created_at", "resolved_at"]
+
+    def validate(self, attrs):
+        from .models import CredentialRequest
+
+        kind = attrs.get("kind")
+        person = attrs.get("person")
+        if person is None:
+            if kind != CredentialRequest.Kind.NEW_LOGIN:
+                raise serializers.ValidationError({"person": "Pick whose login this is about."})
+            errors = {}
+            if not attrs.get("name", "").strip():
+                errors["name"] = "Enter the new person's name."
+            if not attrs.get("email", "").strip():
+                errors["email"] = "Enter the email they'll log in with."
+            if errors:
+                raise serializers.ValidationError(errors)
+        elif kind == CredentialRequest.Kind.EMAIL_CHANGE and not attrs.get("email", "").strip():
+            raise serializers.ValidationError({"email": "Enter the new email they should log in with."})
+        return attrs

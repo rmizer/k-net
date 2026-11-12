@@ -1,6 +1,15 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import { api, ApiError, fieldErrors } from '../../api'
-import { DOCUMENT_CATEGORIES, type DocumentCategory, type ProjectDocument } from '../../types'
+import type { User } from '../../auth/roles'
+import { useFetch } from '../../hooks/useFetch'
+import {
+  AGREEMENT_TYPES,
+  DOCUMENT_CATEGORIES,
+  HR_CATEGORIES,
+  type AgreementType,
+  type DocumentCategory,
+  type ProjectDocument,
+} from '../../types'
 
 /** Categories that usually carry an expiration date. */
 export const EXPIRING_CATEGORIES: DocumentCategory[] = ['insurance', 'permit', 'contract', 'vehicle']
@@ -14,8 +23,8 @@ interface DocumentFormDialogProps {
   initialCategory: DocumentCategory
   /** Managers can file any category; everyone else files receipts. */
   canChooseCategory: boolean
-  /** Starting values for a new upload, e.g. the store a shopping receipt is from. */
-  defaults?: { title?: string; vendor?: string }
+  /** Starting values for a new upload, e.g. the store a shopping receipt is from, or who an NDA is for. */
+  defaults?: { title?: string; vendor?: string; person?: number | null; agreement_type?: AgreementType }
   onSaved: (saved: ProjectDocument) => void
   onClose: () => void
 }
@@ -32,6 +41,9 @@ export function DocumentFormDialog(props: DocumentFormDialogProps) {
     purchase_date: document?.purchase_date ?? '',
     expires_on: document?.expires_on ?? '',
     notes: document?.notes ?? '',
+    person: document?.person ? String(document.person) : defaults?.person ? String(defaults.person) : '',
+    person_name: document?.person_name ?? '',
+    agreement_type: document?.agreement_type ?? defaults?.agreement_type ?? '',
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [saving, setSaving] = useState(false)
@@ -43,6 +55,7 @@ export function DocumentFormDialog(props: DocumentFormDialogProps) {
   const set = (name: keyof typeof form, value: string) => setForm({ ...form, [name]: value })
   const receipt = form.category === 'receipt'
   const expiring = EXPIRING_CATEGORIES.includes(form.category)
+  const hr = HR_CATEGORIES.includes(form.category)
 
   const chooseFile = (chosen: File | null) => {
     setFile(chosen)
@@ -66,6 +79,9 @@ export function DocumentFormDialog(props: DocumentFormDialogProps) {
     body.append('vendor', receipt ? form.vendor : '')
     body.append('amount', receipt ? form.amount : '')
     body.append('purchase_date', receipt ? form.purchase_date : '')
+    body.append('person', hr ? form.person : '')
+    body.append('person_name', hr && !form.person ? form.person_name : '')
+    body.append('agreement_type', form.category === 'agreement' ? form.agreement_type : '')
     if (file) body.append('file', file)
     try {
       const saved = await api<ProjectDocument>(document ? `/documents/${document.id}/` : '/documents/', {
@@ -171,6 +187,17 @@ export function DocumentFormDialog(props: DocumentFormDialogProps) {
             </>
           )}
 
+          {hr && (
+            <HrFields
+              category={form.category}
+              person={form.person}
+              personName={form.person_name}
+              agreementType={form.agreement_type}
+              onChange={(changes) => setForm((prev) => ({ ...prev, ...changes }))}
+              error={error}
+            />
+          )}
+
           {expiring && (
             <label className="form__field">
               <span>Expires</span>
@@ -200,5 +227,77 @@ export function DocumentFormDialog(props: DocumentFormDialogProps) {
         </div>
       </form>
     </dialog>
+  )
+}
+
+interface HrFieldsProps {
+  category: DocumentCategory
+  person: string
+  personName: string
+  agreementType: AgreementType | ''
+  onChange: (changes: { person?: string; person_name?: string; agreement_type?: AgreementType | '' }) => void
+  error: (name: string) => ReactNode
+}
+
+/** Who a hiring file or agreement is about (someone on K-Net, or a candidate's name), and which agreement. */
+function HrFields({ category, person, personName, agreementType, onChange, error }: HrFieldsProps) {
+  const people = useFetch<User[]>('/users/')
+  const list = [...(people.data ?? [])].sort((a, b) =>
+    `${a.first_name} ${a.last_name}`.localeCompare(`${b.first_name} ${b.last_name}`),
+  )
+  return (
+    <>
+      <label className="form__field">
+        <span>
+          Who it’s about<span aria-hidden="true"> *</span>
+        </span>
+        <select value={person} onChange={(e) => onChange({ person: e.target.value })}>
+          <option value="">Not on K-Net yet (type a name)</option>
+          {list.map((option) => (
+            <option key={option.id} value={option.id}>
+              {`${option.first_name} ${option.last_name}`.trim()}
+              {option.department_name ? ` · ${option.department_name}` : ''}
+            </option>
+          ))}
+        </select>
+        {error('person')}
+      </label>
+      {!person && (
+        <label className="form__field">
+          <span>
+            Candidate name<span aria-hidden="true"> *</span>
+          </span>
+          <input
+            value={personName}
+            onChange={(e) => onChange({ person_name: e.target.value })}
+            placeholder="e.g. Pat Lee"
+            autoComplete="off"
+          />
+          {error('person_name')}
+        </label>
+      )}
+      {category === 'agreement' && (
+        <label className="form__field">
+          <span>
+            Agreement<span aria-hidden="true"> *</span>
+          </span>
+          <select
+            value={agreementType}
+            onChange={(e) => onChange({ agreement_type: e.target.value as AgreementType })}
+            aria-invalid={!agreementType}
+          >
+            <option value="" disabled>
+              Choose one
+            </option>
+            {AGREEMENT_TYPES.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          {error('agreement_type')}
+        </label>
+      )}
+    </>
   )
 }

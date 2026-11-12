@@ -6,6 +6,7 @@ export const DEPARTMENT_ICONS: Record<DepartmentPageSlug, NavIconName> = {
   production: 'clapper',
   operations: 'briefcase',
   finance: 'dollar',
+  'human-resources': 'contacts',
   marketing: 'megaphone',
   transportation: 'bus',
   culinary: 'utensils',
@@ -62,7 +63,6 @@ export const NAV_ITEMS: NavItem[] = [
     roles: MANAGER_ROLES,
     children: [
       { label: 'Overview', path: '/staff-manager' },
-      { label: 'Departments', path: '/staff-manager/departments' },
       { label: 'Scheduling', path: '/staff-manager/scheduling' },
       { label: 'Task Management', path: '/staff-manager/tasks' },
       { label: 'Shows', path: '/staff-manager/shows' },

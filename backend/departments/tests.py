@@ -36,10 +36,11 @@ class DepartmentPageTests(APITestCase):
         return [page["slug"] for page in self.client.get("/api/department-pages/").data]
 
     def test_who_sees_which_pages(self):
-        self.assertEqual(len(self.pages(self.director)), 9)
-        self.assertEqual(len(self.pages(self.assistant)), 9)
-        self.assertEqual(len(self.pages(self.lisa)), 8)  # heads see every page but Finance
+        self.assertEqual(len(self.pages(self.director)), 10)
+        self.assertEqual(len(self.pages(self.assistant)), 10)
+        self.assertEqual(len(self.pages(self.lisa)), 8)  # heads see every page but Finance and HR
         self.assertNotIn("finance", self.pages(self.lisa))
+        self.assertNotIn("human-resources", self.pages(self.lisa))
         self.assertEqual(self.pages(self.techie), ["tech"])
         self.assertEqual(self.pages(self.sous), ["culinary"])
         self.assertEqual(self.pages(self.camera), ["film-audio"])

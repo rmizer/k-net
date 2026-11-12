@@ -7,7 +7,7 @@ import { NewAccountNotice } from '../../components/NewAccountNotice'
 import { SortHeader, useSort } from '../../components/sorting'
 import { formatDateTime, timeAgo } from '../../format'
 import { useFetch } from '../../hooks/useFetch'
-import type { Department, RemovalRequest } from '../../types'
+import type { CredentialRequest, Department, RemovalRequest } from '../../types'
 import { StaffFormDialog } from '../directory/StaffFormDialog'
 import { Stat } from '../finance/shared'
 import { NavIcon } from '../../components/NavIcon'
@@ -43,6 +43,7 @@ export function SiteManagerPage() {
   const people = useFetch<User[]>('/users/')
   const departments = useFetch<Department[]>('/departments/')
   const removals = useFetch<RemovalRequest[]>('/removal-requests/')
+  const loginRequests = useFetch<CredentialRequest[]>('/credential-requests/?status=pending')
   const [search, setSearch] = useState('')
   const [roleFilter, setRoleFilter] = useState('')
   const [departmentFilter, setDepartmentFilter] = useState('')
@@ -204,6 +205,20 @@ export function SiteManagerPage() {
     }
   }
 
+  const resolveLoginRequest = async (request: CredentialRequest, action: 'done' | 'dismiss') => {
+    setMessage(null)
+    try {
+      await api(`/credential-requests/${request.id}/${action}/`, { method: 'POST' })
+      setMessage({
+        kind: 'success',
+        text: `${action === 'done' ? 'Marked done' : 'Dismissed'}: ${request.kind_display} for ${request.who}.`,
+      })
+      loginRequests.reload()
+    } catch (err) {
+      setMessage({ kind: 'error', text: errorText(err, 'Couldn’t update that request.') })
+    }
+  }
+
   const edit = async (person: User) => {
     try {
       setEditing(await api<User>(`/users/${person.id}/`))
@@ -331,6 +346,46 @@ export function SiteManagerPage() {
                     Delete account
                   </button>
                   <button type="button" className="text-button" onClick={() => resolveRemoval(removal, 'dismiss')}>
+                    Dismiss
+                  </button>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {(loginRequests.data ?? []).length > 0 && (
+        <section className="tile sm-removals" aria-labelledby="login-requests-heading">
+          <div className="fin-section__head">
+            <h2 id="login-requests-heading">Login requests</h2>
+          </div>
+          <p className="muted sm-pending__hint">
+            HR, Directors and Assistants asked for these. Create the login or reset the password in the table below
+            (or Dev Login), then mark it done.
+          </p>
+          <ul className="sm-pending">
+            {(loginRequests.data ?? []).map((request) => (
+              <li key={request.id}>
+                <span>
+                  <strong>
+                    {request.kind_display}: {request.who}
+                  </strong>
+                  <span className="fin-sub">
+                    {[request.person_email, request.email && request.email !== request.person_email ? `new email ${request.email}` : '']
+                      .filter(Boolean)
+                      .join(' · ')}
+                  </span>
+                  <span className="fin-sub">
+                    Requested by {request.requested_by_name ?? 'a former manager'} {timeAgo(request.created_at)}
+                    {request.details && <>: “{request.details}”</>}
+                  </span>
+                </span>
+                <span className="row-actions">
+                  <button type="button" className="text-button" onClick={() => resolveLoginRequest(request, 'done')}>
+                    Mark done
+                  </button>
+                  <button type="button" className="text-button" onClick={() => resolveLoginRequest(request, 'dismiss')}>
                     Dismiss
                   </button>
                 </span>

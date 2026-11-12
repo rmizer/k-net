@@ -106,6 +106,8 @@ export type DocumentCategory =
   | 'vehicle'
   | 'invoice'
   | 'voucher'
+  | 'hiring'
+  | 'agreement'
   | 'receipt'
   | 'other'
 
@@ -116,6 +118,8 @@ export const DOCUMENT_CATEGORIES: { value: DocumentCategory; label: string }[] =
   { value: 'vehicle', label: 'Vehicle documents' },
   { value: 'invoice', label: 'Invoices' },
   { value: 'voucher', label: 'Vouchers' },
+  { value: 'hiring', label: 'Hiring (resumes & references)' },
+  { value: 'agreement', label: 'Agreements (NDAs, privacy, disclaimers)' },
   { value: 'receipt', label: 'Receipts' },
   { value: 'other', label: 'Miscellaneous' },
 ]
@@ -130,6 +134,19 @@ export const RECEIPT_STATUSES: { value: ReceiptStatus; label: string }[] = [
   { value: 'processed', label: 'Processed' },
 ]
 
+/** Hiring files and agreements are about a person. */
+export const HR_CATEGORIES: DocumentCategory[] = ['hiring', 'agreement']
+
+export type AgreementType = 'nda' | 'privacy' | 'disclaimer' | 'release' | 'other'
+
+export const AGREEMENT_TYPES: { value: AgreementType; label: string }[] = [
+  { value: 'nda', label: 'NDA' },
+  { value: 'privacy', label: 'Privacy agreement' },
+  { value: 'disclaimer', label: 'Legal disclaimer' },
+  { value: 'release', label: 'Appearance / talent release' },
+  { value: 'other', label: 'Other agreement' },
+]
+
 export interface ProjectDocument {
   id: number
   title: string
@@ -142,6 +159,12 @@ export interface ProjectDocument {
   vendor: string
   amount: string | null
   purchase_date: string | null
+  /** Hiring files and agreements: who it's about (an account, or a candidate's name). */
+  person: number | null
+  person_name: string
+  person_display: string
+  agreement_type: AgreementType | ''
+  agreement_type_display: string
   status: ReceiptStatus
   status_display: string
   status_changed_at: string | null
@@ -679,6 +702,36 @@ export interface RemovalRequest {
   reason: string
   status: 'pending' | 'approved' | 'dismissed'
   created_at: string
+}
+
+export type CredentialRequestKind = 'new_login' | 'password_reset' | 'email_change' | 'access_change' | 'other'
+
+export const CREDENTIAL_REQUEST_KINDS: { value: CredentialRequestKind; label: string }[] = [
+  { value: 'new_login', label: 'New login for someone' },
+  { value: 'password_reset', label: 'Password reset' },
+  { value: 'email_change', label: 'Change their login email' },
+  { value: 'access_change', label: 'Role or access change' },
+  { value: 'other', label: 'Something else' },
+]
+
+/** Login help asked of the Site Managers (by HR, Directors or Assistants). */
+export interface CredentialRequest {
+  id: number
+  kind: CredentialRequestKind
+  kind_display: string
+  person: number | null
+  person_email: string | null
+  name: string
+  email: string
+  /** The person's name, or the new hire's. */
+  who: string
+  details: string
+  status: 'pending' | 'done' | 'dismissed'
+  status_display: string
+  requested_by_name: string | null
+  created_at: string
+  resolved_at: string | null
+  resolved_by_name: string | null
 }
 
 /** Minutes from one meeting (Site Managers, Directors and Assistants only). */

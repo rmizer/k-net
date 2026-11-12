@@ -29,7 +29,7 @@ from .emails import (
     send_removal_request_email,
     send_verification_email,
 )
-from .models import Department, RemovalRequest, User
+from .models import CredentialRequest, Department, RemovalRequest, User
 from .permissions import IsManagerLevel, IsSiteManager, ReadOnlyOrManagerLevel
 from .serializers import (
     DepartmentSerializer,
@@ -421,3 +421,52 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     )
     serializer_class = DepartmentSerializer
     permission_classes = [ReadOnlyOrManagerLevel]
+
+
+class CredentialRequestViewSet(viewsets.ModelViewSet):
+    """Login help requests for the Site Managers. Directors, Assistants (HR among
+    them) and Site Managers make them and see their own; Site Managers see and
+    resolve everyone's. ?status=pending|done|dismissed filters."""
+
+    permission_classes = [IsManagerLevel]
+    http_method_names = ["get", "post", "head", "options"]
+
+    def get_serializer_class(self):
+        from .serializers import CredentialRequestSerializer
+
+        return CredentialRequestSerializer
+
+    def get_queryset(self):
+        requests = CredentialRequest.objects.select_related("person", "requested_by", "resolved_by")
+        if not self.request.user.is_site_manager:
+            requests = requests.filter(requested_by=self.request.user)
+        if self.request.query_params.get("status"):
+            requests = requests.filter(status=self.request.query_params["status"])
+        return requests
+
+    def perform_create(self, serializer):
+        from .emails import send_credential_request_email
+
+        credential_request = serializer.save(requested_by=self.request.user)
+        try:
+            send_credential_request_email(credential_request)
+        except Exception:
+            logger.exception("Couldn't email the Site Managers about credential request %s", credential_request.pk)
+
+    def _resolve(self, status_value):
+        if not self.request.user.is_site_manager:
+            raise PermissionDenied("Only Site Managers handle login requests.")
+        credential_request = self.get_object()
+        credential_request.status = status_value
+        credential_request.resolved_at = timezone.now()
+        credential_request.resolved_by = self.request.user
+        credential_request.save()
+        return Response(self.get_serializer(credential_request).data)
+
+    @action(detail=True, methods=["post"])
+    def done(self, request, pk=None):
+        return self._resolve(CredentialRequest.Status.DONE)
+
+    @action(detail=True, methods=["post"])
+    def dismiss(self, request, pk=None):
+        return self._resolve(CredentialRequest.Status.DISMISSED)

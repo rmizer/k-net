@@ -27,6 +27,8 @@ class Document(models.Model):
         VEHICLE = "vehicle", "Vehicle documents"
         INVOICE = "invoice", "Invoices"
         VOUCHER = "voucher", "Vouchers"
+        HIRING = "hiring", "Hiring (resumes & references)"
+        AGREEMENT = "agreement", "Agreements (NDAs, privacy, disclaimers)"
         RECEIPT = "receipt", "Receipts"
         OTHER = "other", "Miscellaneous"
 
@@ -38,6 +40,13 @@ class Document(models.Model):
         IN_PROCESS = "in_process", "In process"
         PROCESSED = "processed", "Processed"
 
+    class AgreementType(models.TextChoices):
+        NDA = "nda", "NDA"
+        PRIVACY = "privacy", "Privacy agreement"
+        DISCLAIMER = "disclaimer", "Legal disclaimer"
+        RELEASE = "release", "Appearance / talent release"
+        OTHER = "other", "Other agreement"
+
     title = models.CharField(max_length=200)
     category = models.CharField(max_length=15, choices=Category.choices, default=Category.OTHER)
     file = models.FileField(
@@ -46,6 +55,14 @@ class Document(models.Model):
         validators=[FileExtensionValidator(ALLOWED_EXTENSIONS)],
     )
     notes = models.TextField(blank=True)
+
+    # Hiring files and agreements: who they're about (someone with an account,
+    # or a candidate's name before they have one), and which agreement it is.
+    person = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name="hr_documents"
+    )
+    person_name = models.CharField("candidate name", max_length=150, blank=True)
+    agreement_type = models.CharField(max_length=15, choices=AgreementType.choices, blank=True)
     expires_on = models.DateField(null=True, blank=True, help_text="For insurance, permits, registrations, etc.")
 
     # Receipts only.
@@ -66,6 +83,12 @@ class Document(models.Model):
 
     def __str__(self):
         return self.title
+
+    HR_CATEGORIES = ("hiring", "agreement")
+
+    @property
+    def is_hr(self):
+        return self.category in self.HR_CATEGORIES
 
     @property
     def is_receipt(self):

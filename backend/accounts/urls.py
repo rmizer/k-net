@@ -7,6 +7,7 @@ router = DefaultRouter()
 router.register("users", views.UserViewSet)
 router.register("departments", views.DepartmentViewSet)
 router.register("removal-requests", views.RemovalRequestViewSet, basename="removal-request")
+router.register("credential-requests", views.CredentialRequestViewSet, basename="credential-request")
 
 urlpatterns = [
     path("auth/csrf/", views.CsrfView.as_view(), name="auth-csrf"),

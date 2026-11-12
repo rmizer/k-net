@@ -484,6 +484,20 @@
     min-width: 15rem;
   }
 
+  /* Names get the room; the department dropdown stays compact. */
+  .staff-overview-table .staff-overview-table__name {
+    min-width: 14rem;
+  }
+
+  .staff-overview-table .staff-overview-table__department {
+    width: 8.5rem;
+  }
+
+  .staff-overview-table .staff-overview-table__department .sm-department {
+    width: 8rem;
+    max-width: 8rem;
+  }
+
   .staff-overview-table .staff-overview-table__when {
     white-space: nowrap;
   }
@@ -538,4 +552,11 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+}
+
+.block-people__department {
+  display: grid;
+  justify-items: start;
+  gap: 0.2rem;
+  margin-top: 0.5rem;
 }

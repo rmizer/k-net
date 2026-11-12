@@ -29,6 +29,7 @@ class Department(models.Model):
         PRODUCTION = "production", "Production"
         OPERATIONS = "operations", "Operations"
         FINANCE = "finance", "Finance"
+        HUMAN_RESOURCES = "human-resources", "Human Resources"
         MARKETING = "marketing", "Marketing"
         TRANSPORTATION = "transportation", "Transportation"
         CULINARY = "culinary", "Culinary"
@@ -199,3 +200,46 @@ class RemovalRequest(models.Model):
 
     def __str__(self):
         return f"Remove {self.person}"
+
+
+class CredentialRequest(models.Model):
+    """HR or a manager asking the Site Managers for login help: a new login for
+    someone, a password reset, a changed login email, or a role or access change.
+    Site Managers handle these; nobody else can set passwords or roles above
+    their own."""
+
+    class Kind(models.TextChoices):
+        NEW_LOGIN = "new_login", "New login for someone"
+        PASSWORD_RESET = "password_reset", "Password reset"
+        EMAIL_CHANGE = "email_change", "Change their login email"
+        ACCESS_CHANGE = "access_change", "Role or access change"
+        OTHER = "other", "Something else"
+
+    class Status(models.TextChoices):
+        PENDING = "pending", "Pending"
+        DONE = "done", "Done"
+        DISMISSED = "dismissed", "Dismissed"
+
+    kind = models.CharField(max_length=20, choices=Kind.choices)
+    # Someone who already has an account, or the name and email of a new hire.
+    person = models.ForeignKey(
+        User, null=True, blank=True, on_delete=models.CASCADE, related_name="credential_requests"
+    )
+    name = models.CharField(max_length=150, blank=True)
+    email = models.EmailField(blank=True)
+    details = models.TextField(blank=True)
+    requested_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+    status = models.CharField(max_length=10, choices=Status.choices, default=Status.PENDING)
+    created_at = models.DateTimeField(auto_now_add=True)
+    resolved_at = models.DateTimeField(null=True, blank=True)
+    resolved_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.get_kind_display()}: {self.who}"
+
+    @property
+    def who(self):
+        return self.person.get_full_name() if self.person else self.name

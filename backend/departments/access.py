@@ -12,9 +12,10 @@ from accounts.models import Department, User
 PAGES = [choice for choice in Department.Page if choice != Department.Page.NONE]
 
 FINANCE = Department.Page.FINANCE
+HUMAN_RESOURCES = Department.Page.HUMAN_RESOURCES
 
-# Pages other departments' heads can't see.
-PRIVATE_PAGES = {FINANCE}
+# Pages other departments' heads can't see: money, and hiring files and agreements.
+PRIVATE_PAGES = {FINANCE, HUMAN_RESOURCES}
 
 
 def page_label(page):
@@ -68,3 +69,8 @@ def visible_pages(user):
 
 def heads_of(page):
     return User.objects.filter(is_active=True, is_department_head=True, head_of_department__page=page)
+
+
+def is_hr(user):
+    """Who can open the Human Resources page and its hiring files and agreements."""
+    return bool(user and user.is_authenticated) and can_view(user, HUMAN_RESOURCES)

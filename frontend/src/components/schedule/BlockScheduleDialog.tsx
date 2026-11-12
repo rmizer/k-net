@@ -7,6 +7,8 @@ import type { Department, EventType, ProductionLocation } from '../../types'
 interface Person {
   id: number
   name: string
+  /** Their department, so choosing a department narrows the list to its people. */
+  department?: number | null
 }
 
 interface BlockScheduleDialogProps {
@@ -123,8 +125,20 @@ export function BlockScheduleDialog(props: BlockScheduleDialogProps) {
   const departmentName = departments.find((d) => String(d.id) === form.department)?.name
 
   const query = search.trim().toLowerCase()
-  const listed = people.filter((p) => !query || p.name.toLowerCase().includes(query) || attendees.includes(p.id))
+  const inDepartment = (p: Person) => !form.department || String(p.department ?? '') === form.department
+  // A chosen department narrows the list to its people; anyone already ticked stays in view.
+  const listed = people.filter(
+    (p) => attendees.includes(p.id) || ((!query || p.name.toLowerCase().includes(query)) && inDepartment(p)),
+  )
+  const members = form.department ? people.filter(inDepartment) : []
+  const allMembersTicked = members.length > 0 && members.every((p) => attendees.includes(p.id))
   const toggle = (id: number, on: boolean) => setAttendees(on ? [...attendees, id] : attendees.filter((a) => a !== id))
+  const tickMembers = () =>
+    setAttendees(
+      allMembersTicked
+        ? attendees.filter((id) => !members.some((p) => p.id === id))
+        : [...attendees, ...members.filter((p) => !attendees.includes(p.id)).map((p) => p.id)],
+    )
 
   const submit = async (event: FormEvent) => {
     event.preventDefault()
@@ -366,8 +380,25 @@ export function BlockScheduleDialog(props: BlockScheduleDialogProps) {
                 <span>{person.name}</span>
               </label>
             ))}
-            {listed.length === 0 && <span className="muted">No one matches.</span>}
+            {listed.length === 0 && (
+              <span className="muted">{departmentName ? `No one in ${departmentName} matches.` : 'No one matches.'}</span>
+            )}
           </div>
+          {departmentName && (
+            <div className="block-people__department">
+              {members.length > 0 && (
+                <button type="button" className="text-button" onClick={tickMembers}>
+                  {allMembersTicked
+                    ? `Untick all ${members.length} in ${departmentName}`
+                    : `Tick all ${members.length} in ${departmentName}`}
+                </button>
+              )}
+              <small className="form__hint">
+                Showing {departmentName}. The block goes on the department’s calendar; tick people to put it on their own
+                schedules too.
+              </small>
+            </div>
+          )}
           {error('attendees')}
         </fieldset>
 

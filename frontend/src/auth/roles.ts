@@ -80,6 +80,7 @@ export const DEPARTMENT_PAGES = [
   { slug: 'culinary', label: 'Culinary' },
   { slug: 'film-audio', label: 'Film & Audio Crew' },
   { slug: 'finance', label: 'Finance' },
+  { slug: 'human-resources', label: 'Human Resources' },
   { slug: 'marketing', label: 'Marketing' },
   { slug: 'security', label: 'Security' },
   { slug: 'tech', label: 'Tech' },
@@ -89,7 +90,7 @@ export const DEPARTMENT_PAGES = [
 export type DepartmentPageSlug = (typeof DEPARTMENT_PAGES)[number]['slug']
 
 /** Pages other departments' heads can't see: only managers and the department itself. */
-const PRIVATE_PAGES: string[] = ['finance']
+const PRIVATE_PAGES: string[] = ['finance', 'human-resources']
 
 /** Site Managers, Directors, Assistants and department heads see every department
  *  page (but Finance only if they head it); everyone else only their own
@@ -141,3 +142,6 @@ export const canUseVehicles = (user: User | null) =>
 
 /** Only managers and the Transportation head(s) delete a vehicle. */
 export const canDeleteVehicles = (user: User | null) => canEditDepartmentPage(user, 'transportation')
+
+/** HR's hiring files and agreements: the HR team, its head(s) and managers. (Mirrors the server.) */
+export const canUseHr = (user: User | null) => canSeeDepartmentPage(user, 'human-resources')

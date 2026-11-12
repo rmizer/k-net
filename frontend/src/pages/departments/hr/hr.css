@@ -1,0 +1,151 @@
+/* Human Resources: onboarding, hiring files, agreements and login help. */
+
+.hr-section__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.6rem;
+}
+
+.hr-section__head .department__heading {
+  margin: 0;
+}
+
+.hr .department__count {
+  margin-left: 0.5rem;
+}
+
+.hr-tools {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr));
+  gap: 0.75rem;
+}
+
+.hr-tool {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.hr-tool:hover {
+  border-color: var(--knet-dark-red);
+  text-decoration: none;
+}
+
+.hr-tool .nav-icon {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  color: var(--knet-dark-red);
+}
+
+.hr-tool > span {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.hr-tool .muted {
+  font-size: 0.85rem;
+}
+
+.hr-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 0.75rem 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.hr-filters .form__field {
+  flex: 1 1 16rem;
+}
+
+.hr-filters__check {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.75rem;
+}
+
+.hr-table__sub {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--knet-gray-600);
+}
+
+.hr-on-file {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: var(--weight-bold);
+  color: var(--knet-success);
+}
+
+.hr-missing {
+  color: var(--knet-dark-red);
+}
+
+.hr-hint {
+  margin-top: 0.75rem;
+}
+
+.hr-files {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hr-files li {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--knet-gray-300);
+}
+
+.hr-files li:last-child {
+  border-bottom: 0;
+}
+
+.hr-files__title {
+  font-weight: var(--weight-bold);
+}
+
+.hr-files .muted {
+  font-size: 0.85rem;
+}
+
+.hr-files__notes {
+  font-size: 0.9rem;
+}
+
+.hr-request-status {
+  margin-left: 0.5rem;
+  padding: calc(0.05rem + 2px) 0.45rem 0.05rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  vertical-align: 0.1em;
+}
+
+.hr-request-status.is-pending {
+  background: var(--knet-red);
+  color: var(--knet-white);
+}
+
+.hr-request-status.is-done {
+  background: var(--knet-success);
+  color: var(--knet-white);
+}
+
+.hr-request-status.is-dismissed {
+  background: var(--knet-gray-300);
+  color: var(--knet-black);
+}

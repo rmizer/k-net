@@ -13,7 +13,6 @@ import { useFetch } from '../../hooks/useFetch'
 import { StaffFormDialog } from '../directory/StaffFormDialog'
 import type { Department, ProductionSettings, StaffOverviewRow, Task } from '../../types'
 import { Stat } from '../finance/shared'
-import { NewDepartmentDialog } from './NewDepartmentDialog'
 import { NavIcon } from '../../components/NavIcon'
 import '../finance/finance.css'
 import './staff-manager.css'
@@ -40,7 +39,6 @@ export function StaffOverviewPage() {
   // The person being edited (null to add someone new), or undefined when the dialog is closed.
   const [editing, setEditing] = useState<User | null | undefined>(undefined)
   const [movingId, setMovingId] = useState<number | null>(null)
-  const [addingDepartment, setAddingDepartment] = useState(false)
   const [rowError, setRowError] = useState('')
   const sort = useSort<SortKey>('name')
   const timeZone = production.data?.time_zone ?? 'UTC'
@@ -175,19 +173,9 @@ export function StaffOverviewPage() {
             </button>
           </div>
           <div className="sm-actions__group">
-            <button type="button" className="button button--secondary" onClick={() => setAddingDepartment(true)}>
-              + New department
-            </button>
-            <button type="button" className="button button--secondary" onClick={() => setEditing(null)}>
-              + Add staff
-            </button>
-            <Link to="/schedule/crew/invite" className="button button--secondary">
-              + Invite crew
-            </Link>
-          </div>
-          <div className="sm-actions__group">
-            <Link to="/staff-manager/shows" className="button button--secondary">
-              Show control hub
+            <Link to="/departments/human-resources" className="button button--secondary">
+              <NavIcon name="contacts" size={16} />
+              Human Resources
             </Link>
           </div>
         </div>
@@ -311,10 +299,10 @@ export function StaffOverviewPage() {
               <table className="data-table fin-table staff-overview-table">
                 <thead>
                   <tr>
-                    <SortHeader sort={sort} column="name">
+                    <SortHeader sort={sort} column="name" className="staff-overview-table__name">
                       Name
                     </SortHeader>
-                    <SortHeader sort={sort} column="department">
+                    <SortHeader sort={sort} column="department" className="staff-overview-table__department">
                       Department
                     </SortHeader>
                     <th>Contact</th>
@@ -339,7 +327,7 @@ export function StaffOverviewPage() {
                 <tbody>
                   {visible.map((person) => (
                     <tr key={person.id}>
-                      <td data-label="Name">
+                      <td data-label="Name" className="staff-overview-table__name">
                         <Link to={`/staff-manager/scheduling?person=${person.id}`} className="fin-person-link">
                           {person.name}
                         </Link>
@@ -348,7 +336,7 @@ export function StaffOverviewPage() {
                           {person.is_active_crew ? ' · Active crew' : ''}
                         </span>
                       </td>
-                      <td data-label="Department">
+                      <td data-label="Department" className="staff-overview-table__department">
                         {canEdit(person) ? (
                           <select
                             className="sm-status sm-department"
@@ -454,7 +442,7 @@ export function StaffOverviewPage() {
         <BlockScheduleDialog
           defaultDay={today}
           defaultAttendees={blocking === null ? [] : [blocking]}
-          people={all.map((p) => ({ id: p.id, name: p.name }))}
+          people={all.map((p) => ({ id: p.id, name: p.name, department: p.department }))}
           departments={departments.data ?? []}
           timeZone={timeZone}
           onClose={() => setBlocking(undefined)}
@@ -462,17 +450,6 @@ export function StaffOverviewPage() {
             setBlocking(undefined)
             setNotice(`Added ${count} ${count === 1 ? 'day' : 'days'} to the schedule.`)
             people.reload()
-          }}
-        />
-      )}
-
-      {addingDepartment && (
-        <NewDepartmentDialog
-          onClose={() => setAddingDepartment(false)}
-          onCreated={(created) => {
-            setAddingDepartment(false)
-            departments.reload()
-            setNotice(`Added the ${created.name} department.`)
           }}
         />
       )}

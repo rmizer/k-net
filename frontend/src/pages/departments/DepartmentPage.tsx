@@ -15,6 +15,7 @@ import { MonthCalendar, monthGrid } from '../schedule/MonthCalendar'
 import { CulinaryNav } from './culinary/CulinaryNav'
 import { IncidentReportsSection } from './security/IncidentReports'
 import { VehiclesSection } from '../vehicles/VehiclePages'
+import { HumanResourcesSection } from './hr/HumanResources'
 import { NavIcon } from '../../components/NavIcon'
 import { DEPARTMENT_ICONS } from '../../navigation'
 import './departments.css'
@@ -130,6 +131,7 @@ function DepartmentView({ slug, today, timeZone }: ViewProps) {
 
       {slug === 'security' && <IncidentReportsSection />}
       {slug === 'transportation' && <VehiclesSection />}
+      {slug === 'human-resources' && <HumanResourcesSection />}
 
       <section className="department__section" aria-labelledby="department-calendar">
         <h2 id="department-calendar" className="department__heading">

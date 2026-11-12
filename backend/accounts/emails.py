@@ -103,3 +103,35 @@ def send_removal_request_email(removal):
         to=managers,
         reply_to=[requester.email],
     ).send()
+
+
+def send_credential_request_email(credential_request):
+    """Tells every Site Manager that HR or a manager needs login help for someone."""
+    from django.core.mail import EmailMessage
+
+    from .models import User
+
+    managers = list(
+        User.objects.filter(role=User.Role.SITE_MANAGER, is_active=True).values_list("email", flat=True)
+    )
+    if not managers:
+        return
+    request, requester = credential_request, credential_request.requested_by
+    who = request.who + (f" ({request.person.email})" if request.person else "")
+    lines = [
+        f"{requester.get_full_name()} ({requester.get_role_display()}) asked for: {request.get_kind_display()}.",
+        "",
+        f"For: {who}",
+    ]
+    if request.email:
+        lines.append(f"Email: {request.email}")
+    if request.details.strip():
+        lines += ["", "Details:", request.details.strip()]
+    lines += ["", "Handle it on the Site Manager Dashboard:", f"{settings.SITE_URL.rstrip('/')}/site-manager"]
+    EmailMessage(
+        subject=f"[K-Net] {request.get_kind_display()}: {request.who}",
+        body="\n".join(lines),
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=managers,
+        reply_to=[requester.email],
+    ).send()

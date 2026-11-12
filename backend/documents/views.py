@@ -5,7 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 
-from departments.access import is_finance
+from departments.access import is_finance, is_hr
 
 from .models import Document
 from .serializers import DocumentSerializer
@@ -26,19 +26,25 @@ class DocumentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         documents = Document.objects.select_related("uploaded_by")
-        if is_finance(user) and not user.is_manager_level:
-            documents = documents.filter(Q(uploaded_by=user) | Q(category=Document.Category.RECEIPT))
-        elif not user.is_manager_level:
-            documents = documents.filter(uploaded_by=user)
+        if not user.is_manager_level:
+            visible = Q(uploaded_by=user)
+            if is_finance(user):
+                visible |= Q(category=Document.Category.RECEIPT)
+            if is_hr(user):
+                # HR keeps the hiring files and agreements.
+                visible |= Q(category__in=Document.HR_CATEGORIES)
+            documents = documents.filter(visible)
         params = self.request.query_params
         if params.get("category"):
             documents = documents.filter(category=params["category"])
+        if params.get("person"):
+            documents = documents.filter(person_id=params["person"])
         if params.get("mine") in ("1", "true"):
             documents = documents.filter(uploaded_by=user)
         return documents
 
     def _check_can_change(self, document):
-        if self.request.user.is_manager_level:
+        if self.request.user.is_manager_level or (document.is_hr and is_hr(self.request.user)):
             return
         if document.uploaded_by_id != self.request.user.pk:
             raise PermissionDenied("You can only change what you submitted.")
