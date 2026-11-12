@@ -66,6 +66,9 @@ export const NAV_ITEMS: NavItem[] = [
       { label: 'Scheduling', path: '/staff-manager/scheduling' },
       { label: 'Task Management', path: '/staff-manager/tasks' },
       { label: 'Shows', path: '/staff-manager/shows' },
+      { label: 'Challenge Planner', path: '/staff-manager/challenge-planner' },
+      { label: 'Inventory', path: '/staff-manager/inventory' },
+      { label: 'Vehicles', path: '/staff-manager/vehicles' },
     ],
   },
   { label: 'Influencers', path: '/influencers', icon: 'star' },
@@ -87,6 +90,21 @@ export const NAV_ITEMS: NavItem[] = [
             { label: 'Overview', path: page.path, departmentPage: slug },
             { label: 'Documents', path: '/documents', roles: MANAGER_ROLES },
             { label: 'Meeting Notes', path: '/meeting-notes', roles: MANAGER_ROLES },
+          ],
+        }
+      }
+      if (slug === 'transportation') {
+        // The department page, plus Vehicles for the Transportation team and managers.
+        return {
+          ...page,
+          children: [
+            { label: 'Overview', path: page.path, departmentPage: slug },
+            {
+              label: 'Vehicles',
+              path: '/departments/transportation/vehicles',
+              roles: MANAGER_ROLES,
+              departments: ['Transportation'],
+            },
           ],
         }
       }
@@ -122,7 +140,6 @@ export const NAV_ITEMS: NavItem[] = [
       { label: 'Paperwork', path: '/paperwork' },
     ],
   },
-  { label: 'Contact', path: '/contact', icon: 'mail' },
   { label: 'Help', path: '/help', icon: 'help' },
 ]
 

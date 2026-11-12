@@ -178,12 +178,117 @@
   margin: 0;
 }
 
-.investor__before {
-  margin-bottom: 0.4rem !important;
+/* What K-Net replaces: problem → solution, one row each. */
+.investor__swap-labels,
+.investor__swap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 2.5rem minmax(0, 1fr);
+  column-gap: 1rem;
+}
+
+.investor__swap-labels {
+  margin-bottom: 0.5rem;
+  padding: 0 1rem;
+  font-size: 0.8rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.investor__swap-labels span:first-child {
   color: var(--knet-gray-600);
-  font-size: 0.9rem;
+}
+
+.investor__swap-labels span:last-child {
+  grid-column: 3;
+  color: var(--knet-dark-red);
+}
+
+.investor__swaps {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.investor__swap {
+  align-items: center;
+  padding: 0;
+  overflow: hidden;
+}
+
+.investor__problem,
+.investor__solution {
+  align-self: stretch;
+  padding: 0.9rem 1rem;
+}
+
+.investor__problem {
+  background: var(--knet-gray-100);
+}
+
+.investor__problem p,
+.investor__solution p {
+  margin: 0;
+}
+
+.investor__problem p:not(.visually-hidden) {
+  color: var(--knet-gray-600);
+  font-size: 0.92rem;
+}
+
+.investor__problem-title {
+  margin: 0 0 0.3rem;
+  color: var(--knet-gray-600);
+  font-size: 1rem;
   text-decoration: line-through;
   text-decoration-color: var(--knet-red);
+  text-decoration-thickness: 2px;
+}
+
+.investor__swap-arrow {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--knet-dark-red);
+  color: var(--knet-white);
+  font-size: 1.25rem;
+  font-weight: var(--weight-bold);
+  line-height: 1;
+}
+
+.investor__solution .investor__tile-title {
+  margin-bottom: 0.3rem;
+}
+
+/* Phones: problem on top, solution underneath, arrow pointing down. */
+@media (max-width: 700px) {
+  .investor__swap-labels {
+    display: none;
+  }
+
+  .investor__swap {
+    grid-template-columns: 1fr;
+  }
+
+  .investor__swap-arrow {
+    justify-self: center;
+    margin: -1.25rem 0;
+    position: relative;
+    z-index: 1;
+    transform: rotate(90deg);
+  }
+
+  .investor__problem {
+    padding-bottom: 1.5rem;
+  }
+
+  .investor__solution {
+    padding-top: 1.5rem;
+  }
 }
 
 /* Savings estimate */

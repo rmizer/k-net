@@ -3,48 +3,75 @@ import { Link, useParams } from 'react-router-dom'
 import wordmark from '../../assets/brand/knet-wordmark.png'
 import { NavIcon, type NavIconName } from '../../components/NavIcon'
 import { useFetch } from '../../hooks/useFetch'
-import { TRIAL_END_LABEL } from '../../trial/trial'
 import { NotFoundPage } from '../NotFoundPage'
 import { DOMAIN, firstYear, hostingHigh, hostingLow, laterYears, maintenance, money, PURCHASE_PRICE, range, WEEKLY_FEE } from './costs'
 import './investors.css'
 
 const CONTACT_EMAIL = 'support.knet@gmail.com'
 
-const REPLACES: [string, string, string, NavIconName][] = [
+/** Problem → solution: [the old way, why it hurts, what K-Net does instead, how, icon]. */
+const REPLACES: [string, string, string, string, NavIconName][] = [
   [
     'Schedules in group texts and emailed PDFs',
+    'Every change means a new version, and half the crew is still working from the old one.',
     'One live schedule',
     'Daily, weekly and monthly views everyone sees the moment it changes. Block scheduling books a month of shifts (e.g. Oct 5–30, weekdays, 9 to 5) in one step.',
     'calendar',
   ],
   [
     'Tasks lost in chat threads',
+    'Requests scroll away in busy channels, nobody knows who owns what, and nothing flags when it’s late.',
     'Assigned tasks with owners',
     'Tasks go to a person or a whole department, show on their Staff Hub, flag when overdue and can message them on Slack.',
     'tasks',
   ],
   [
     'Contact spreadsheets that are always out of date',
+    'Phone numbers, rooms and emergency contacts live in files someone has to keep updating by hand.',
     'A self-updating directory',
     'Crew sign up from a QR code with a verified email. Departments, roles, lodging and emergency contacts in one place, visible only to the roles that need them.',
     'contacts',
   ],
   [
     'Paper receipts and reimbursement chasing',
+    'Receipts get lost in pockets and glove boxes, and crew wait weeks with no idea where their money is.',
     'Receipts from a phone',
     'Crew send in receipts and paperwork, get a confirmation and keep a history; Finance moves each receipt from Submitted to Processed and onto a paycheck.',
     'receipt',
   ],
   [
     'Permits and insurance that lapse unnoticed',
+    'An expired permit or certificate can shut down a shoot day, and expiry dates sit in a drawer.',
     'Documents with expiry alerts',
     'Permits, insurance, contracts, invoices and vehicle paperwork filed by type, with “expiring soon” warnings.',
     'document',
   ],
   [
     'Talent travel buried in email',
+    'Flights, hotels, agents and needs for each creator are spread across inboxes and attachments.',
     'An influencer roster',
     'Each creator’s contacts, agent, needs, flights, hotels and schedule on one profile, in a sortable table.',
+    'star',
+  ],
+  [
+    'Security incidents reported by text or not at all',
+    'A trespasser or threat gets a quick message, if that, with no photos, no record and no follow-up.',
+    'Incident reports with evidence',
+    'Security files a report with photos and video on the spot; High and Critical incidents alert managers by Slack and email, and reports print for insurance or police.',
+    'guard',
+  ],
+  [
+    'Supplies tracked on clipboards, or in someone’s head',
+    'Nobody knows what’s in the pod, what’s run out or what expired, so the same things get bought twice.',
+    'A company-wide inventory',
+    'Every item by department, with quantities, storage spots, expiration dates, linked receipts and serial numbers for gear. Out-of-stock items stand out.',
+    'layers',
+  ],
+  [
+    'Challenge plans in scattered docs',
+    'Rules, props, prizes and safety checks for each episode’s challenges live in different notes.',
+    'A challenge planner',
+    'Each challenge with its participants, rewards, supply checklist, safety sign-offs, clean-up plan and content warnings, from planning to done.',
     'star',
   ],
 ]
@@ -68,7 +95,6 @@ const FUTURE: [string, string, NavIconName][] = [
   ['CrewFinder: live crew tracking', 'See where crew are on a map during the shoot, with opt-in sharing that switches off when a shift ends.', 'locate'],
   ['Shift handovers', 'A handover log for round-the-clock shoots: what happened, what’s pending and who’s on next, read before every shift.', 'notes'],
   ['Clock-in / clock-out system for staff', 'Staff clock in and out from their phone, giving payroll accurate hours to work from; turnaround and overtime are tracked and flagged automatically.', 'clock'],
-  ['Call sheets', 'Generate the daily call sheet from the live schedule, locations and directory, and send it to everyone on it.', 'sheet'],
   ['Budget tracking', 'Spending from receipts and invoices measured against each department’s budget as the shoot goes.', 'wallet'],
   ['Payments and payroll exports', 'Pay reimbursements and export hours to payroll providers, instead of re-keying them.', 'card'],
   ['Offline mode', 'Schedules, contacts and documents stay readable on remote locations with no signal, and sync when back online.', 'wifiOff'],
@@ -142,17 +168,31 @@ export function InvestorPage() {
 
       <section className="investor__section" aria-labelledby="replaces-heading">
         <h2 id="replaces-heading">What K-Net replaces</h2>
-        <ul className="investor__replaces">
-          {REPLACES.map(([before, after, detail, icon]) => (
-            <li key={after} className="tile">
-              <p className="investor__before">{before}</p>
-              <h3 className="investor__tile-title">
-                <span className="investor__icon" aria-hidden="true">
-                  <NavIcon name={icon} size={20} />
-                </span>
-                {after}
-              </h3>
-              <p>{detail}</p>
+        <div className="investor__swap-labels" aria-hidden="true">
+          <span>The problem</span>
+          <span>The K-Net solution</span>
+        </div>
+        <ul className="investor__swaps">
+          {REPLACES.map(([problem, why, solution, how, icon]) => (
+            <li key={solution} className="tile investor__swap">
+              <div className="investor__problem">
+                <p className="visually-hidden">The problem:</p>
+                <h3 className="investor__problem-title">{problem}</h3>
+                <p>{why}</p>
+              </div>
+              <span className="investor__swap-arrow" aria-hidden="true">
+                →
+              </span>
+              <div className="investor__solution">
+                <p className="visually-hidden">The K-Net solution:</p>
+                <h3 className="investor__tile-title">
+                  <span className="investor__icon" aria-hidden="true">
+                    <NavIcon name={icon} size={20} />
+                  </span>
+                  {solution}
+                </h3>
+                <p>{how}</p>
+              </div>
             </li>
           ))}
         </ul>
@@ -270,10 +310,11 @@ export function InvestorPage() {
               Working now
             </h3>
             <p>
-              In alpha testing with real crew through {TRIAL_END_LABEL}: Staff Hub, schedule and block scheduling, call
-              sheets, tasks, department pages with Culinary menus and shopping lists, a private Finance department,
-              shows, meeting notes, directory, influencer roster, locations and resources, documents, crew paperwork and
-              receipt submission, email-verified sign-up and Slack notifications.
+              In beta testing, after an alpha trial with real crew: Staff Hub, schedule and block scheduling, call
+              sheets, tasks, department pages with Culinary menus and shopping lists, Security incident reports with
+              photo and video evidence and manager alerts, a private Finance department, shows, the Challenge Planner,
+              company inventory, meeting notes, directory, influencer roster, locations and resources, documents, crew
+              paperwork and receipt submission, email-verified sign-up and Slack notifications.
             </p>
             <p>
               <Link to="/trial">About the trial</Link>
@@ -410,7 +451,7 @@ function SavingsEstimate() {
     <section className="investor__section" aria-labelledby="estimate-heading">
       <h2 id="estimate-heading">What it could save a production</h2>
       <p className="investor__intro">
-        An estimate, not a measured result: K-Net is still in its alpha trial. Change any number to match your
+        An estimate, not a measured result: K-Net is still in beta testing. Change any number to match your
         production; the defaults are a six-week shoot filming around the clock, seven days a week, with a rotating
         staff of about 50.
       </p>

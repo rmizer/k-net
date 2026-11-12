@@ -13,6 +13,8 @@ import { ForbiddenPage } from '../ForbiddenPage'
 import { MarketingLinks } from '../marketing/MarketingLinks'
 import { MonthCalendar, monthGrid } from '../schedule/MonthCalendar'
 import { CulinaryNav } from './culinary/CulinaryNav'
+import { IncidentReportsSection } from './security/IncidentReports'
+import { VehiclesSection } from '../vehicles/VehiclePages'
 import { NavIcon } from '../../components/NavIcon'
 import { DEPARTMENT_ICONS } from '../../navigation'
 import './departments.css'
@@ -125,6 +127,9 @@ function DepartmentView({ slug, today, timeZone }: ViewProps) {
       {slug === 'culinary' && <CulinaryNav />}
 
       <HeadBanners heads={page.heads} />
+
+      {slug === 'security' && <IncidentReportsSection />}
+      {slug === 'transportation' && <VehiclesSection />}
 
       <section className="department__section" aria-labelledby="department-calendar">
         <h2 id="department-calendar" className="department__heading">

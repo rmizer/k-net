@@ -1,0 +1,377 @@
+/* Vehicles: buses, rentals and trucks, and where they are. */
+
+.vehicles-section__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.6rem;
+}
+
+.vehicles-section__head .department__heading {
+  margin: 0;
+}
+
+.vehicles-section__head .department__count {
+  margin-left: 0.5rem;
+}
+
+.vehicles__toolbar {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.vehicles__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.vehicles__tab {
+  min-height: 2.25rem;
+  padding: 0.3rem 0.9rem;
+  border: 1px solid var(--knet-gray-300);
+  border-radius: 999px;
+  background: var(--knet-white);
+  font: inherit;
+  cursor: pointer;
+}
+
+.vehicles__tab.is-selected {
+  border-color: var(--knet-dark-red);
+  background: var(--knet-dark-red);
+  color: var(--knet-white);
+}
+
+.vehicles__tab-count {
+  margin-left: 0.2rem;
+  opacity: 0.75;
+  font-size: 0.85em;
+}
+
+.vehicles__filters {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .vehicles__filters {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Cards */
+
+.vehicle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vehicle-card {
+  display: grid;
+  align-content: start;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.vehicle-card.is-returned,
+.vehicle-card.is-out_of_service {
+  border-top-color: var(--knet-gray-600);
+  background: var(--knet-gray-100);
+}
+
+.vehicle-card__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 0.5rem;
+}
+
+.vehicle-card__name {
+  font-size: 1.15rem;
+  font-weight: var(--weight-bold);
+  overflow-wrap: anywhere;
+}
+
+.vehicle-status {
+  padding: calc(0.05rem + 2px) 0.5rem 0.05rem;
+  border-radius: 999px;
+  background: var(--knet-gray-600);
+  color: var(--knet-white);
+  font-size: 0.7rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.vehicle-card__kind {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--knet-gray-600);
+}
+
+/* The plate reads like a plate. */
+.vehicle-plate {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  justify-self: start;
+  margin: 0;
+  padding: 0.2rem 0.65rem;
+  border: 2px solid var(--knet-black);
+  border-radius: 6px;
+  background: var(--knet-white);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 1.05rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.08em;
+}
+
+.vehicle-plate__state {
+  font-family: var(--font-brand);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--knet-gray-600);
+}
+
+.vehicle-card__facts {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0;
+}
+
+.vehicle-card__facts div {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 0.5rem;
+}
+
+.vehicle-card__facts dt {
+  font-size: 0.75rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--knet-dark-red);
+  padding-top: 0.15rem;
+}
+
+.vehicle-card__facts dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.vehicle-card__foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 0.75rem;
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+}
+
+.vehicle-due {
+  font-weight: var(--weight-bold);
+}
+
+.vehicle-due.is-soon {
+  color: var(--knet-dark-red);
+}
+
+.vehicle-due.is-overdue {
+  padding: 0.1rem 0.45rem;
+  border-radius: var(--radius);
+  background: var(--knet-red);
+  color: var(--knet-white);
+}
+
+/* The vehicle form */
+
+.vehicle-form {
+  display: grid;
+  gap: 1rem;
+  max-width: 56rem;
+}
+
+.vehicle-form__summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin: 0;
+}
+
+.vehicle-form__group {
+  display: grid;
+  gap: 0.85rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0.85rem 1rem 1rem;
+  border: 1px solid var(--knet-gray-300);
+  border-radius: var(--radius);
+}
+
+.vehicle-form__group legend {
+  padding: 0 0.35rem;
+  font-weight: var(--weight-bold);
+}
+
+.vehicle-form__row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .vehicle-form__row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .vehicle-form__row .form__field:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+.vehicle-form__plate {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: 0.08em;
+}
+
+.vehicle-form__ownership {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.vehicle-form__option {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 2.5rem;
+  padding: 0 0.85rem;
+  border: 1px solid var(--knet-gray-300);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.vehicle-form__option:has(input:checked) {
+  border-color: var(--knet-dark-red);
+  background: var(--knet-red-wash);
+  font-weight: var(--weight-bold);
+}
+
+.vehicle-docs {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vehicle-docs li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: baseline;
+  gap: 0.1rem 0.75rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--knet-gray-300);
+}
+
+.vehicle-docs__title {
+  font-weight: var(--weight-bold);
+  overflow-wrap: anywhere;
+}
+
+.vehicle-docs__meta {
+  grid-column: 1;
+  grid-row: 2;
+  font-size: 0.82rem;
+}
+
+.vehicle-docs__amount {
+  font-weight: var(--weight-bold);
+  white-space: nowrap;
+}
+
+.vehicle-docs__add {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.5rem;
+}
+
+.vehicle-docs__add select {
+  min-width: 0;
+}
+
+@media (max-width: 640px) {
+  .vehicle-docs__add {
+    grid-template-columns: 1fr;
+  }
+}
+
+.vehicle-form__meta {
+  font-size: 0.85rem;
+}
+
+/* The vehicle's type icon, in a red ring. */
+.vehicle-card__icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 2px solid var(--knet-dark-red);
+  border-radius: 50%;
+  color: var(--knet-dark-red);
+  background: var(--knet-white);
+}
+
+.vehicle-card__head {
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.vehicle-card__head .vehicle-status {
+  margin-left: auto;
+}
+
+.vehicle-card__model {
+  margin: 0;
+  font-weight: var(--weight-bold);
+}
+
+.vehicle-form__model {
+  font-size: 1.1rem;
+  font-weight: var(--weight-bold);
+}
+
+/* "Tag" reads like the Parked at / Keys labels, in the same column, with the plate beside it. */
+.vehicle-tag {
+  display: grid;
+  grid-template-columns: 6.5rem auto;
+  align-items: center;
+  justify-content: start;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.vehicle-tag__label {
+  font-size: 0.75rem;
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--knet-dark-red);
+}
+
+/* In the vehicle page's summary line it sits inline with the icon and model. */
+.vehicle-form__summary .vehicle-tag {
+  grid-template-columns: auto auto;
+}

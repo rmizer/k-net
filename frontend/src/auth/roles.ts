@@ -126,3 +126,18 @@ export const isSiteManager = (user: User | null) => user?.role === 'site_manager
 /** Whether `viewer` can edit or remove `target` (mirrors the server's rules). */
 export const canManageUser = (viewer: User | null, target: User) =>
   !!viewer && viewer.id !== target.id && !!viewer.assignable_roles?.includes(target.role)
+
+/** The Security team, its head(s) and managers file and read incident reports. (Mirrors the server.) */
+export const canFileIncidents = (user: User | null) =>
+  !!user && (isManagerLevel(user) || user.department_page === 'security' || user.head_of_department_page === 'security')
+
+/** The Security head(s) and managers review incident reports: status, resolution, delete. */
+export const canReviewIncidents = (user: User | null) => canEditDepartmentPage(user, 'security')
+
+/** Managers and the Transportation team use the Vehicles page. (Mirrors the server.) */
+export const canUseVehicles = (user: User | null) =>
+  !!user &&
+  (isManagerLevel(user) || user.department_page === 'transportation' || user.head_of_department_page === 'transportation')
+
+/** Only managers and the Transportation head(s) delete a vehicle. */
+export const canDeleteVehicles = (user: User | null) => canEditDepartmentPage(user, 'transportation')

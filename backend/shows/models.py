@@ -10,6 +10,7 @@ class Show(models.Model):
         PLANNING = "planning", "Planning"
         PRE_PRODUCTION = "pre_production", "Pre-production"
         PRODUCTION = "production", "Production"
+        HIATUS = "hiatus", "Hiatus"
 
     name = models.CharField(max_length=150, unique=True)
     description = models.TextField()

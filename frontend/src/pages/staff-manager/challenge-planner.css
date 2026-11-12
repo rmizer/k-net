@@ -1,0 +1,196 @@
+/* Challenge Planner: future, current and completed side by side. */
+
+.cp-columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+
+/* Each column's title sits on a solid bar the width of the tile:
+   gray for In Planning, red for Planned, green for Completed. */
+.cp-column {
+  --cp-color: var(--knet-gray-600);
+  border-top-color: var(--cp-color);
+}
+
+.cp-column--planned {
+  --cp-color: var(--knet-dark-red);
+}
+
+.cp-column--complete {
+  --cp-color: var(--knet-success);
+}
+
+.cp-column__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 0.75rem;
+  /* Out to the tile's edges (the tile pads 0.85rem 1rem). */
+  margin: -0.85rem -1rem 0.5rem;
+  padding: 0.65rem 1rem;
+  border-radius: calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0;
+  background: var(--cp-color);
+  color: var(--knet-white);
+}
+
+.cp-column__head h2 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--knet-white);
+}
+
+.cp-column__head .department__count {
+  margin-left: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: var(--weight-bold);
+  color: var(--knet-white);
+  opacity: 0.85;
+}
+
+.cp-column__head .muted {
+  font-size: 0.85rem;
+  color: var(--knet-white);
+  opacity: 0.85;
+}
+
+.cp-column__empty {
+  padding: 1.5rem 0 0.75rem;
+  text-align: center;
+}
+
+.cp-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cp-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.55rem 0;
+}
+
+.cp-list li + li {
+  border-top: 1px solid var(--knet-gray-100);
+}
+
+.cp-list__title {
+  font-weight: var(--weight-bold);
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 860px) {
+  .cp-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* New / edit challenge form */
+
+.challenge-form {
+  display: grid;
+  gap: 1rem;
+  max-width: 56rem;
+}
+
+.challenge-form__group {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0.85rem 1rem 1rem;
+  border: 1px solid var(--knet-gray-300);
+  border-radius: var(--radius);
+}
+
+.challenge-form__group legend {
+  padding: 0 0.35rem;
+  font-weight: var(--weight-bold);
+}
+
+.challenge-form__person {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2rem;
+}
+
+.challenge-supplies__add {
+  padding-bottom: 0.75rem;
+  border-bottom: 1px dashed var(--knet-gray-300);
+}
+
+.challenge-supplies__section + .challenge-supplies__section {
+  margin-top: 0.5rem;
+}
+
+.challenge-form__warnings {
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+/* Safety checklist: To do stands out until it is Done or Not needed. */
+.challenge-safety {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.challenge-safety__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  padding: 0.4rem 0.6rem;
+  border-left: 4px solid var(--knet-gray-300);
+  border-radius: var(--radius);
+}
+
+.challenge-safety__row.is-todo {
+  border-left-color: var(--knet-red);
+  background: var(--knet-red-wash);
+}
+
+.challenge-safety__row.is-done {
+  border-left-color: var(--knet-success);
+}
+
+.challenge-safety__row .form__field-error {
+  flex-basis: 100%;
+}
+
+.challenge-safety__label {
+  font-weight: var(--weight-bold);
+}
+
+.challenge-safety__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+}
+
+.challenge-safety__option {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 2rem;
+}
+
+.challenge-safety__todo,
+.cp-list__safety {
+  color: var(--knet-dark-red);
+}
+
+.challenge-safety__clear {
+  color: var(--knet-success);
+}
+
+.cp-list__safety {
+  font-size: 0.85rem;
+  font-weight: var(--weight-bold);
+}

@@ -1,4 +1,4 @@
-/* Trial countdown: a slim black strip above everything else. */
+/* Trial banner: a slim black strip above everything else. */
 .trial-banner {
   --trial-red: #ff4545; /* Brighter than the brand red so small text stays readable on black. */
   display: flex;
@@ -19,42 +19,10 @@
   margin: 0;
 }
 
-.trial-banner__label {
-  opacity: 0.85;
-}
-
-.trial-banner__part {
-  white-space: nowrap;
-}
-
-/* Each number sits in a clipped box so a new value can roll down into place. */
-.trial-banner__number {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: bottom;
-  min-width: 1ch;
-  text-align: right;
-  font-weight: var(--weight-bold);
-  font-variant-numeric: tabular-nums;
-}
-
-.trial-banner__digits {
-  display: inline-block;
-  animation: trial-roll 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-@keyframes trial-roll {
-  from {
-    transform: translateY(-90%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
 .trial-banner__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
   color: var(--knet-white);
   font-size: 0.8rem;
   text-decoration: underline;
@@ -73,13 +41,26 @@
   outline-offset: 2px;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .trial-banner__digits {
-    animation: none;
-  }
+/* About the trial page */
+
+.trial-page__header {
+  text-align: center;
 }
 
-/* About the trial page */
+/* Title and subtitle sit close together. */
+.trial-page__header h1 {
+  margin-bottom: 0.1em;
+}
+
+.trial-page__subtitle {
+  margin-top: 0;
+  color: var(--knet-black);
+  font-size: 1.25rem;
+}
+
+.trial-page__beta {
+  color: var(--knet-red);
+}
 
 /* Tighter than the site's 1.5 for all body text here; the intro sets its own. */
 .trial-page p,
@@ -100,10 +81,61 @@
   margin-bottom: 0;
 }
 
-/* The intro reads as a lede: bigger, with tighter lines. */
-.trial-page__intro p:not(.trial-page__actions) {
+/* The intro uses the investors band's callout styles (index.css); these only
+   add what a longer, multi-paragraph callout needs. */
+.trial-intro {
+  align-items: start;
+}
+
+.trial-page .trial-intro__text p {
+  margin: 0 0 0.5rem;
+  color: rgb(255 255 255 / 0.78);
+}
+
+.trial-page .trial-intro__text .callout__eyebrow {
+  margin: 0;
+  color: #ff5a5a;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.trial-page .trial-intro h2 {
+  margin: 0.15rem 0 0.3rem;
+}
+
+/* Both top tiles: bigger body text with tighter lines, close under the heading. */
+.trial-page__top .callout__text p:not(.callout__eyebrow):not(.trial-page__actions) {
   font-size: 1.2rem;
-  line-height: 1.2;
+  line-height: 1.15;
+}
+
+.trial-page__top .callout h2 {
+  margin-bottom: 0.3rem;
+}
+
+/* The description's buttons span the tile, under the icon and text. */
+.trial-page .trial-intro__actions {
+  grid-column: 1 / -1;
+  justify-content: center;
+  margin: 0;
+}
+
+.callout__button .nav-icon {
+  flex-shrink: 0;
+}
+
+/* Second button on black: white outline. */
+.trial-intro__outline {
+  border-color: var(--knet-white);
+  background: transparent;
+  color: var(--knet-white);
+}
+
+.trial-intro__outline:hover {
+  border-color: var(--knet-red);
+  background: var(--knet-red);
+  color: var(--knet-white);
+  text-decoration: none;
 }
 
 .trial-page__actions {
@@ -141,9 +173,39 @@
   color: var(--knet-gray-600);
 }
 
-/* The investors band (a CalloutBand) sits under the intro. */
-.trial-page .callout {
-  margin-top: 1.5rem;
+/* The intro and the investors band (a CalloutBand) share a row, half each. */
+.trial-page__top {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 1rem;
+}
+
+.trial-page__top > * {
+  margin: 0;
+}
+
+/* At half width the band stacks: icon and text, then the button underneath. */
+.trial-page__top .callout {
+  grid-template-columns: auto 1fr;
+  align-content: center;
+}
+
+.trial-page__top .callout__button {
+  grid-column: 1 / -1;
+  justify-self: center;
+}
+
+@media (max-width: 860px) {
+  .trial-page__top {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .trial-page__top .callout__button {
+    justify-self: stretch;
+  }
 }
 
 .trial-page__icon {
@@ -155,4 +217,14 @@
   border-radius: 50%;
   background: var(--knet-red-tint);
   color: var(--knet-dark-red);
+}
+
+.trial-banner__link .nav-icon {
+  flex-shrink: 0;
+  color: var(--trial-red);
+}
+
+.trial-banner__link:hover .nav-icon,
+.trial-banner__link:focus-visible .nav-icon {
+  color: currentColor;
 }

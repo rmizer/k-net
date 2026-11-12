@@ -36,6 +36,10 @@ import { MenuItemFormPage } from './pages/departments/culinary/MenuItemFormPage'
 import { FoodAllergiesPage } from './pages/departments/culinary/FoodAllergiesPage'
 import { MenuPage } from './pages/departments/culinary/MenuPage'
 import { ShoppingListPage } from './pages/departments/culinary/ShoppingListPage'
+import {
+  IncidentReportFormPage,
+  IncidentReportsPage,
+} from './pages/departments/security/IncidentReports'
 import { NewShoppingListPage, ShoppingListsPage } from './pages/departments/culinary/ShoppingListsPage'
 import { MeetingNoteFormPage } from './pages/meetings/MeetingNoteFormPage'
 import { MeetingNotePage } from './pages/meetings/MeetingNotePage'
@@ -49,6 +53,10 @@ import { SchedulePage } from './pages/schedule/SchedulePage'
 import { DepartmentsPage } from './pages/staff-manager/DepartmentsPage'
 import { SchedulingPage } from './pages/staff-manager/SchedulingPage'
 import { StaffOverviewPage } from './pages/staff-manager/StaffOverviewPage'
+import { ChallengeFormPage } from './pages/staff-manager/ChallengeFormPage'
+import { VehicleFormPage, VehiclesPage } from './pages/vehicles/VehiclePages'
+import { DeletedInventoryPage, InventoryItemFormPage, InventoryPage } from './pages/staff-manager/inventory/InventoryPages'
+import { ChallengePlannerPage } from './pages/staff-manager/ChallengePlannerPage'
 import { TaskManagementPage } from './pages/staff-manager/TaskManagementPage'
 import { TimelinePage } from './pages/schedule/TimelinePage'
 import { LoginPage } from './pages/LoginPage'
@@ -105,6 +113,12 @@ export default function App() {
               <Route path="/departments/culinary/shopping/new" element={<NewShoppingListPage />} />
               <Route path="/departments/culinary/shopping/:id" element={<ShoppingListPage />} />
               <Route path="/departments/culinary/allergies" element={<FoodAllergiesPage />} />
+              <Route path="/departments/security/incidents" element={<IncidentReportsPage />} />
+              <Route path="/departments/security/incidents/new" element={<IncidentReportFormPage />} />
+              <Route path="/departments/security/incidents/:id" element={<IncidentReportFormPage />} />
+              <Route path="/departments/transportation/vehicles" element={<VehiclesPage />} />
+              <Route path="/departments/transportation/vehicles/new" element={<VehicleFormPage />} />
+              <Route path="/departments/transportation/vehicles/:id" element={<VehicleFormPage />} />
               <Route path="/departments/:slug" element={<DepartmentPage />} />
               <Route path="/schedule" element={<SchedulePage />} />
               <Route path="/schedule/tasks" element={<MyTasksPage />} />
@@ -132,6 +146,16 @@ export default function App() {
                 <Route path="/staff-manager/tasks" element={<TaskManagementPage />} />
                 <Route path="/staff-manager/shows" element={<ShowsPage />} />
                 <Route path="/staff-manager/shows/:id" element={<ShowPage />} />
+                <Route path="/staff-manager/challenge-planner" element={<ChallengePlannerPage />} />
+                <Route path="/staff-manager/challenge-planner/new" element={<ChallengeFormPage />} />
+                <Route path="/staff-manager/challenge-planner/:id" element={<ChallengeFormPage />} />
+                <Route path="/staff-manager/inventory" element={<InventoryPage />} />
+                <Route path="/staff-manager/inventory/new" element={<InventoryItemFormPage />} />
+                <Route path="/staff-manager/inventory/deleted" element={<DeletedInventoryPage />} />
+                <Route path="/staff-manager/inventory/:id" element={<InventoryItemFormPage />} />
+                <Route path="/staff-manager/vehicles" element={<VehiclesPage />} />
+                <Route path="/staff-manager/vehicles/new" element={<VehicleFormPage />} />
+                <Route path="/staff-manager/vehicles/:id" element={<VehicleFormPage />} />
                 {/* Call sheets live under Scheduling. */}
                 <Route path="/staff-manager/scheduling/call-sheet" element={<CallSheetPage />} />
                 <Route path="/staff-manager/call-sheet" element={<Navigate to="/staff-manager/scheduling/call-sheet" replace />} />
